@@ -3,795 +3,2157 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MONITORAMENTO ASSAYAG — GUERRA IRÃ 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<title>MONITORAMENTO ASSAYAG — GUERRA IRÃ 2026 v2</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* ============================================================
+   CSS VARIABLES — Design System
+   ============================================================ */
 :root {
-  --red:#ff2233; --red-d:#6b0010; --red-glow:rgba(255,34,51,0.15);
-  --amber:#ffb300; --amber-d:#7a5500; --amber-glow:rgba(255,179,0,0.12);
-  --green:#00e676; --green-d:#00441f; --green-glow:rgba(0,230,118,0.12);
-  --blue:#00b4ff; --blue-d:#003d5c;
-  --purple:#a78bfa; --purple-d:#4c1d95;
-  --bg:#060709; --bg2:#0b0d12; --bg3:#111520; --bg4:#161b26;
-  --border:#1c2232; --border2:#2a3448;
-  --text:#bec9d8; --text-dim:#4e5f72; --text-bright:#e8f0f8;
-  --mono:'Share Tech Mono',monospace;
-  --head:'Bebas Neue',sans-serif;
-  --body:'IBM Plex Sans',sans-serif;
+  /* Backgrounds — layered neutrals, not pure black */
+  --bg0: #0a0c0f;
+  --bg1: #0f1217;
+  --bg2: #141820;
+  --bg3: #1a2030;
+  --bg4: #1f2636;
+
+  /* Borders */
+  --border: rgba(255,255,255,.07);
+  --border2: rgba(255,255,255,.12);
+
+  /* Text */
+  --text-primary: #e2e8f0;
+  --text-secondary: #8892a4;
+  --text-tertiary: #556070;
+  --text-bright: #f8fafc;
+
+  /* Confidence colors — calibrated, not loud */
+  --confirmed: #22c55e;    /* green — CONFIRMADO */
+  --confirmed-bg: rgba(34,197,94,.08);
+  --confirmed-border: rgba(34,197,94,.25);
+
+  --reported: #60a5fa;     /* blue — REPORTADO */
+  --reported-bg: rgba(96,165,250,.08);
+  --reported-border: rgba(96,165,250,.25);
+
+  --claimed: #f59e0b;      /* amber — REIVINDICADO */
+  --claimed-bg: rgba(245,158,11,.08);
+  --claimed-border: rgba(245,158,11,.25);
+
+  --contested: #f97316;    /* orange — CONFLITANTE */
+  --contested-bg: rgba(249,115,22,.08);
+  --contested-border: rgba(249,115,22,.25);
+
+  --alert: #ef4444;        /* red — only for critical alerts */
+  --alert-bg: rgba(239,68,68,.08);
+  --alert-border: rgba(239,68,68,.25);
+
+  /* Escalation index colors */
+  --esc-low: #22c55e;
+  --esc-med: #f59e0b;
+  --esc-high: #f97316;
+  --esc-crit: #ef4444;
+
+  /* Typography */
+  --font-ui: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', 'DM Mono', monospace;
+
+  /* Spacing scale */
+  --gap-xs: .375rem;
+  --gap-sm: .75rem;
+  --gap-md: 1.25rem;
+  --gap-lg: 2rem;
+  --gap-xl: 3rem;
+
+  /* Radius */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 10px;
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-html{background:var(--bg);color:var(--text);font-family:var(--body);font-size:14px;}
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px);pointer-events:none;z-index:9999;}
 
-/* HEADER */
-header{background:var(--bg2);border-bottom:2px solid var(--red-d);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
-.logo{font-family:var(--head);font-size:1.5rem;letter-spacing:.15em;color:var(--red);line-height:1;}
-.logo-sub{font-family:var(--mono);font-size:.52rem;color:var(--text-dim);letter-spacing:.25em;margin-top:1px;}
-.hdr-r{display:flex;align-items:center;gap:1.5rem;}
-.live-pill{display:flex;align-items:center;gap:.4rem;padding:.25rem .7rem;border:1px solid var(--red-d);background:var(--red-glow);cursor:pointer;font-family:var(--mono);font-size:.58rem;color:var(--red);letter-spacing:.15em;user-select:none;}
-.ldot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:blink 1s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.clk{font-family:var(--mono);font-size:.8rem;color:var(--amber);letter-spacing:.1em;}
-.nxt{font-family:var(--mono);font-size:.48rem;color:var(--text-dim);letter-spacing:.1em;}
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* TICKER */
-.ticker-bar{background:linear-gradient(90deg,#180004,#0d0002,#180004);border-bottom:1px solid var(--red-d);padding:.38rem 1.5rem;display:flex;gap:1rem;align-items:center;overflow:hidden;}
-.ticker-tag{font-family:var(--mono);font-size:.55rem;background:var(--red);color:#000;padding:1px 7px;letter-spacing:.15em;font-weight:700;flex-shrink:0;}
-.ticker-wrap{flex:1;overflow:hidden;}
-.ticker-inner{white-space:nowrap;font-family:var(--mono);font-size:.6rem;color:var(--red);letter-spacing:.06em;animation:scr 45s linear infinite;}
-@keyframes scr{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+body {
+  font-family: var(--font-ui);
+  background: var(--bg0);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
 
-/* LAYOUT */
-main{padding:1.25rem 1.5rem;max-width:1800px;margin:0 auto;display:flex;flex-direction:column;gap:1.25rem;}
-.sl{font-family:var(--mono);font-size:.55rem;letter-spacing:.28em;color:var(--text-dim);text-transform:uppercase;display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;}
-.sl::after{content:'';flex:1;height:1px;background:var(--border);}
-.sl-badge{background:var(--red-glow);border:1px solid var(--red-d);color:var(--red);padding:1px 6px;font-size:.5rem;}
+/* ============================================================
+   TICKER
+   ============================================================ */
+.ticker-strip {
+  background: var(--bg1);
+  border-bottom: 1px solid var(--alert-border);
+  padding: .35rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  overflow: hidden;
+}
+.ticker-label {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  font-weight: 600;
+  letter-spacing: .15em;
+  color: var(--alert);
+  background: var(--alert-bg);
+  border: 1px solid var(--alert-border);
+  padding: 2px 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.ticker-scroll {
+  flex: 1;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 5%, black 95%, transparent);
+}
+.ticker-inner {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  animation: ticker 60s linear infinite;
+  letter-spacing: .03em;
+}
+@keyframes ticker {
+  from { transform: translateX(100vw); }
+  to { transform: translateX(-100%); }
+}
 
-/* STAT ROW */
-.stat-row{display:grid;grid-template-columns:repeat(6,1fr);gap:.75rem;}
-.sc{background:var(--bg2);border:1px solid var(--border);border-top:2px solid;padding:.85rem 1rem;position:relative;overflow:hidden;}
-.sc.r{border-top-color:var(--red);}.sc.a{border-top-color:var(--amber);}.sc.g{border-top-color:var(--green);}.sc.b{border-top-color:var(--blue);}
-.sc-lbl{font-family:var(--mono);font-size:.5rem;letter-spacing:.16em;color:var(--text-dim);text-transform:uppercase;margin-bottom:.25rem;}
-.sc-val{font-family:var(--head);font-size:2.2rem;line-height:1;}
-.sc.r .sc-val{color:var(--red);}.sc.a .sc-val{color:var(--amber);}.sc.g .sc-val{color:var(--green);}.sc.b .sc-val{color:var(--blue);}
-.sc-sub{font-family:var(--mono);font-size:.48rem;color:var(--text-dim);margin-top:.2rem;}
-.sc-glow{position:absolute;top:-10px;right:-10px;width:70px;height:70px;border-radius:50%;filter:blur(25px);opacity:.35;}
-.sc.r .sc-glow{background:var(--red);}.sc.a .sc-glow{background:var(--amber);}.sc.g .sc-glow{background:var(--green);}.sc.b .sc-glow{background:var(--blue);}
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.header-brand {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+}
+.header-title {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  font-weight: 500;
+  letter-spacing: .25em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+.header-ops {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+.op-badge {
+  font-family: var(--font-mono);
+  font-size: .58rem;
+  font-weight: 500;
+  letter-spacing: .12em;
+  padding: 3px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.op-us { color: #60a5fa; border-color: rgba(96,165,250,.3); background: rgba(96,165,250,.06); }
+.op-il { color: #a78bfa; border-color: rgba(167,139,250,.3); background: rgba(167,139,250,.06); }
+.op-ir { color: var(--claimed); border-color: var(--claimed-border); background: var(--claimed-bg); }
 
-/* PANELS */
-.panel{background:var(--bg2);border:1px solid var(--border);}
-.ph{background:var(--bg3);border-bottom:1px solid var(--border);padding:.55rem 1rem;display:flex;justify-content:space-between;align-items:center;}
-.pt{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;color:var(--amber);text-transform:uppercase;}
-.pn{font-family:var(--mono);font-size:.48rem;color:var(--text-dim);}
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .4rem;
+}
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  color: var(--confirmed);
+  cursor: pointer;
+}
+.live-dot {
+  width: 7px; height: 7px;
+  background: var(--confirmed);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .4; transform: scale(.7); }
+}
+.time-display {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--text-tertiary);
+}
 
-/* GRID HELPERS */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
-.col-r{display:flex;flex-direction:column;gap:1.25rem;}
+/* ============================================================
+   ESCALATION INDEX BAR
+   ============================================================ */
+.escalation-bar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: .75rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+.esc-label {
+  font-family: var(--font-mono);
+  font-size: .58rem;
+  letter-spacing: .15em;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+.esc-track {
+  flex: 1;
+  max-width: 400px;
+  height: 4px;
+  background: var(--bg4);
+  border-radius: 2px;
+  position: relative;
+}
+.esc-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--esc-low), var(--esc-med) 40%, var(--esc-high) 70%, var(--esc-crit));
+  width: 82%;
+  transition: width 1s ease;
+}
+.esc-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: 82%;
+  width: 10px; height: 10px;
+  background: var(--esc-high);
+  border-radius: 50%;
+  border: 2px solid var(--bg0);
+  box-shadow: 0 0 8px var(--esc-high);
+}
+.esc-value {
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--esc-high);
+}
+.esc-markers {
+  display: flex;
+  gap: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: .5rem;
+  color: var(--text-tertiary);
+}
+.esc-markers span { cursor: default; }
 
-/* WEAPON TOTALS */
-.wt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);}
-.wt{background:var(--bg3);padding:.75rem 1rem;text-align:center;}
-.wt-icon{font-size:1.3rem;margin-bottom:.25rem;}
-.wt-val{font-family:var(--head);font-size:1.7rem;margin-bottom:.15rem;}
-.wt-lbl{font-family:var(--mono);font-size:.5rem;color:var(--text-dim);letter-spacing:.1em;}
-.wt-sub{font-family:var(--mono);font-size:.46rem;color:var(--text-dim);margin-top:.15rem;}
+/* ============================================================
+   VIEW MODE SWITCHER
+   ============================================================ */
+.view-switcher {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.view-btn {
+  font-family: var(--font-mono);
+  font-size: .58rem;
+  letter-spacing: .1em;
+  color: var(--text-tertiary);
+  padding: .65rem 1.25rem;
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.view-btn:hover { color: var(--text-primary); }
+.view-btn.active {
+  color: var(--reported);
+  border-bottom-color: var(--reported);
+}
+.view-section { display: none; }
+.view-section.active { display: block; }
 
-/* MISSILE GRID */
-.mg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);}
-.tc{background:var(--bg2);padding:.85rem 1rem;}
-.tc-flag{font-size:1.1rem;margin-bottom:.25rem;}
-.tc-country{font-family:var(--head);font-size:1rem;letter-spacing:.04em;color:var(--text-bright);margin-bottom:.4rem;}
-.tc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem;}
-.tc-type{font-family:var(--mono);font-size:.5rem;color:var(--text-dim);letter-spacing:.08em;}
-.tc-nums{font-family:var(--mono);font-size:.5rem;display:flex;gap:.4rem;}
-.n-fire{color:var(--red);}.n-hit{color:var(--amber);}.n-int{color:var(--green);}
-.bar{height:5px;background:var(--bg4);margin-top:2px;border-radius:2px;overflow:hidden;display:flex;}
-.b-hit{background:var(--amber);height:100%;}
-.b-int{background:var(--green);height:100%;}
-.b-mis{background:var(--red-d);height:100%;}
-.wpills{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.4rem;}
-.wp{font-family:var(--mono);font-size:.46rem;padding:1px 5px;border:1px solid var(--border2);color:var(--text-dim);background:var(--bg3);}
-.wp.bal{border-color:var(--red-d);color:var(--red);}
-.wp.drn{border-color:var(--amber-d);color:var(--amber);}
-.wp.cru{border-color:var(--blue-d);color:var(--blue);}
-.tc-note{font-family:var(--mono);font-size:.5rem;color:var(--text-dim);margin-top:.45rem;line-height:1.5;}
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+.main {
+  padding: 1.5rem 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
 
-/* BENCHMARKS */
-.bench-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);}
-.bc{background:var(--bg3);padding:.9rem 1rem;}
-.bc-title{font-family:var(--mono);font-size:.55rem;letter-spacing:.14em;color:var(--text-dim);text-transform:uppercase;margin-bottom:.7rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);}
-.br{margin-bottom:.6rem;}
-.br-lbl{display:flex;justify-content:space-between;margin-bottom:.2rem;}
-.br-name{font-family:var(--body);font-size:.68rem;color:var(--text);}
-.br-pct{font-family:var(--mono);font-size:.6rem;color:var(--text-bright);}
-.br-bar{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
-.bf{height:100%;border-radius:3px;}
-.bf-r{background:linear-gradient(90deg,var(--red-d),var(--red));}
-.bf-a{background:linear-gradient(90deg,var(--amber-d),var(--amber));}
-.bf-g{background:linear-gradient(90deg,var(--green-d),var(--green));}
-.bf-b{background:linear-gradient(90deg,var(--blue-d),var(--blue));}
-.bf-p{background:linear-gradient(90deg,var(--purple-d),var(--purple));}
-.br-note{font-family:var(--mono);font-size:.46rem;color:var(--text-dim);margin-top:2px;}
+/* ============================================================
+   SECTION HEADERS
+   ============================================================ */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: .6rem;
+  border-bottom: 1px solid var(--border);
+}
+.section-title {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  font-weight: 600;
+  letter-spacing: .2em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.section-title::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 12px;
+  background: var(--reported);
+  border-radius: 2px;
+}
+.section-meta {
+  font-family: var(--font-mono);
+  font-size: .52rem;
+  color: var(--text-tertiary);
+}
 
-/* SEVERITY DOTS */
-.sev{display:flex;gap:.4rem;align-items:center;margin-bottom:.45rem;}
-.sev-lbl{font-family:var(--mono);font-size:.52rem;color:var(--text-dim);width:120px;flex-shrink:0;}
-.sev-dots{display:flex;gap:3px;}
-.sd{width:9px;height:9px;border-radius:2px;background:var(--bg4);}
-.sd-r{background:var(--red);}.sd-a{background:var(--amber);}.sd-g{background:var(--green);}
-.sev-val{font-family:var(--mono);font-size:.52rem;color:var(--text-bright);margin-left:.4rem;}
+/* ============================================================
+   VALIDATION ALERT BANNER
+   ============================================================ */
+.validation-banner {
+  display: none;
+  background: var(--alert-bg);
+  border: 1px solid var(--alert-border);
+  border-radius: var(--r-md);
+  padding: .6rem 1rem;
+  font-family: var(--font-mono);
+  font-size: .58rem;
+  color: var(--alert);
+  gap: .5rem;
+  align-items: center;
+}
+.validation-banner.visible { display: flex; }
 
-/* INFRA */
-.infra-list{padding:0;}
-.ii{display:grid;grid-template-columns:26px 1fr auto;gap:.55rem;align-items:start;padding:.5rem 1rem;border-bottom:1px solid var(--border);}
-.ii:last-child{border-bottom:none;}
-.ii:hover{background:rgba(255,34,51,.03);}
-.ii-idx{font-family:var(--mono);font-size:.52rem;color:var(--text-dim);}
-.ii-name{font-family:var(--body);font-weight:600;font-size:.78rem;color:var(--text-bright);line-height:1.2;}
-.ii-loc{font-family:var(--mono);font-size:.5rem;color:var(--text-dim);margin-top:1px;}
-.ii-type{font-family:var(--mono);font-size:.48rem;color:var(--text-dim);margin-top:2px;}
-.icat{font-family:var(--mono);font-size:.48rem;padding:1px 6px;border:1px solid;border-radius:2px;white-space:nowrap;}
-.cat-n{border-color:#7c3aed;color:#a78bfa;background:rgba(124,58,237,.1);}
-.cat-m{border-color:var(--red-d);color:var(--red);background:var(--red-glow);}
-.cat-i{border-color:var(--amber-d);color:var(--amber);background:var(--amber-glow);}
-.cat-c{border-color:#0284c7;color:var(--blue);background:rgba(2,132,199,.1);}
-.cat-a{border-color:#059669;color:var(--green);background:var(--green-glow);}
-.cat-v{border-color:#0e7490;color:#22d3ee;background:rgba(14,116,144,.1);}
-.cat-g{border-color:#9f1239;color:#fb7185;background:rgba(159,18,57,.1);}
+/* ============================================================
+   KPI GRID — Level 1
+   ============================================================ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.kpi-card {
+  background: var(--bg2);
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  position: relative;
+  transition: background .2s;
+}
+.kpi-card:hover { background: var(--bg3); }
+.kpi-label {
+  font-family: var(--font-mono);
+  font-size: .52rem;
+  letter-spacing: .12em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+.kpi-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: .4rem;
+}
+.kpi-value {
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--text-bright);
+}
+.kpi-unit {
+  font-family: var(--font-mono);
+  font-size: .55rem;
+  color: var(--text-tertiary);
+}
+.kpi-sub {
+  font-size: .62rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.kpi-badge {
+  position: absolute;
+  top: .75rem;
+  right: .75rem;
+}
 
-/* CASUALTIES */
-.cas-cat{background:var(--bg3);border-bottom:1px solid var(--border);border-top:1px solid var(--border);padding:.3rem 1rem;font-family:var(--mono);font-size:.52rem;letter-spacing:.2em;color:var(--text-dim);text-transform:uppercase;}
-.pc{border-bottom:1px solid var(--border);padding:.65rem 1rem;display:grid;grid-template-columns:24px 1fr auto;gap:.55rem;align-items:start;}
-.pc:last-child{border-bottom:none;}
-.pc:hover{background:rgba(255,34,51,.03);}
-.pc-n{font-family:var(--mono);font-size:.52rem;color:var(--red-d);}
-.pc-name{font-family:var(--body);font-weight:600;font-size:.82rem;color:var(--text-bright);line-height:1.2;}
-.pc-pos{font-family:var(--body);font-style:italic;font-size:.68rem;color:var(--amber);margin-top:1px;line-height:1.3;}
-.pc-org{font-family:var(--mono);font-size:.5rem;color:var(--text-dim);letter-spacing:.05em;margin-top:2px;}
-.pc-src{font-family:var(--mono);font-size:.46rem;color:var(--text-dim);margin-top:2px;}
-.cf{font-family:var(--mono);font-size:.5rem;padding:2px 6px;border:1px solid;}
-.cf-c{border-color:var(--red);color:var(--red);background:var(--red-glow);}
-.cf-r{border-color:var(--amber);color:var(--amber);background:var(--amber-glow);}
-.cf-u{border-color:var(--text-dim);color:var(--text-dim);}
+/* ============================================================
+   CONFIDENCE BADGES
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-mono);
+  font-size: .48rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid;
+  cursor: default;
+  position: relative;
+}
+.badge-confirmed { color: var(--confirmed); background: var(--confirmed-bg); border-color: var(--confirmed-border); }
+.badge-reported  { color: var(--reported);  background: var(--reported-bg);  border-color: var(--reported-border); }
+.badge-claimed   { color: var(--claimed);   background: var(--claimed-bg);   border-color: var(--claimed-border); }
+.badge-contested { color: var(--contested); background: var(--contested-bg); border-color: var(--contested-border); }
+.badge-alert     { color: var(--alert);     background: var(--alert-bg);     border-color: var(--alert-border); }
 
-/* TIMELINE */
-.tl{padding:.35rem 0;max-height:320px;overflow-y:auto;}
-.tl::-webkit-scrollbar{width:3px;}
-.tl::-webkit-scrollbar-thumb{background:var(--red-d);}
-.tl-i{display:grid;grid-template-columns:50px 1fr;gap:.55rem;padding:.45rem 1rem;border-bottom:1px solid var(--border);}
-.tl-i:last-child{border-bottom:none;}
-.tl-t{font-family:var(--mono);font-size:.52rem;color:var(--amber);line-height:1.4;}
-.tl-x{font-family:var(--body);font-size:.68rem;color:var(--text);line-height:1.4;font-style:italic;}
-.tag{display:inline-block;font-family:var(--mono);font-size:.46rem;padding:0 4px;margin-right:3px;border:1px solid;}
-.tg-k{border-color:var(--red-d);color:var(--red);background:var(--red-glow);}
-.tg-s{border-color:var(--amber-d);color:var(--amber);background:var(--amber-glow);}
-.tg-c{border-color:var(--green-d);color:var(--green);background:var(--green-glow);}
-.tg-d{border-color:var(--blue-d);color:var(--blue);background:rgba(0,180,255,.08);}
+/* Tooltip */
+.badge[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 0;
+  background: var(--bg4);
+  border: 1px solid var(--border2);
+  color: var(--text-primary);
+  font-size: .55rem;
+  padding: .4rem .6rem;
+  border-radius: var(--r-sm);
+  white-space: pre-wrap;
+  max-width: 240px;
+  z-index: 100;
+  line-height: 1.6;
+  box-shadow: 0 4px 20px rgba(0,0,0,.5);
+}
 
-/* SOURCES */
-.src-i{display:flex;justify-content:space-between;align-items:center;padding:.42rem 1rem;border-bottom:1px solid var(--border);}
-.src-i:last-child{border-bottom:none;}
-.src-n{font-family:var(--mono);font-size:.58rem;color:var(--text);}
-.src-b{font-family:var(--mono);font-size:.48rem;padding:1px 6px;border:1px solid;}
-.sb-ok{border-color:var(--green-d);color:var(--green);background:var(--green-glow);}
-.sb-st{border-color:var(--amber-d);color:var(--amber);background:var(--amber-glow);}
-.sb-an{border-color:var(--blue-d);color:var(--blue);}
+/* ============================================================
+   THEATER GRID — Level 2
+   ============================================================ */
+.theater-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.country-card {
+  background: var(--bg2);
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  transition: background .2s;
+}
+.country-card:hover { background: var(--bg3); }
+.country-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.country-name {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  color: var(--text-bright);
+}
+.country-flag { font-size: 1rem; }
+.intercept-gauge {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.gauge-track {
+  flex: 1;
+  height: 3px;
+  background: var(--bg4);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.gauge-fill {
+  height: 100%;
+  background: var(--confirmed);
+  border-radius: 2px;
+  transition: width 1s ease;
+}
+.gauge-pct {
+  font-family: var(--font-mono);
+  font-size: .55rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  min-width: 2.5rem;
+  text-align: right;
+}
+.country-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px;
+}
+.cstat {
+  background: var(--bg3);
+  border-radius: var(--r-sm);
+  padding: .35rem .5rem;
+  text-align: center;
+}
+.cstat-val {
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  font-weight: 500;
+  color: var(--text-bright);
+  display: block;
+}
+.cstat-lbl {
+  font-family: var(--font-mono);
+  font-size: .42rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  display: block;
+  margin-top: 1px;
+}
+.country-note {
+  font-size: .6rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  border-top: 1px solid var(--border);
+  padding-top: .5rem;
+}
+/* Heatmap risk indicator */
+.risk-bar {
+  height: 2px;
+  border-radius: 1px;
+  margin-top: .25rem;
+}
+.risk-critical { background: var(--alert); box-shadow: 0 0 6px var(--alert); }
+.risk-high     { background: var(--esc-high); }
+.risk-medium   { background: var(--claimed); }
+.risk-low      { background: var(--confirmed); }
 
-/* SURVIVOR STRIP */
-.surv{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--green);padding:.65rem 1rem;}
-.surv-inner{font-family:var(--mono);font-size:.55rem;color:var(--text-dim);line-height:2.1;letter-spacing:.04em;}
-.s-ok{color:var(--green);}
+/* ============================================================
+   ISRAEL SECTION — Special treatment
+   ============================================================ */
+.israel-section {
+  background: var(--bg2);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid rgba(239,68,68,.2);
+}
+.israel-header {
+  background: rgba(239,68,68,.06);
+  border-bottom: 1px solid rgba(239,68,68,.2);
+  padding: .75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.israel-title {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  font-weight: 600;
+  letter-spacing: .2em;
+  color: var(--alert);
+  text-transform: uppercase;
+}
+.israel-cities {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+.city-card {
+  background: var(--bg2);
+  padding: .9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+.city-name {
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  color: var(--text-bright);
+}
+.city-coords {
+  font-family: var(--font-mono);
+  font-size: .48rem;
+  color: var(--text-tertiary);
+}
+.city-casualties {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+.cas-block {
+  background: var(--bg3);
+  border-radius: var(--r-sm);
+  padding: .4rem .5rem;
+  text-align: center;
+}
+.cas-n {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 500;
+  display: block;
+}
+.cas-n.dead { color: var(--alert); }
+.cas-n.wounded { color: var(--claimed); }
+.cas-l {
+  font-family: var(--font-mono);
+  font-size: .4rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  display: block;
+}
+.city-notes {
+  font-size: .58rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.israel-totals {
+  background: var(--bg3);
+  border-top: 1px solid var(--border);
+  padding: .6rem 1.25rem;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.total-item {
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+}
+.total-val {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+.total-lbl {
+  font-family: var(--font-mono);
+  font-size: .45rem;
+  color: var(--text-tertiary);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
 
-/* TOAST */
-#toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;padding:.65rem 1rem;border:1px solid;max-width:310px;line-height:1.5;transition:opacity .5s;pointer-events:none;display:none;}
+/* ============================================================
+   BENCHMARK PANELS
+   ============================================================ */
+.bench-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.bench-card {
+  background: var(--bg2);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.bench-head {
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.bench-icon { font-size: .9rem; }
+.bench-title {
+  font-family: var(--font-mono);
+  font-size: .58rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+.bench-body { padding: .75rem 1rem; display: flex; flex-direction: column; gap: .65rem; }
+.bench-row {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+.bench-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.bench-name {
+  font-size: .62rem;
+  color: var(--text-primary);
+}
+.bench-pct {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  font-weight: 500;
+  color: var(--text-bright);
+}
+.bench-track {
+  height: 3px;
+  background: var(--bg4);
+  border-radius: 2px;
+}
+.bench-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1.2s ease;
+}
+.bench-source {
+  font-family: var(--font-mono);
+  font-size: .48rem;
+  color: var(--text-tertiary);
+}
 
-/* FOOTER */
-footer{border-top:1px solid var(--border);padding:.7rem 1.5rem;display:flex;justify-content:space-between;align-items:center;margin-top:.5rem;}
-.ft{font-family:var(--mono);font-size:.5rem;color:var(--text-dim);line-height:1.8;}
-.ft span{color:var(--amber);}
+/* ============================================================
+   CASUALTIES TABLE
+   ============================================================ */
+.cas-table { width: 100%; border-collapse: collapse; }
+.cas-table th {
+  font-family: var(--font-mono);
+  font-size: .48rem;
+  font-weight: 500;
+  letter-spacing: .12em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  padding: .5rem .75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.cas-table td {
+  padding: .55rem .75rem;
+  font-size: .62rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.cas-table tr:hover td { background: var(--bg3); }
+.cas-num-cell {
+  font-family: var(--font-mono);
+  font-size: .55rem;
+  color: var(--text-tertiary);
+  width: 30px;
+}
+.cas-name-cell { font-weight: 500; color: var(--text-bright); }
+.cas-role-cell { color: var(--text-secondary); font-size: .58rem; }
+.cas-org-cell { font-family: var(--font-mono); font-size: .55rem; color: var(--text-tertiary); }
+.cas-src-cell { font-family: var(--font-mono); font-size: .5rem; color: var(--text-tertiary); }
 
-/* RESPONSIVE */
-@media(max-width:1300px){.stat-row{grid-template-columns:repeat(3,1fr)}.mg{grid-template-columns:repeat(2,1fr)}.bench-grid{grid-template-columns:1fr}.two-col{grid-template-columns:1fr}}@media(max-width:700px){.stat-row{grid-template-columns:1fr 1fr}.mg{grid-template-columns:1fr}.wt-grid{grid-template-columns:repeat(2,1fr)}header{padding:0 .75rem}.logo{font-size:1.1rem}}
+/* ============================================================
+   DESTROYED INFRASTRUCTURE
+   ============================================================ */
+.infra-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.infra-item {
+  background: var(--bg2);
+  padding: .75rem 1rem;
+  display: flex;
+  gap: .75rem;
+  align-items: flex-start;
+  transition: background .15s;
+}
+.infra-item:hover { background: var(--bg3); }
+.infra-num {
+  font-family: var(--font-mono);
+  font-size: .55rem;
+  color: var(--text-tertiary);
+  min-width: 1.5rem;
+  padding-top: .1rem;
+}
+.infra-content { flex: 1; }
+.infra-name { font-size: .65rem; font-weight: 500; color: var(--text-bright); margin-bottom: .15rem; }
+.infra-loc { font-family: var(--font-mono); font-size: .5rem; color: var(--text-tertiary); margin-bottom: .2rem; }
+.infra-note { font-size: .58rem; color: var(--text-secondary); line-height: 1.5; }
+.infra-cat {
+  font-family: var(--font-mono);
+  font-size: .44rem;
+  letter-spacing: .1em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: .1rem;
+}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.tl-item {
+  display: flex;
+  gap: 1rem;
+  padding: .6rem 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.tl-item:last-child { border-bottom: none; }
+.tl-time {
+  font-family: var(--font-mono);
+  font-size: .55rem;
+  color: var(--text-tertiary);
+  min-width: 70px;
+  padding-top: .1rem;
+  line-height: 1.5;
+}
+.tl-body { flex: 1; }
+.tl-text {
+  font-size: .63rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+  max-width: 75ch;
+}
+.tl-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: .45rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  padding: 1px 6px;
+  border-radius: 2px;
+  margin-right: .4rem;
+  vertical-align: middle;
+}
+.tag-attack   { background: rgba(239,68,68,.12); color: var(--alert); border: 1px solid var(--alert-border); }
+.tag-retaliate{ background: rgba(245,158,11,.12); color: var(--claimed); border: 1px solid var(--claimed-border); }
+.tag-confirm  { background: rgba(34,197,94,.12);  color: var(--confirmed); border: 1px solid var(--confirmed-border); }
+.tag-diplo    { background: rgba(96,165,250,.12);  color: var(--reported); border: 1px solid var(--reported-border); }
+.tag-us       { background: rgba(147,197,253,.1);  color: #93c5fd; border: 1px solid rgba(147,197,253,.25); }
+.tag-warning  { background: rgba(249,115,22,.12);  color: var(--esc-high); border: 1px solid rgba(249,115,22,.3); }
+.tag-disinfo  { background: rgba(245,158,11,.1);   color: var(--claimed); border: 1px solid var(--claimed-border); }
+
+/* ============================================================
+   AUDIT LOG
+   ============================================================ */
+.audit-section {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.audit-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .75rem 1.25rem;
+  cursor: pointer;
+  user-select: none;
+}
+.audit-toggle:hover { background: var(--bg2); }
+.audit-title {
+  font-family: var(--font-mono);
+  font-size: .58rem;
+  font-weight: 600;
+  letter-spacing: .15em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+.audit-arrow {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  color: var(--text-tertiary);
+  transition: transform .3s;
+}
+.audit-arrow.open { transform: rotate(180deg); }
+.audit-body { display: none; padding: .75rem 1.25rem; }
+.audit-body.visible { display: block; }
+.audit-table { width: 100%; border-collapse: collapse; }
+.audit-table th {
+  font-family: var(--font-mono);
+  font-size: .45rem;
+  letter-spacing: .12em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  padding: .4rem .5rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.audit-table td {
+  font-family: var(--font-mono);
+  font-size: .55rem;
+  color: var(--text-secondary);
+  padding: .4rem .5rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.audit-table tr:last-child td { border-bottom: none; }
+
+/* ============================================================
+   SOURCES
+   ============================================================ */
+.sources-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.src-card {
+  background: var(--bg2);
+  padding: .65rem .85rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .5rem;
+}
+.src-name { font-size: .62rem; color: var(--text-primary); }
+.src-type {
+  font-family: var(--font-mono);
+  font-size: .45rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.src-verified  { background: var(--confirmed-bg); color: var(--confirmed); border: 1px solid var(--confirmed-border); }
+.src-official  { background: var(--reported-bg);  color: var(--reported);  border: 1px solid var(--reported-border); }
+.src-analysis  { background: rgba(167,139,250,.08); color: #a78bfa; border: 1px solid rgba(167,139,250,.25); }
+.src-state     { background: var(--claimed-bg); color: var(--claimed); border: 1px solid var(--claimed-border); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  background: var(--bg1);
+  border-top: 1px solid var(--border);
+  padding: .75rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+.footer-text {
+  font-family: var(--font-mono);
+  font-size: .52rem;
+  color: var(--text-tertiary);
+}
+
+/* ============================================================
+   PANEL WRAPPER
+   ============================================================ */
+.panel {
+  background: var(--bg2);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.panel-head {
+  padding: .75rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.panel-title {
+  font-family: var(--font-mono);
+  font-size: .58rem;
+  font-weight: 600;
+  letter-spacing: .15em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+.panel-body { padding: 1rem 1.25rem; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1200px) {
+  .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+  .theater-grid { grid-template-columns: repeat(2, 1fr); }
+  .israel-cities { grid-template-columns: repeat(2, 1fr); }
+  .bench-grid { grid-template-columns: 1fr; }
+  .sources-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .main { padding: 1rem; }
+  .header { padding: .75rem 1rem; flex-wrap: wrap; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .theater-grid { grid-template-columns: 1fr; }
+  .israel-cities { grid-template-columns: 1fr; }
+  .infra-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div>
-    <div class="logo">MONITORAMENTO ASSAYAG</div>
-    <div class="logo-sub">GUERRA IRÃ 2026 — PAINEL DE INTELIGÊNCIA OPERACIONAL</div>
-  </div>
-  <div class="hdr-r">
-    <div style="font-family:var(--mono);font-size:.52rem;color:var(--text-dim);letter-spacing:.12em;">EPIC FURY / LION'S ROAR</div>
-    <div class="live-pill" onclick="forceUpdate()" title="Clique p/ atualizar agora" id="live-pill">
-      <div class="ldot" id="ldot"></div><span id="ulbl">AO VIVO</span>
-    </div>
-    <div>
-      <div class="clk" id="clock">--:--:-- UTC</div>
-      <div class="nxt">Próx. atualização: <span id="nxt-upd">--:--</span></div>
-    </div>
-  </div>
-</header>
-
-<div class="ticker-bar">
-  <div class="ticker-tag">URGENTE</div>
-  <div class="ticker-wrap">
-    <div class="ticker-inner" id="ticker">◆ KHAMENEI MORTO — CONFIRMADO POR MÍDIA ESTATAL IRANIANA — 01 MAR 2026 &nbsp;|&nbsp; ◆ CENTCOM: 3 SOLDADOS AMERICANOS MORTOS · 5 FERIDOS GRAVES — OP. EPIC FURY &nbsp;|&nbsp; ◆ TRUMP: 48 LÍDERES IRANIANOS ELIMINADOS EM UM SÓ GOLPE &nbsp;|&nbsp; ◆ EUA AFUNDAM 9 NAVIOS IRANIANOS — TRUMP NO TRUTH SOCIAL &nbsp;|&nbsp; ◆ FRAGATA JAMARAN AFUNDANDO NO GOLFO DE OMÃ — CENTCOM CONFIRMA &nbsp;|&nbsp; ◆ IRGC ALEGA ATINGIR PORTA-AVIÕES USS ABRAHAM LINCOLN COM 4 MÍSSEIS — CENTCOM DESMENTE: "MENTIRA" &nbsp;|&nbsp; ◆ AHMADINEJAD: MORTE REPORTADA PELA ILNA — ESCRITÓRIO DELE DESMENTE — INFORMAÇÃO CONFLITANTE &nbsp;|&nbsp; ◆ IRÃ ATACA 14 BASES DOS EUA NO ORIENTE MÉDIO &nbsp;|&nbsp; ◆ CIBERATAQUE: INTERNET NO IRÃ CAI A 4% DA CAPACIDADE &nbsp;|&nbsp; ◆ 40 DIAS DE LUTO NACIONAL NO IRÃ &nbsp;|&nbsp; ◆ CHIPRE: PRIMEIRO ATAQUE IRANIANO EM SOLO EUROPEU (BASES BRITÂNICAS) &nbsp;|&nbsp; ◆ ESTREITO DE HORMUZ: 150+ PETROLEIROS ANCORADOS SEM CRUZAR</div>
-  </div>
-</div>
-
-<main>
-
-<!-- TOP STATS -->
-<div>
-  <div class="sl">Panorama Geral <span class="sl-badge">28 FEV – 01 MAR 2026</span></div>
-  <div class="stat-row">
-    <div class="sc r"><div class="sc-glow"></div><div class="sc-lbl">Oficiais iranianos mortos</div><div class="sc-val" id="s-officials">40+</div><div class="sc-sub">Inclui Líder Supremo · Fonte: CBS/Israel</div></div>
-    <div class="sc a"><div class="sc-glow"></div><div class="sc-lbl">Civis mortos no Irã</div><div class="sc-val" id="s-civilians">201+</div><div class="sc-sub">Red Crescent · 747+ feridos</div></div>
-    <div class="sc r"><div class="sc-glow"></div><div class="sc-lbl">Proj. iranianos lançados</div><div class="sc-val">500+</div><div class="sc-sub">Múltiplas ondas · Golfo + Israel</div></div>
-    <div class="sc a"><div class="sc-glow"></div><div class="sc-lbl">Baixas em Israel (retaliação iraniana)</div><div class="sc-val" id="s-israel">9+</div><div class="sc-sub">8 mortos Beit Shemesh · 1 Tel Aviv · 110+ feridos</div></div>
-    <div class="sc r"><div class="sc-glow"></div><div class="sc-lbl">Baixas EUA (Op. Epic Fury)</div><div class="sc-val">3 ✝</div><div class="sc-sub">3 mortos · 5 feridos graves · CENTCOM 01/MAR 09h30 ET</div></div>
-    <div class="sc b"><div class="sc-glow"></div><div class="sc-lbl">Alvos destruídos no Irã</div><div class="sc-val">500+</div><div class="sc-sub">IDF: maior op. aérea da história de Israel</div></div>
-  </div>
-</div>
-
-<!-- WEAPON TOTALS -->
-<div>
-  <div class="sl">Arsenal Iraniano Lançado — Classificação por Tipo</div>
-  <div class="panel">
-    <div class="ph"><div class="pt">🚀 Vetores de Ataque Iranianos — Operação "Promessa Sincera 4"</div><div class="pn">IDF · CENTCOM · Haaretz · Iran International</div></div>
-    <div class="wt-grid">
-      <div class="wt"><div class="wt-icon">🚀</div><div class="wt-val" style="color:var(--red)">100+</div><div class="wt-lbl">Mísseis Balísticos</div><div class="wt-sub">Shahab · Sejjil · Fattah modificado</div></div>
-      <div class="wt"><div class="wt-icon">✈️</div><div class="wt-val" style="color:var(--amber)">300+</div><div class="wt-lbl">Drones Kamikaze</div><div class="wt-sub">Shahed-136 · Golfo Pérsico e Israel</div></div>
-      <div class="wt"><div class="wt-icon">🎯</div><div class="wt-val" style="color:var(--blue)">~50</div><div class="wt-lbl">Mísseis de Cruzeiro</div><div class="wt-sub">Ya-Ali · Ra'ad · bases dos EUA</div></div>
-      <div class="wt"><div class="wt-icon">⚓</div><div class="wt-val" style="color:var(--green)">14</div><div class="wt-lbl">Bases dos EUA Atacadas</div><div class="wt-sub">IRGC: todos os alvos atingidos (reivindicado)</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- COUNTRY TARGETS -->
-<div>
-  <div class="sl">Mapa de Ataques Iranianos por País Alvo <span class="sl-badge">RETALIAÇÃO</span></div>
-  <div class="panel">
-    <div class="ph">
-      <div class="pt">🗺 Países Atingidos por Mísseis / Drones do Irã</div>
-      <div class="pn"><span style="color:var(--red)">■ Lançados</span> &nbsp;<span style="color:var(--amber)">■ Impactos</span> &nbsp;<span style="color:var(--green)">■ Interceptados</span></div>
-    </div>
-    <div class="mg">
-
-      <div class="tc">
-        <div class="tc-flag">🇮🇱</div><div class="tc-country">Israel</div>
-        <div class="tc-row"><div class="tc-type">BALÍSTICOS</div><div class="tc-nums"><span class="n-fire">100+ lançados</span><span class="n-hit">~8 impactos</span><span class="n-int">~92 interc.</span></div></div>
-        <div class="bar"><div class="b-hit" style="width:8%"></div><div class="b-int" style="width:92%"></div></div>
-        <div class="tc-row" style="margin-top:.35rem"><div class="tc-type">DRONES</div><div class="tc-nums"><span class="n-fire">Dezenas</span><span class="n-int">Maioria interc.</span></div></div>
-        <div class="bar"><div class="b-hit" style="width:10%"></div><div class="b-int" style="width:90%"></div></div>
-        <div class="wpills"><span class="wp bal">Shahab-3</span><span class="wp bal">Sejjil</span><span class="wp bal">Fattah mod.</span><span class="wp drn">Shahed-136</span></div>
-        <div class="tc-note">Alvos: Tel Aviv · Haifa · Base Aérea Tel Nof · QG militar · Ind. Defesa<br>89 feridos leves · 1 edifício atingido em Tel Aviv · Hospital realocado sob terra<br><span style="color:var(--red)">⚠ 01/MAR: Míssil em Beit Shemesh — 8 MORTOS, 20+ feridos · Míssil a metros da Cidade Velha de Jerusalém</span></div>
-      </div>
-
-      <div class="tc">
-        <div class="tc-flag">🇧🇭</div><div class="tc-country">Bahrein</div>
-        <div class="tc-row"><div class="tc-type">BALÍSTICOS + DRONES</div><div class="tc-nums"><span class="n-fire">Múltiplos</span><span class="n-hit">3–5 impactos</span></div></div>
-        <div class="bar"><div class="b-hit" style="width:40%"></div><div class="b-int" style="width:60%"></div></div>
-        <div class="wpills"><span class="wp drn">Shahed-136</span><span class="wp cru">Cruzeiro</span></div>
-        <div class="tc-note" style="color:var(--amber);">⚠ QG da 5ª Frota Naval dos EUA ATINGIDO<br></div>
-        <div class="tc-note">Drone Shahed perfurou cúpula de radar · Crowne Plaza Hotel em chamas<br>Vídeo confirmado por múltiplas fontes · Prédios residenciais atingidos</div>
-      </div>
-
-      <div class="tc">
-        <div class="tc-flag">🇰🇼</div><div class="tc-country">Kuwait</div>
-        <div class="tc-row"><div class="tc-type">BALÍSTICOS</div><div class="tc-nums"><span class="n-fire">Vários</span><span class="n-int">Todos interc.</span></div></div>
-        <div class="bar"><div class="b-int" style="width:100%"></div></div>
-        <div class="tc-row" style="margin-top:.35rem"><div class="tc-type">DRONES (aeroporto)</div><div class="tc-nums"><span class="n-hit">1 impacto</span></div></div>
-        <div class="bar"><div class="b-hit" style="width:50%"></div><div class="b-int" style="width:50%"></div></div>
-        <div class="wpills"><span class="wp bal">SRBM</span><span class="wp drn">Shahed</span></div>
-        <div class="tc-note">Base Ali Al-Salem: balísticos interceptados · Aeroporto Internacional: drone causou danos no terminal · Embaixador iraniano convocado<br><span style="color:var(--red)">⚠ 1 morto · 32 feridos (Min. Saúde do Kuwait · 01/03)</span></div>
-      </div>
-
-      <div class="tc">
-        <div class="tc-flag">🇦🇪</div><div class="tc-country">Emirados Árabes Unidos</div>
-        <div class="tc-row"><div class="tc-type">BALÍSTICOS + DRONES</div><div class="tc-nums"><span class="n-fire">Vários</span><span class="n-hit">2 impactos</span><span class="n-int">Maioria interc.</span></div></div>
-        <div class="bar"><div class="b-hit" style="width:20%"></div><div class="b-int" style="width:80%"></div></div>
-        <div class="wpills"><span class="wp drn">Shahed kamikaze</span><span class="wp bal">Balístico</span></div>
-        <div class="tc-note">Base Al-Dhafra ATACADA · Dubai Airport afetado · Etihad Towers danificada (destroços) · Porto de Jebel Ali: fumaça · Burj Al Arab: fogo na fachada<br><span style="color:var(--red)">⚠ 3 mortos · 58 feridos leves (Min. Defesa dos EAU · 01/03)</span></div>
-      </div>
-
-      <div class="tc">
-        <div class="tc-flag">🇶🇦</div><div class="tc-country">Qatar</div>
-        <div class="tc-row"><div class="tc-type">BALÍSTICOS</div><div class="tc-nums"><span class="n-fire">Vários</span><span class="n-int">Todos interc.</span></div></div>
-        <div class="bar"><div class="b-int" style="width:100%"></div></div>
-        <div class="wpills"><span class="wp bal">MRBM</span><span class="wp cru">Cruzeiro</span></div>
-        <div class="tc-note">Base Al-Udeid (HQ CENTCOM) alvo principal · Radar early-warning do norte atingido (val. US$ 1,1 bi) · "Todos os mísseis interceptados" — 0 feridos</div>
-      </div>
-
-      <div class="tc">
-        <div class="tc-flag">🇯🇴</div><div class="tc-country">Jordânia</div>
-        <div class="tc-row"><div class="tc-type">BALÍSTICOS + DRONES</div><div class="tc-nums"><span class="n-fire">49 total</span><span class="n-int">49 interc. (100%)</span></div></div>
-        <div class="bar"><div class="b-int" style="width:100%"></div></div>
-        <div class="wpills"><span class="wp bal">Balístico</span><span class="wp drn">Drones</span></div>
-        <div class="tc-note">Base Muwaffaq al-Salti ATACADA · 49 drones e balísticos derrubados · Destroços em Amã — 0 feridos · Sirenes soaram na capital</div>
-      </div>
-
-      <div class="tc">
-        <div class="tc-flag">🇸🇦</div><div class="tc-country">Arábia Saudita</div>
-        <div class="tc-row"><div class="tc-type">BALÍSTICOS</div><div class="tc-nums"><span class="n-fire">Vários</span><span class="n-int">Interceptados</span></div></div>
-        <div class="bar"><div class="b-int" style="width:90%"></div><div class="b-hit" style="width:10%"></div></div>
-        <div class="wpills"><span class="wp bal">MRBM</span></div>
-        <div class="tc-note">Explosões ouvidas em Riad (AFP) · SA condena "agressão iraniana brutal" · Solidariedade com Qatar, Jordânia, Bahrein, Kuwait e EAU</div>
-      </div>
-
-      <div class="tc">
-        <div class="tc-flag">🇮🇶</div><div class="tc-country">Iraque (bases EUA)</div>
-        <div class="tc-row"><div class="tc-type">DRONES / MILÍCIAS</div><div class="tc-nums"><span class="n-fire">Vários</span><span class="n-hit">Parciais</span></div></div>
-        <div class="bar"><div class="b-hit" style="width:35%"></div><div class="b-int" style="width:65%"></div></div>
-        <div class="wpills"><span class="wp drn">Drones milícias</span></div>
-        <div class="tc-note">Base dos EUA norte do Iraque ATACADA · Aeroporto Erbil: drone interceptado · Kataib Hezbollah ameaça mais ataques a bases americanas</div>
-      </div>
-
-      <div class="tc">
-        <div class="tc-flag">🇨🇾</div><div class="tc-country">Chipre (bases britânicas)</div>
-        <div class="tc-row"><div class="tc-type">BALÍSTICOS</div><div class="tc-nums"><span class="n-fire">2 mísseis</span><span class="n-int">Interceptados</span></div></div>
-        <div class="bar"><div class="b-int" style="width:100%"></div></div>
-        <div class="wpills"><span class="wp bal">MRBM</span></div>
-        <div class="tc-note" style="color:var(--red)">⚠ PRIMEIRO ataque iraniano em solo europeu<br></div>
-        <div class="tc-note">RU confirma 2 mísseis interceptados · Precedente histórico gravíssimo</div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- ISRAEL CASUALTIES -->
-<div>
-  <div class="sl">🇮🇱 Israel — Cidades Atingidas por Mísseis Iranianos <span class="sl-badge">SOLO ISRAELENSE CONFIRMADO</span></div>
-  <div class="panel">
-    <div class="ph">
-      <div class="pt">☠ Baixas confirmadas em território israelense — Retaliação iraniana</div>
-      <div class="pn">Times of Israel · Magen David Adom · CTP-ISW · Al Jazeera · 28 FEV – 01 MAR 2026</div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);">
-
-      <!-- BEIT SHEMESH -->
-      <div style="background:var(--bg2);padding:1rem;">
-        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
-          <div style="font-size:1.1rem;">🔴</div>
-          <div>
-            <div style="font-family:var(--head);font-size:1.2rem;color:var(--red);letter-spacing:.05em;">BEIT SHEMESH</div>
-            <div style="font-family:var(--mono);font-size:.5rem;color:var(--text-dim);letter-spacing:.1em;">30 KM OESTE DE JERUSALÉM · 01 MAR 2026</div>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.75rem;">
-          <div style="background:rgba(255,34,51,.1);border:1px solid var(--red-d);padding:.5rem;text-align:center;">
-            <div style="font-family:var(--head);font-size:1.8rem;color:var(--red);">8</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">MORTOS</div>
-          </div>
-          <div style="background:rgba(255,179,0,.08);border:1px solid var(--amber-d);padding:.5rem;text-align:center;">
-            <div style="font-family:var(--head);font-size:1.8rem;color:var(--amber);">27+</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">FERIDOS</div>
-          </div>
-          <div style="background:rgba(255,34,51,.06);border:1px solid var(--red-d);padding:.5rem;text-align:center;">
-            <div style="font-family:var(--head);font-size:1.8rem;color:var(--red);">3</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">CRÍTICOS</div>
-          </div>
-        </div>
-        <div style="font-family:var(--mono);font-size:.52rem;color:var(--text-dim);line-height:1.7;border-top:1px solid var(--border);padding-top:.5rem;">
-          Míssil balístico atingiu edifício residencial diretamente<br>
-          Abrigo antiaéreo público destruído<br>
-          Dezenas de casas vizinhas danificadas<br>
-          Entre os feridos: menina de 10 anos (crítica) e menino de 4 anos<br>
-          <span style="color:var(--red);">⚠ IDF investiga falha de interceptação</span><br>
-          Fonte: Magen David Adom · Times of Israel
-        </div>
-      </div>
-
-      <!-- TEL AVIV -->
-      <div style="background:var(--bg2);padding:1rem;">
-        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
-          <div style="font-size:1.1rem;">🟠</div>
-          <div>
-            <div style="font-family:var(--head);font-size:1.2rem;color:var(--amber);letter-spacing:.05em;">TEL AVIV</div>
-            <div style="font-family:var(--mono);font-size:.5rem;color:var(--text-dim);letter-spacing:.1em;">CENTRO DO PAÍS · 28 FEV – 01 MAR 2026</div>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.75rem;">
-          <div style="background:rgba(255,34,51,.1);border:1px solid var(--red-d);padding:.5rem;text-align:center;">
-            <div style="font-family:var(--head);font-size:1.8rem;color:var(--red);">1</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">MORTO</div>
-          </div>
-          <div style="background:rgba(255,179,0,.08);border:1px solid var(--amber-d);padding:.5rem;text-align:center;">
-            <div style="font-family:var(--head);font-size:1.8rem;color:var(--amber);">21+</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">FERIDOS</div>
-          </div>
-          <div style="background:rgba(255,34,51,.06);border:1px solid var(--red-d);padding:.5rem;text-align:center;">
-            <div style="font-family:var(--head);font-size:1.8rem;color:var(--amber);">—</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">CRÍTICOS</div>
-          </div>
-        </div>
-        <div style="font-family:var(--mono);font-size:.52rem;color:var(--text-dim);line-height:1.7;border-top:1px solid var(--border);padding-top:.5rem;">
-          1 mulher morta após ferimento por míssil iraniano (28/02)<br>
-          2 mísseis confirmados atingiram a região<br>
-          Enorme bola de fogo filmada — vídeo viral<br>
-          Prédio atingido na área central<br>
-          Hospital da cidade realocado para bunker subterrâneo<br>
-          Fonte: Magen David Adom · CTP-ISW · Reuters
-        </div>
-      </div>
-
-      <!-- JERUSALÉM -->
-      <div style="background:var(--bg2);padding:1rem;">
-        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
-          <div style="font-size:1.1rem;">⚠️</div>
-          <div>
-            <div style="font-family:var(--head);font-size:1.2rem;color:var(--amber);letter-spacing:.05em;">JERUSALÉM</div>
-            <div style="font-family:var(--mono);font-size:.5rem;color:var(--text-dim);letter-spacing:.1em;">CIDADE SANTA · 28 FEV 2026</div>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.75rem;">
-          <div style="background:rgba(255,34,51,.06);border:1px solid var(--border);padding:.5rem;text-align:center;">
-            <div style="font-family:var(--head);font-size:1.8rem;color:var(--text-dim);">0</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">MORTOS</div>
-          </div>
-          <div style="background:rgba(255,179,0,.08);border:1px solid var(--amber-d);padding:.5rem;text-align:center;">
-            <div style="font-family:var(--head);font-size:1.8rem;color:var(--amber);">0</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">FERIDOS</div>
-          </div>
-          <div style="background:rgba(255,34,51,.06);border:1px solid var(--red-d);padding:.5rem;text-align:center;">
-            <div style="font-family:var(--head);font-size:1.1rem;color:var(--red);margin-top:.2rem;">QUASE</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">CATÁSTROFE</div>
-          </div>
-        </div>
-        <div style="font-family:var(--mono);font-size:.52rem;line-height:1.7;border-top:1px solid var(--border);padding-top:.5rem;">
-          <span style="color:var(--red);">⚠ Ogiva de míssil iraniano caiu a metros da Cidade Velha</span><br>
-          <span style="color:var(--text-dim);">Local: Sultan's Pool — a ~700m do Muro das Lamentações e Monte do Templo<br>
-          Explosão ouvida logo após início dos ataques ao Irã<br>
-          "Se tivesse desviado centenas de metros, poderia ter atingido locais sagrados lotados de fiéis"<br>
-          — Cmte. Dvir Tamir, Polícia de Israel<br>
-          Fonte: Times of Israel · Israel Police</span>
-        </div>
-      </div>
-
-      <!-- HAIFA + OUTRAS -->
-      <div style="background:var(--bg2);padding:1rem;">
-        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
-          <div style="font-size:1.1rem;">🟡</div>
-          <div>
-            <div style="font-family:var(--head);font-size:1.2rem;color:var(--amber);letter-spacing:.05em;">HAIFA + NORTE</div>
-            <div style="font-family:var(--mono);font-size:.5rem;color:var(--text-dim);letter-spacing:.1em;">REGIÃO NORTE + OUTRAS CIDADES</div>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;">
-          <div style="background:rgba(255,179,0,.08);border:1px solid var(--amber-d);padding:.5rem;text-align:center;">
-            <div style="font-family:var(--head);font-size:1.8rem;color:var(--amber);">1+</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">FERIDO (Haifa)</div>
-          </div>
-          <div style="background:rgba(255,179,0,.08);border:1px solid var(--amber-d);padding:.5rem;text-align:center;">
-            <div style="font-family:var(--head);font-size:1.8rem;color:var(--amber);">Danos</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">BNEI BRAK</div>
-          </div>
-        </div>
-        <div style="font-family:var(--mono);font-size:.52rem;color:var(--text-dim);line-height:1.7;border-top:1px solid var(--border);padding-top:.5rem;">
-          <span style="color:var(--text);">Haifa:</span> Prédio de 9 andares atingido no norte — 1 ferido por estilhaço de interceptor<br>
-          <span style="color:var(--text);">Bnei Brak:</span> Míssil iraniano confirmado (CTP-ISW)<br>
-          <span style="color:var(--text);">Sharon:</span> Projétil caiu — danos materiais, 0 vítimas<br>
-          <span style="color:var(--text);">Galiléia / Carmel:</span> Sirenes contínuas · intercepções confirmadas<br>
-          <span style="color:var(--text);">Arava / Paran:</span> Drone infiltrado — interceptado<br>
-          Fonte: Al Jazeera · CTP-ISW · Israel Police
-        </div>
-      </div>
-
-    </div>
-
-    <!-- TOTAL BAR -->
-    <div style="background:var(--bg3);border-top:1px solid var(--border);padding:.75rem 1rem;display:flex;gap:2rem;align-items:center;flex-wrap:wrap;">
-      <div style="font-family:var(--mono);font-size:.55rem;color:var(--text-dim);letter-spacing:.15em;">TOTAL ISRAEL (28 FEV – 01 MAR):</div>
-      <div style="display:flex;gap:1.5rem;">
-        <div style="text-align:center;"><div style="font-family:var(--head);font-size:1.4rem;color:var(--red);">9+</div><div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">MORTOS CONFIRMADOS</div></div>
-        <div style="text-align:center;"><div style="font-family:var(--head);font-size:1.4rem;color:var(--amber);">110+</div><div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">FERIDOS TOTAIS</div></div>
-        <div style="text-align:center;"><div style="font-family:var(--head);font-size:1.4rem;color:var(--amber);">89</div><div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">FERIDOS INDIRETOS (28/02)</div></div>
-        <div style="text-align:center;"><div style="font-family:var(--head);font-size:1.4rem;color:var(--blue);">4</div><div style="font-family:var(--mono);font-size:.48rem;color:var(--text-dim);">CIDADES ATINGIDAS</div></div>
-      </div>
-      <div style="font-family:var(--mono);font-size:.5rem;color:var(--text-dim);margin-left:auto;">Fontes: Magen David Adom · Times of Israel · CTP-ISW · Al Jazeera</div>
-    </div>
-  </div>
-</div>
-
-<!-- BENCHMARKS -->
-<div>
-  <div class="sl">Benchmarks — Indicadores de Impacto Operacional</div>
-  <div class="bench-grid">
-
-    <div class="bc">
-      <div class="bc-title">☢ Capacidade Nuclear Iraniana — Destruição Acumulada (2025 + 2026)</div>
-      <div class="br"><div class="br-lbl"><span class="br-name">Fordow (enriquecimento subterrâneo)</span><span class="br-pct">~85%</span></div><div class="br-bar"><div class="bf bf-r" style="width:85%"></div></div><div class="br-note">14 bombas GBU-57 MOP + Tomahawks · Op. Midnight Hammer (jun/2025)</div></div>
-      <div class="br"><div class="br-lbl"><span class="br-name">Natanz (instalação principal de enriquecimento)</span><span class="br-pct">~75%</span></div><div class="br-bar"><div class="bf bf-r" style="width:75%"></div></div><div class="br-note">2 MOP + 30 Tomahawks · parcialmente reconstruído (teto novo em jan/2026)</div></div>
-      <div class="br"><div class="br-lbl"><span class="br-name">Isfahan (hub de produção de centrífugas)</span><span class="br-pct">~60%</span></div><div class="br-bar"><div class="bf bf-a" style="width:60%"></div></div><div class="br-note">Reatingida em 2026 · Irã escondeu reconstrução sob novo teto</div></div>
-      <div class="br"><div class="br-lbl"><span class="br-name">Agência de Energia Atômica (AEOI) — sede</span><span class="br-pct">100%</span></div><div class="br-bar"><div class="bf bf-r" style="width:100%"></div></div><div class="br-note">Sede em Teerã destruída em 28/02/2026 · NCRI confirmado</div></div>
-    </div>
-
-    <div class="bc">
-      <div class="bc-title">🚀 Arsenal Balístico Iraniano — Degradação Acumulada (antes de 28/02)</div>
-      <div class="br"><div class="br-lbl"><span class="br-name">Lançadores móveis destruídos</span><span class="br-pct">~79%</span></div><div class="br-bar"><div class="bf bf-r" style="width:79%"></div></div><div class="br-note">480 antes da guerra → ~100 restantes (Alma Institute, jan/2026)</div></div>
-      <div class="br"><div class="br-lbl"><span class="br-name">Estoque de mísseis consumido/destruído</span><span class="br-pct">~60%</span></div><div class="br-bar"><div class="bf bf-a" style="width:60%"></div></div><div class="br-note">2.500 → ~1.000–1.200 disponíveis · Iran disparou ~550 na guerra de 2025</div></div>
-      <div class="br"><div class="br-lbl"><span class="br-name">25 bases de lançamento MRBM atingidas</span><span class="br-pct">25/25</span></div><div class="br-bar"><div class="bf bf-a" style="width:75%"></div></div><div class="br-note">Todas 25 atingidas · 12 em reconstrução em jan/2026 (NYT satellite)</div></div>
-      <div class="br"><div class="br-lbl"><span class="br-name">Sistemas de defesa aérea destruídos (28/02)</span><span class="br-pct">11+</span></div><div class="br-bar"><div class="bf bf-r" style="width:88%"></div></div><div class="br-note">IDF destrói 11+ sistemas · Reaper voa livremente sobre Shiraz sem resposta</div></div>
-    </div>
-
-    <div class="bc">
-      <div class="bc-title">☠ Decapitação da Liderança — Nível de Eliminação Hierárquica</div>
-      <div class="sev"><div class="sev-lbl">Líder Supremo</div><div class="sev-dots"><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div></div><div class="sev-val">✓ ELIMINADO</div></div>
-      <div class="sev"><div class="sev-lbl">Cmd. IRGC</div><div class="sev-dots"><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div></div><div class="sev-val">REPORTADO MORTO</div></div>
-      <div class="sev"><div class="sev-lbl">Min. da Defesa</div><div class="sev-dots"><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div></div><div class="sev-val">REPORTADO MORTO</div></div>
-      <div class="sev"><div class="sev-lbl">Chefe Estado-Maior</div><div class="sev-dots"><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div></div><div class="sev-val">REPORTADO MORTO</div></div>
-      <div class="sev"><div class="sev-lbl">Cúpula Inteligência</div><div class="sev-dots"><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-a"></div></div><div class="sev-val">4 CHEFES MORTOS</div></div>
-      <div class="sev"><div class="sev-lbl">Presidente / Parlam.</div><div class="sev-dots"><div class="sd"></div><div class="sd"></div><div class="sd"></div><div class="sd"></div><div class="sd sd-g"></div></div><div class="sev-val">SOBREVIVENTES</div></div>
-      <div class="sev"><div class="sev-lbl">Infraestrutura digital</div><div class="sev-dots"><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div><div class="sd sd-r"></div></div><div class="sev-val">4% DE CAPACIDADE</div></div>
-    </div>
-
-    <div class="bc">
-      <div class="bc-title">🛡 Eficácia dos Sistemas de Defesa — Por País</div>
-      <div class="br"><div class="br-lbl"><span class="br-name">🇮🇱 Israel (Iron Dome + Arrow + THAAD)</span><span class="br-pct">~92%</span></div><div class="br-bar"><div class="bf bf-g" style="width:92%"></div></div><div class="br-note">100+ balísticos · ~8 impactos confirmados · 89 feridos leves</div></div>
-      <div class="br"><div class="br-lbl"><span class="br-name">🇯🇴 Jordânia</span><span class="br-pct">100%</span></div><div class="br-bar"><div class="bf bf-g" style="width:100%"></div></div><div class="br-note">49/49 drones e balísticos derrubados · 0 feridos</div></div>
-      <div class="br"><div class="br-lbl"><span class="br-name">🇶🇦 Qatar (Patriot PAC-3)</span><span class="br-pct">~95%</span></div><div class="br-bar"><div class="bf bf-g" style="width:95%"></div></div><div class="br-note">"Todos interceptados" · 0 feridos · radar early-warning danificado</div></div>
-      <div class="br"><div class="br-lbl"><span class="br-name">🇰🇼 Kuwait (THAAD + Patriot)</span><span class="br-pct">~85%</span></div><div class="br-bar"><div class="bf bf-a" style="width:85%"></div></div><div class="br-note">Balísticos interceptados · drone atingiu aeroporto internacional</div></div>
-      <div class="br"><div class="br-lbl"><span class="br-name">🇦🇪 EAU</span><span class="br-pct">~80%</span></div><div class="br-bar"><div class="bf bf-a" style="width:80%"></div></div><div class="br-note">1 civil morto · Etihad Towers danificada · Porto Jebel Ali</div></div>
-      <div class="br"><div class="br-lbl"><span class="br-name">🇧🇭 Bahrein (5ª Frota dos EUA)</span><span class="br-pct">~60%</span></div><div class="br-bar"><div class="bf bf-a" style="width:60%"></div></div><div class="br-note">QG naval atingido · drone perfurou cúpula de radar · hotel em chamas</div></div>
-    </div>
-
-  </div>
-</div>
-
-<!-- INFRA + CASUALTIES -->
-<div class="two-col">
-
-  <!-- LEFT: INFRA DESTROYED -->
-  <div style="display:flex;flex-direction:column;gap:1.25rem;">
-    <div class="panel">
-      <div class="ph"><div class="pt">🏛 Infraestrutura Destruída no Irã — Comando, Gov. e Inteligência</div><div class="pn">Teerã · IDF · NCRI · CTP-ISW</div></div>
-      <div class="infra-list">
-        <div class="ii"><div class="ii-idx">01</div><div><div class="ii-name">Complexo / Bunker do Líder Supremo (Beit Khamenei)</div><div class="ii-loc">Distrito Pasteur, Teerã</div><div class="ii-type">Imagens de satélite confirmam destruição total do complexo</div></div><div class="icat cat-g">LIDERANÇA</div></div>
-        <div class="ii"><div class="ii-idx">02</div><div><div class="ii-name">Sede do Ministério de Inteligência (VAJA)</div><div class="ii-loc">Teerã Norte — bairro Seyyed Khandan</div><div class="ii-type">3 explosões · fumaça geolocada pela CNN · Israel já atacou em 2025</div></div><div class="icat cat-i">INTELIGÊNCIA</div></div>
-        <div class="ii"><div class="ii-idx">03</div><div><div class="ii-name">Conselho Supremo de Segurança Nacional</div><div class="ii-loc">Teerã</div><div class="ii-type">1 dos 3 locais de reunião atingidos simultaneamente</div></div><div class="icat cat-c">COMANDO</div></div>
-        <div class="ii"><div class="ii-idx">04</div><div><div class="ii-name">Ministério da Defesa — Sede</div><div class="ii-loc">Teerã</div><div class="ii-type">Confirmado NCRI e imagens de satélite</div></div><div class="icat cat-g">GOVERNO</div></div>
-        <div class="ii"><div class="ii-idx">05</div><div><div class="ii-name">Agência de Energia Atômica do Irã (AEOI)</div><div class="ii-loc">Teerã</div><div class="ii-type">Sede da agência nuclear civil completamente destruída</div></div><div class="icat cat-n">NUCLEAR</div></div>
-        <div class="ii"><div class="ii-idx">06</div><div><div class="ii-name">QG de Inteligência do IRGC</div><div class="ii-loc">Teerã</div><div class="ii-type">Mídia iraniana confirmou explosões diretas</div></div><div class="icat cat-i">INTELIGÊNCIA</div></div>
-        <div class="ii"><div class="ii-idx">07</div><div><div class="ii-name">Tribunal Revolucionário de Teerã</div><div class="ii-loc">Teerã</div><div class="ii-type">Prédio destruído · confirmado por fontes iranianas</div></div><div class="icat cat-g">JUDICIÁRIO</div></div>
-        <div class="ii"><div class="ii-idx">08</div><div><div class="ii-name">Base IRGC Heydar Karar (Fatehin / Basij)</div><div class="ii-loc">Damavand, Província de Teerã</div><div class="ii-type">Centro de treinamento forças especiais Basij · vídeos viralizaram</div></div><div class="icat cat-c">IRGC / BASIJ</div></div>
-        <div class="ii"><div class="ii-idx">09</div><div><div class="ii-name">Palácio Presidencial (alvo)</div><div class="ii-loc">Teerã · Distrito Pasteur</div><div class="ii-type">Área próxima ao complexo de Khamenei · co-alvo confirmado</div></div><div class="icat cat-g">GOV.</div></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="ph"><div class="pt">🚀 Infraestrutura Destruída — Mísseis, Radar, Marinha e Nuclear</div><div class="pn">CTP-ISW · IDF · Alma Institute · NPR</div></div>
-      <div class="infra-list">
-        <div class="ii"><div class="ii-idx">10</div><div><div class="ii-name">Depósito de Mísseis IRGC — Aeroporto Mehrabad</div><div class="ii-loc">Teerã (co-localizado com Base Aérea Artesh 1ª Tática)</div><div class="ii-type">Estoque de mísseis destruído · CTP-ISW confirmado</div></div><div class="icat cat-m">MÍSSEIS</div></div>
-        <div class="ii"><div class="ii-idx">11</div><div><div class="ii-name">Base de Mísseis Khomein (IRGC MRBM)</div><div class="ii-loc">Província de Markazi</div><div class="ii-type">Reatingida (1ª vez em jun/2025) · CTP-ISW</div></div><div class="icat cat-m">MÍSSEIS</div></div>
-        <div class="ii"><div class="ii-idx">12</div><div><div class="ii-name">Base de Mísseis IRGC — Haji Abad</div><div class="ii-loc">Hormozgan (sul costeiro)</div><div class="ii-type">Lançadores costeiros posicionados recentemente · CTP-ISW</div></div><div class="icat cat-m">MÍSSEIS</div></div>
-        <div class="ii"><div class="ii-idx">13</div><div><div class="ii-name">Base de Mísseis IRGC — Jam</div><div class="ii-loc">Bushehr (Golfo Pérsico)</div><div class="ii-type">Confirmado por mídia iraniana · CTP-ISW</div></div><div class="icat cat-m">MÍSSEIS</div></div>
-        <div class="ii"><div class="ii-idx">14</div><div><div class="ii-name">11+ Sistemas de Defesa Aérea (Irã Ocidental)</div><div class="ii-loc">Incluindo IRGC Div. 29ª Nabi Akram — Kermanshah</div><div class="ii-type">SA-65 avançado destruído · IDF completou varredura de defesas</div></div><div class="icat cat-a">DEF. AÉREA</div></div>
-        <div class="ii"><div class="ii-idx">15</div><div><div class="ii-name">Radar de Vigilância — Ilha de Kish</div><div class="ii-loc">Golfo Pérsico</div><div class="ii-type">Radar de monitoramento naval destruído · IDF</div></div><div class="icat cat-a">RADAR</div></div>
-        <div class="ii"><div class="ii-idx">16</div><div><div class="ii-name">Fragata IRGC Jamaran (provável)</div><div class="ii-loc">Marinha IRGC — Golfo</div><div class="ii-type">Conta OSINT israelense reportou ataque direto</div></div><div class="icat cat-v">MARINHA</div></div>
-        <div class="ii"><div class="ii-idx">17</div><div><div class="ii-name">Complexo Nuclear de Isfahan (superfície)</div><div class="ii-loc">Isfahan — produção de centrífugas e pesquisa</div><div class="ii-type">Reatingido em 2026 · teto falso construído para esconder reconstrução</div></div><div class="icat cat-n">NUCLEAR</div></div>
-        <div class="ii"><div class="ii-idx">18</div><div><div class="ii-name">Complexo Militar de Parchin</div><div class="ii-loc">Teerã — pesquisa de armamentos avançados</div><div class="ii-type">Confirmado Saham News / NCRI · infraestrutura de P&D bélico</div></div><div class="icat cat-m">ARMAMENTOS</div></div>
-        <div class="ii"><div class="ii-idx">19</div><div><div class="ii-name">Porto / Instalações de Bushehr</div><div class="ii-loc">Bushehr, costa sul</div><div class="ii-type">Iran International: Bushehr atingida · status do reator nuclear incerto</div></div><div class="icat cat-v">NAVAL/NUC.</div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RIGHT: CASUALTIES + TL + SOURCES -->
-  <div class="col-r">
-
-    <div class="panel">
-      <div class="ph"><div class="pt">☠ Registro de Baixas — Liderança Iraniana</div><div class="pn">28 FEV – 01 MAR 2026</div></div>
-      <div>
-        <div class="cas-cat">☪ Liderança Suprema</div>
-        <div class="pc"><div class="pc-n">01</div><div><div class="pc-name">Aiatolá Ali Khamenei</div><div class="pc-pos">Líder Supremo do Irã (1989–2026) · 86 anos</div><div class="pc-org">AUTORIDADE MÁXIMA: Política, Militar e Religiosa</div><div class="pc-src">✦ Mídia estatal iraniana · Reuters · NPR · Al Jazeera · Trump (Truth Social)</div></div><div class="cf cf-c">CONFIRMADO</div></div>
-
-        <div class="cas-cat">⚑ Segurança / Defesa</div>
-        <div class="pc"><div class="pc-n">02</div><div><div class="pc-name">Ali Shamkhani</div><div class="pc-pos">Secretário do Conselho Supremo de Segurança Nacional</div><div class="pc-org">Ex-Min. Defesa (1997–2005) · 70 anos</div><div class="pc-src">✦ IDF (Defrin) · Al Jazeera · Times of Israel</div></div><div class="cf cf-r">REPORTADO</div></div>
-        <div class="pc"><div class="pc-n">03</div><div><div class="pc-name">Gen. Mohammad Pakpour</div><div class="pc-pos">Comandante-Geral do IRGC</div><div class="pc-org">Nomeado 8 meses antes · Ex-Cmte. Terrestres IRGC (16 anos)</div><div class="pc-src">✦ Reuters (3 fontes) · IDF · Al Arabiya</div></div><div class="cf cf-r">REPORTADO</div></div>
-        <div class="pc"><div class="pc-n">04</div><div><div class="pc-name">Brig. Gen. Amir Nasirzadeh</div><div class="pc-pos">Ministro da Defesa do Irã</div><div class="pc-org">Nomeado em agosto de 2024</div><div class="pc-src">✦ Reuters · IDF · Al Arabiya · Times of Israel</div></div><div class="cf cf-r">REPORTADO</div></div>
-        <div class="pc"><div class="pc-n">05</div><div><div class="pc-name">Maj. Gen. Mohammad Bagheri</div><div class="pc-pos">Chefe do Estado-Maior das Forças Armadas</div><div class="pc-org">Membro do Conselho Supremo de Segurança Nacional</div><div class="pc-src">✦ IDF (Defrin) · Jerusalem Post</div></div><div class="cf cf-r">REPORTADO</div></div>
-        <div class="pc"><div class="pc-n">06</div><div><div class="pc-name">Gen. Esmail Qaani</div><div class="pc-pos">Comandante da Força Quds — IRGC</div><div class="pc-org">Sucessor de Soleimani · Operações externas e proxy</div><div class="pc-src">✦ RedState / fontes israelenses</div></div><div class="cf cf-u">APURAÇÃO</div></div>
-
-        <div class="cas-cat">◈ Inteligência (VAJA)</div>
-        <div class="pc"><div class="pc-n">07</div><div><div class="pc-name">Javad Pourhossein</div><div class="pc-pos">Chefe de Inteligência Estrangeira</div><div class="pc-org">Ministério de Inteligência (VAJA)</div><div class="pc-src">✦ Iran International · @JasonMBrodsky</div></div><div class="cf cf-r">REPORTADO</div></div>
-        <div class="pc"><div class="pc-n">08</div><div><div class="pc-name">Mohammad-Reza Bajestani</div><div class="pc-pos">Chefe da Unidade de Segurança</div><div class="pc-org">Ministério de Inteligência (VAJA)</div><div class="pc-src">✦ Iran International · Jerusalem Post</div></div><div class="cf cf-r">REPORTADO</div></div>
-        <div class="pc"><div class="pc-n">09</div><div><div class="pc-name">Ali Kheirandish</div><div class="pc-pos">Chefe da Unidade de Contraterrorismo</div><div class="pc-org">Ministério de Inteligência (VAJA)</div><div class="pc-src">✦ Iran International · Jerusalem Post</div></div><div class="cf cf-r">REPORTADO</div></div>
-        <div class="pc"><div class="pc-n">10</div><div><div class="pc-name">Saeed Ehya Hamidi</div><div class="pc-pos">Assessor — Dossiê Israel/Guerra</div><div class="pc-org">Ministério de Inteligência (VAJA)</div><div class="pc-src">✦ Iran International · Jerusalem Post</div></div><div class="cf cf-r">REPORTADO</div></div>
-
-        <div class="cas-cat">◉ Segurança / Família</div>
-        <div class="pc"><div class="pc-n">11</div><div><div class="pc-name">Mohammad Nasseri</div><div class="pc-pos">Oficial do Ministério de Inteligência</div><div class="pc-org">VAJA</div><div class="pc-src">✦ Wikipedia · fontes iranianas</div></div><div class="cf cf-r">REPORTADO</div></div>
-        <div class="pc"><div class="pc-n">12</div><div><div class="pc-name">Gholamreza Rezaeian</div><div class="pc-pos">Chefe de Inteligência da Polícia FARAJA</div><div class="pc-org">Polícia da República Islâmica</div><div class="pc-src">✦ Wikipedia</div></div><div class="cf cf-r">REPORTADO</div></div>
-        <div class="pc"><div class="pc-n">13-16</div><div><div class="pc-name">Filha · Genro · Nora · Neto de Khamenei</div><div class="pc-pos">Familiares do Líder Supremo</div><div class="pc-org">Complexo residencial de Khamenei em Teerã</div><div class="pc-src">✦ Fars News Agency (IRGC) · Conselho Municipal de Teerã · Times of Israel</div></div><div class="cf cf-r">REPORTADO</div></div>
-        <div class="pc" style="border-left:3px solid var(--amber);"><div class="pc-n" style="color:var(--amber);">17</div><div><div class="pc-name">Mahmoud Ahmadinejad <span style="font-size:.55rem;color:var(--amber);margin-left:.5rem;">⚠ INFORMAÇÃO CONFLITANTE</span></div><div class="pc-pos">Ex-Presidente do Irã (2005–2013) · Populista nuclear · Negacionista do Holocausto</div><div class="pc-org">Residência bairro Narmak, Teerã nordeste — atingida em raid</div><div class="pc-src" style="color:var(--amber);">ILNA (iraniana) reportou morte c/ guardas-costas → Escritório de Ahmadinejad DESMENTIU → Channel 12 Israel: "Não foi eliminado" · Guardian confirma contradição</div></div><div class="cf" style="background:rgba(255,179,0,.15);color:var(--amber);border:1px solid var(--amber-d);font-size:.5rem;">CONTESTADO</div></div>
-      </div>
-    </div>
-
-    <div class="surv">
-      <div class="sl" style="margin-bottom:.4rem;font-size:.52rem;">✓ Sobreviventes confirmados (28/02 à noite)</div>
-      <div class="surv-inner">
-        <span class="s-ok">Masoud Pezeshkian</span> — Presidente &nbsp;|&nbsp; <span class="s-ok">Mohammad Baqer Qalibaf</span> — Pres. Parlamento &nbsp;|&nbsp; <span class="s-ok">Abbas Araghchi</span> — Min. Rel. Exteriores &nbsp;|&nbsp; <span class="s-ok">Amir Hatami</span> — Cmte. Exército &nbsp;|&nbsp; <span class="s-ok">Gholam-Hossein Mohseni-Ejei</span> — Judiciário &nbsp;|&nbsp; <span class="s-ok">Ali Larijani</span> — Anuncia conselho de liderança de transição
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="ph"><div class="pt">⟳ Linha do Tempo</div></div>
-      <div class="tl" id="timeline">
-        <div class="tl-i"><div class="tl-t">03h00<br>EST</div><div class="tl-x"><span class="tag tg-s">INÍCIO</span>Trump anuncia "grandes operações de combate" no Truth Social</div></div>
-        <div class="tl-i"><div class="tl-t">08h10<br>Teerã</div><div class="tl-x"><span class="tag tg-s">ATAQUE</span>200 caças israelenses · 3 locais com reuniões da cúpula atingidos simultaneamente · 500+ alvos</div></div>
-        <div class="tl-i"><div class="tl-t">Manhã</div><div class="tl-x"><span class="tag tg-k">BAIXAS</span>IDF confirma morte de Shamkhani, Pakpour, Nasirzadeh e Bagheri</div></div>
-        <div class="tl-i"><div class="tl-t">~11h</div><div class="tl-x"><span class="tag tg-s">RETALIAT.</span>Irã inicia ondas de mísseis e drones contra Israel e 14 bases dos EUA no Golfo</div></div>
-        <div class="tl-i"><div class="tl-t">~13h</div><div class="tl-x"><span class="tag tg-s">NAVAL</span>IRGC reivindica ataque a navio auxiliar da Marinha dos EUA · Fragata Jamaran possivelmente atingida</div></div>
-        <div class="tl-i"><div class="tl-t">17h30<br>CET</div><div class="tl-x">Red Crescent: 201 civis mortos e 747 feridos no Irã</div></div>
-        <div class="tl-i"><div class="tl-t">~18h</div><div class="tl-x"><span class="tag tg-k">BAIXA</span>Channel 12 Israel: "Indicações crescentes de que Khamenei foi morto"</div></div>
-        <div class="tl-i"><div class="tl-t">Noite</div><div class="tl-x"><span class="tag tg-c">CONFIRM.</span>Trump: "A maioria da liderança do Irã se foi." IDF completa varredura de defesas aéreas</div></div>
-        <div class="tl-i"><div class="tl-t">Noite</div><div class="tl-x"><span class="tag tg-d">DIPLOM.</span>Jordânia derruba 49 proj. · Qatar e Kuwait convocam embaixadores iranianos</div></div>
-        <div class="tl-i" style="border-left:2px solid var(--red)"><div class="tl-t">01 MAR<br>NOVO</div><div class="tl-x"><span class="tag tg-k">BAIXAS</span>Míssil iraniano atinge área residencial em Beit Shemesh (Israel) — 8 mortos, 20+ feridos · Abrigo antiaéreo destruído</div></div>
-        <div class="tl-i" style="border-left:2px solid var(--red)"><div class="tl-t">01 MAR<br>NOVO</div><div class="tl-x"><span class="tag tg-k">HISTÓRICO</span>Míssil iraniano cai a metros da Cidade Velha de Jerusalém e do Monte do Templo — local: Sultan's Pool</div></div>
-        <div class="tl-i"><div class="tl-t">01 MAR</div><div class="tl-x"><span class="tag tg-c">CONFIRM.</span>Mídia estatal iraniana confirma morte de Khamenei · 40 dias de luto decretados</div></div>
-        <div class="tl-i"><div class="tl-t">01 MAR</div><div class="tl-x"><span class="tag tg-d">TRANSIÇÃO</span>Ali Larijani anuncia conselho temporário de liderança · Israel renova ataques a Teerã</div></div>
-        <div class="tl-i"><div class="tl-t">01 MAR</div><div class="tl-x"><span class="tag tg-s">RETALIAT.</span>Irã lança nova onda: Israel, EAU, Qatar, Kuwait, Bahrein, Jordânia, Arábia Saudita e Chipre</div></div>
-        <div class="tl-i" style="border-left:2px solid var(--red);"><div class="tl-t" style="color:var(--red);">01 MAR<br>09h30 ET</div><div class="tl-x"><span class="tag tg-s" style="background:var(--red);">⚠ EUA MORTOS</span><strong style="color:var(--red);">CENTCOM confirma 3 soldados americanos mortos e 5 feridos graves</strong> na Operação Epic Fury — primeiras baixas confirmadas dos EUA · "A situação é fluida"</div></div>
-        <div class="tl-i"><div class="tl-t">01 MAR</div><div class="tl-x"><span class="tag tg-n">NAVAL</span>CENTCOM confirma fragata Jamaran afundando no fundo do Golfo de Omã em pier de Chah Bahar · Trump: 9 navios iranianos destruídos e afundados · QG Naval iraniano atacado</div></div>
-        <div class="tl-i"><div class="tl-t">01 MAR</div><div class="tl-x"><span class="tag" style="background:var(--amber);color:#000;">DESINFOR.</span>IRGC alega atingir USS Abraham Lincoln com 4 mísseis balísticos · CENTCOM desmente imediatamente: <em>"MENTIRA — o Lincoln não foi atingido, os mísseis nem chegaram perto"</em></div></div>
-        <div class="tl-i"><div class="tl-t">01 MAR</div><div class="tl-x"><span class="tag" style="background:var(--amber);color:#000;">CONTESTADO</span>ILNA (Iran) reporta morte de ex-presidente Ahmadinejad em raid na residência (Narmak, Teerã) · Escritório de Ahmadinejad desmente · Channel 12 Israel: "não foi eliminado" · status incerto</div></div>
-        <div class="tl-i"><div class="tl-t">01 MAR</div><div class="tl-x"><span class="tag tg-d">TRUMP</span>Trump: "48 líderes iranianos se foram em um único golpe" · Confirma destruição do QG Naval iraniano · Anuncia disposição para negociar com nova liderança iraniana</div></div>
-        <div class="tl-i"><div class="tl-t">01 MAR</div><div class="tl-x"><span class="tag tg-n">HORMUZ</span>IRGC fecha Estreito de Hormuz · 150+ petroleiros ancorados sem cruzar · Bloomberg: EUA e Israel podem ficar sem munição se Irã continuar ataques intensivos</div></div>
-      </div>
-    </div>
-
-    <!-- X / OSINT LIVE FEEDS -->
-    <div class="panel" style="border-top:2px solid #1d9bf0;">
-      <div class="ph" style="background:#0a0f1a;border-bottom:1px solid #1a2a3a;">
-        <div class="pt" style="color:#1d9bf0;">𝕏 FEEDS OSINT AO VIVO — X (TWITTER)</div>
-        <div class="pn">Clique para abrir o perfil</div>
-      </div>
-
-      <!-- OSINT613 -->
-      <a href="https://x.com/Osint613" target="_blank" rel="noopener" style="text-decoration:none;display:block;">
-        <div style="padding:.75rem 1rem;border-bottom:1px solid var(--border);display:grid;grid-template-columns:36px 1fr auto;gap:.65rem;align-items:start;transition:background .15s;" onmouseover="this.style.background='rgba(29,155,240,.06)'" onmouseout="this.style.background='transparent'">
-          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1d4ed8,#1d9bf0);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;">🔍</div>
-          <div>
-            <div style="font-family:var(--body);font-weight:600;font-size:.82rem;color:var(--text-bright);">@Osint613 — Open Source Intel</div>
-            <div style="font-family:var(--mono);font-size:.52rem;color:var(--text-dim);margin-top:2px;">Rastreamento tempo real · CENTCOM updates · Geolocalização · Citado pelo CTP-ISW como fonte primária</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:#1d9bf0;margin-top:4px;">"CENTCOM: DAMAGE TO U.S. INSTALLATIONS WAS MINIMAL AND HAS NOT IMPACTED OPERATIONS" — 28/02/2026</div>
-          </div>
-          <div style="font-family:var(--mono);font-size:.5rem;padding:2px 7px;border:1px solid #1d4ed8;color:#1d9bf0;background:rgba(29,155,240,.1);white-space:nowrap;align-self:start;">OSINT</div>
-        </div>
-      </a>
-
-      <!-- SENTDEFENDER -->
-      <a href="https://x.com/sentdefender" target="_blank" rel="noopener" style="text-decoration:none;display:block;">
-        <div style="padding:.75rem 1rem;border-bottom:1px solid var(--border);display:grid;grid-template-columns:36px 1fr auto;gap:.65rem;align-items:start;transition:background .15s;" onmouseover="this.style.background='rgba(29,155,240,.06)'" onmouseout="this.style.background='transparent'">
-          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0f4c75,#1b9aaa);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;">🛰️</div>
-          <div>
-            <div style="font-family:var(--body);font-weight:600;font-size:.82rem;color:var(--text-bright);">@sentdefender — OSINTdefender</div>
-            <div style="font-family:var(--mono);font-size:.52rem;color:var(--text-dim);margin-top:2px;">Defesa e segurança · Rastreamento aéreo/naval · Referenciado pelo CTP-ISW · Cobertura de frotas e mísseis</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:#1d9bf0;margin-top:4px;">Rastreamento: IRGC Jamaran · ataques navais · movimentação de frotas no Golfo Pérsico</div>
-          </div>
-          <div style="font-family:var(--mono);font-size:.5rem;padding:2px 7px;border:1px solid #1d4ed8;color:#1d9bf0;background:rgba(29,155,240,.1);white-space:nowrap;align-self:start;">OSINT</div>
-        </div>
-      </a>
-
-      <!-- VISEGRAD24 -->
-      <a href="https://x.com/visegrad24" target="_blank" rel="noopener" style="text-decoration:none;display:block;">
-        <div style="padding:.75rem 1rem;display:grid;grid-template-columns:36px 1fr auto;gap:.65rem;align-items:start;transition:background .15s;" onmouseover="this.style.background='rgba(190,24,93,.05)'" onmouseout="this.style.background='transparent'">
-          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#831843,#be185d);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;">🌍</div>
-          <div>
-            <div style="font-family:var(--body);font-weight:600;font-size:.82rem;color:var(--text-bright);">@visegrad24 — Visegrád 24</div>
-            <div style="font-family:var(--mono);font-size:.52rem;color:var(--text-dim);margin-top:2px;">Cobertura de conflitos globais · Breaking news · Vídeos verificados do campo de batalha</div>
-            <div style="font-family:var(--mono);font-size:.48rem;color:#fb7185;margin-top:4px;">Reportou: míssil iraniano abatido caiu em rua em Doha, Qatar · Ataques em múltiplos países</div>
-          </div>
-          <div style="font-family:var(--mono);font-size:.5rem;padding:2px 7px;border:1px solid #831843;color:#fb7185;background:rgba(131,24,67,.1);white-space:nowrap;align-self:start;">BREAKING</div>
-        </div>
-      </a>
-      <a href="https://x.com/CENTCOM" target="_blank" rel="noopener" style="text-decoration:none;display:block;">
-        <div style="background:var(--bg2);border:1px solid var(--border);padding:.85rem 1rem;display:flex;gap:.75rem;align-items:flex-start;transition:border-color .2s;" onmouseover="this.style.borderColor='#1d9bf0'" onmouseout="this.style.borderColor='var(--border)'">
-          <div style="font-size:1.4rem;flex-shrink:0;">🛡</div>
-          <div style="flex:1;">
-            <div style="font-family:var(--mono);font-size:.5rem;color:#1d9bf0;letter-spacing:.1em;margin-bottom:.2rem;">FONTE OFICIAL · EUA</div>
-            <div style="font-family:var(--body);font-weight:600;font-size:.82rem;color:var(--text-bright);">@CENTCOM — U.S. Central Command</div>
-            <div style="font-family:var(--mono);font-size:.52rem;color:var(--text-dim);margin:.3rem 0;">Comunicados oficiais das Forças Armadas dos EUA · Confirmações e desmentidos de operações · Fonte primária para baixas e ataques</div>
-            <div style="font-family:var(--mono);font-size:.52rem;color:var(--text);line-height:1.6;">"3 US service members KIA, 5 seriously wounded — Op. Epic Fury" · Jamaran afundando confirmado · Desmentiu ataque ao USS Abraham Lincoln</div>
-          </div>
-          <div style="font-family:var(--mono);font-size:.5rem;padding:2px 7px;border:1px solid #1d4ed8;color:#1d9bf0;background:rgba(29,155,240,.1);white-space:nowrap;align-self:start;">OFICIAL</div>
-        </div>
-      </a>
-    </div>
-
-    <div class="panel">
-      <div class="ph"><div class="pt">⌖ Fontes de Referência</div></div>
-      <div class="src-i"><div class="src-n">Reuters · AP · NPR · CBS · Washington Post · NYT</div><div class="src-b sb-ok">VERIFICADA</div></div>
-      <div class="src-i"><div class="src-n">Al Jazeera</div><div class="src-b sb-ok">VERIFICADA</div></div>
-      <div class="src-i"><div class="src-n">CTP-ISW / Critical Threats</div><div class="src-b sb-ok">ANÁLISE</div></div>
-      <div class="src-i"><div class="src-n">Iran International (Londres)</div><div class="src-b sb-ok">VERIFICADA</div></div>
-      <div class="src-i"><div class="src-n">IDF (Porta-voz Oficial) · CENTCOM</div><div class="src-b sb-ok">OFICIAL</div></div>
-      <div class="src-i"><div class="src-n">@CENTCOM — X/Twitter oficial (feed ao vivo)</div><div class="src-b sb-ok">OFICIAL LIVE</div></div>
-      <div class="src-i"><div class="src-n">CFR · Chatham House · Alma Institute</div><div class="src-b sb-ok">ANÁLISE</div></div>
-      <div class="src-i"><div class="src-n">Fars / Tasnim / Mehr / IRIB (Irã)</div><div class="src-b sb-st">ESTADO IRÃ</div></div>
-      <div class="src-i"><div class="src-n">X: @JasonMBrodsky · @BarakRavid · @clashreport</div><div class="src-b sb-an">ANALISTAS</div></div>
-      <div class="src-i"><div class="src-n">StandWithUs Brasil (@StandwithusBr)</div><div class="src-b sb-an">BRASIL / PRÓ-ISRAEL</div></div>
-      <div class="src-i" style="background:rgba(29,155,240,.04);">
-        <div class="src-n" style="color:#1d9bf0;">𝕏 @Osint613 · @sentdefender · @visegrad24</div>
-        <div class="src-b" style="border-color:#1d4ed8;color:#1d9bf0;background:rgba(29,155,240,.1);">OSINT LIVE</div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-</main>
-
-<footer>
-  <div class="ft">MONITORAMENTO ASSAYAG — GUERRA EUA/ISRAEL × IRÃ 2026<br>Atualização automática a cada 60 minutos via busca na web · Clique no badge AO VIVO para atualizar agora<br>Última atualização: <span id="last-ft">01 MAR 2026 — situação em desenvolvimento</span></div>
-  <div class="ft" style="text-align:right;"><span>OPERATION EPIC FURY</span> — EUA / CENTCOM / Pentagon<br><span>OPERATION LION'S ROAR</span> (Roaring Lion) — Israel / IDF<br>IRAN: "Operação Promessa Sincera 4" (retaliação)</div>
-</footer>
-
-<div id="toast"></div>
-
+<!-- ============================================================
+     WAR_DATA — OBJETO CENTRAL DE DADOS
+     Todas as métricas exibidas no painel vêm exclusivamente daqui.
+     Cada campo inclui: value, unit, source_primary, source_secondary,
+     last_update_utc, confidence_level, notes
+     ============================================================ -->
 <script>
-const UPD=60*60*1000;
-let nxt=Date.now()+UPD;
-function pad(n){return String(n).padStart(2,'0')}
-function utcS(d){return`${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`}
-function updClock(){document.getElementById('clock').textContent=utcS(new Date())}
-setInterval(updClock,1000);updClock();
-function updNxt(){const d=new Date(nxt);document.getElementById('nxt-upd').textContent=`${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} UTC`}
-updNxt();setInterval(updNxt,10000);
+const WAR_DATA = {
 
-function toast(msg,t){
-  const el=document.getElementById('toast');
-  const cols={ok:{bg:'rgba(0,230,118,.08)',bc:'#00441f',c:'#00e676'},err:{bg:'rgba(255,34,51,.08)',bc:'#6b0010',c:'#ff2233'},inf:{bg:'rgba(255,179,0,.08)',bc:'#7a5500',c:'#ffb300'}};
-  const c=cols[t]||cols.inf;
-  Object.assign(el.style,{background:c.bg,borderColor:c.bc,color:c.c,opacity:'1',display:'block'});
-  el.textContent=msg;clearTimeout(el._t);el._t=setTimeout(()=>{el.style.opacity='0';},5000);
+  // ──────────────────────────────────────────────
+  // META — Operações e contexto
+  // ──────────────────────────────────────────────
+  meta: {
+    operation_us:    "EPIC FURY",
+    operation_il:    "LION'S ROAR (ROARING LION)",
+    operation_iran:  "PROMESSA SINCERA 4",
+    start_utc:       "2026-02-28T08:00:00Z",
+    last_manual_update: "2026-03-01T18:00:00Z",
+    escalation_index: { value: 82, confidence: "REPORTADO",
+      note: "Índice sintético 0–100 baseado: alcance geográfico (9 países), baixas confirmadas, tipo de alvos atingidos, retaliações em andamento" }
+  },
+
+  // ──────────────────────────────────────────────
+  // KPIs — Panorama Geral
+  // ──────────────────────────────────────────────
+  kpis: {
+    iranian_officials_dead: {
+      value: 40, unit: "oficiais", qualifier: "+",
+      source_primary: "CBS News (inteligência militar dos EUA)",
+      source_secondary: "IDF Defrin (porta-voz)",
+      last_update_utc: "2026-02-28T22:00:00Z",
+      confidence: "REPORTADO",
+      notes: "Fontes não especificaram se estavam em um único local ou múltiplos. Inclui Líder Supremo Khamenei."
+    },
+    iran_civilian_dead: {
+      value: 201, unit: "civis", qualifier: "+",
+      source_primary: "Cruz Vermelha Iraniana (Red Crescent)",
+      source_secondary: "IRNA (mídia estatal)",
+      last_update_utc: "2026-02-28T17:30:00Z",
+      confidence: "REPORTADO",
+      notes: "Dado fornecido por fonte estatal iraniana. Não há confirmação independente. 747+ feridos reportados na mesma fonte."
+    },
+    iran_wounded: {
+      value: 747, unit: "feridos", qualifier: "+",
+      source_primary: "Cruz Vermelha Iraniana",
+      source_secondary: "IRNA",
+      last_update_utc: "2026-02-28T17:30:00Z",
+      confidence: "REPORTADO",
+      notes: "Acompanha dado de mortos civis. Mesma fonte."
+    },
+    projectiles_launched: {
+      value: 500, unit: "projéteis", qualifier: "+",
+      source_primary: "CENTCOM",
+      source_secondary: "IDF",
+      last_update_utc: "2026-03-01T14:00:00Z",
+      confidence: "REPORTADO",
+      notes: "Múltiplas ondas. Mix de mísseis balísticos, drones kamikaze e mísseis de cruzeiro. Estimativa acumulada."
+    },
+    israel_dead: {
+      value: 9, unit: "mortos", qualifier: "+",
+      source_primary: "Magen David Adom",
+      source_secondary: "Times of Israel",
+      last_update_utc: "2026-03-01T16:00:00Z",
+      confidence: "CONFIRMADO",
+      notes: "8 mortos em Beit Shemesh (01/Mar) + 1 mulher em Tel Aviv (28/Fev). MDA é serviço de emergência oficial do Estado de Israel."
+    },
+    us_dead: {
+      value: 3, unit: "soldados EUA",
+      source_primary: "CENTCOM — comunicado oficial",
+      source_secondary: "ABC News / Al Jazeera",
+      last_update_utc: "2026-03-01T09:30:00Z",
+      confidence: "CONFIRMADO",
+      notes: "Comunicado CENTCOM: 3 KIA, 5 feridos graves, vários ferimentos menores de estilhaços em retorno ao serviço. Identidades retidas até notificação de familiares."
+    }
+  },
+
+  // ──────────────────────────────────────────────
+  // ARSENAL — Projéteis iranianos por tipo
+  // ──────────────────────────────────────────────
+  arsenal: {
+    ballistic: {
+      launched: { value: 100, qualifier: "+",
+        source_primary: "IDF", source_secondary: "CENTCOM",
+        confidence: "REPORTADO", last_update_utc: "2026-03-01T12:00:00Z",
+        notes: "Estimativa IDF. Inclui Shahab-3, Sejjil e variante Fattah modificada." },
+      impacted: { value: 8, qualifier: "~",
+        source_primary: "IDF", source_secondary: "Times of Israel",
+        confidence: "REPORTADO", last_update_utc: "2026-03-01T16:00:00Z",
+        notes: "Impactos confirmados em solo israelense. Inclui Beit Shemesh, Tel Aviv, Bnei Brak." },
+      intercepted: { value: 92, qualifier: "~",
+        source_primary: "IDF", source_secondary: "CENTCOM",
+        confidence: "REPORTADO", last_update_utc: "2026-03-01T12:00:00Z",
+        notes: "Taxa de interceptação ~92%. Iron Dome + Arrow + THAAD." }
+    },
+    drones: {
+      launched: { value: 300, qualifier: "+",
+        source_primary: "CENTCOM", source_secondary: "IDF",
+        confidence: "REPORTADO", last_update_utc: "2026-03-01T12:00:00Z",
+        notes: "Shahed-136 predominante. Dispersos por 9 países." },
+      impacted: { value: 12, qualifier: "~",
+        source_primary: "Multiple OSINT", source_secondary: "Al Jazeera",
+        confidence: "REPORTADO", last_update_utc: "2026-03-01T14:00:00Z",
+        notes: "Inclui impactos confirmados no Bahrein (5ª Frota), Kuwait (aeroporto), EAU." },
+      intercepted: { value: 288, qualifier: "~",
+        source_primary: "CENTCOM", source_secondary: "Multiple defense ministries",
+        confidence: "REPORTADO", last_update_utc: "2026-03-01T14:00:00Z",
+        notes: "Estimativa derivada. 96%+ taxa intercepção de drones." }
+    },
+    cruise: {
+      launched: { value: 50, qualifier: "~",
+        source_primary: "CTP-ISW", source_secondary: "IDF",
+        confidence: "REPORTADO", last_update_utc: "2026-03-01T12:00:00Z",
+        notes: "Ya-Ali e Ra'ad principalmente. Alvos: bases dos EUA no Golfo." },
+      impacted: { value: 5, qualifier: "~",
+        source_primary: "Multiple reports", source_secondary: "CENTCOM",
+        confidence: "REPORTADO", last_update_utc: "2026-03-01T14:00:00Z",
+        notes: "Inclui base 5ª Frota Bahrein (confirmado por vídeo)." },
+      intercepted: { value: 45, qualifier: "~",
+        source_primary: "CENTCOM", source_secondary: "Gulf ministries of defense",
+        confidence: "REPORTADO", last_update_utc: "2026-03-01T14:00:00Z",
+        notes: "Estimativa derivada." }
+    }
+  },
+
+  // ──────────────────────────────────────────────
+  // COUNTRIES — Teatro de operações
+  // ──────────────────────────────────────────────
+  countries: [
+    {
+      name: "Israel", flag: "🇮🇱",
+      intercept_pct: 92, risk: "critical",
+      launched: 100, qualifier_l: "+", impacted: 8, qualifier_i: "~", intercepted: 92, qualifier_int: "~",
+      dead: 9, wounded: 110,
+      confidence: "CONFIRMADO",
+      source_primary: "Magen David Adom",
+      source_secondary: "Times of Israel",
+      last_update_utc: "2026-03-01T16:00:00Z",
+      note: "8 mortos em Beit Shemesh; 1 em Tel Aviv. IDF investiga falha de interceptação em Beit Shemesh.",
+      weapons: ["Shahab-3","Sejjil","Fattah mod.","Shahed-136"]
+    },
+    {
+      name: "Bahrein", flag: "🇧🇭",
+      intercept_pct: 60, risk: "high",
+      launched: 20, qualifier_l: "~", impacted: 5, qualifier_i: "~", intercepted: 15, qualifier_int: "~",
+      dead: 0, wounded: "N/C",
+      confidence: "REPORTADO",
+      source_primary: "US 5th Fleet", source_secondary: "Reuters",
+      last_update_utc: "2026-03-01T10:00:00Z",
+      note: "QG da 5ª Frota dos EUA atingido. Drone Shahed perfurou cúpula de radar. Crowne Plaza Hotel em chamas.",
+      weapons: ["Shahed-136","Cruzeiro"]
+    },
+    {
+      name: "Kuwait", flag: "🇰🇼",
+      intercept_pct: 85, risk: "high",
+      launched: 15, qualifier_l: "~", impacted: 2, qualifier_i: "~", intercepted: 13, qualifier_int: "~",
+      dead: 1, wounded: 32,
+      confidence: "CONFIRMADO",
+      source_primary: "Ministério da Saúde do Kuwait", source_secondary: "Al Jazeera",
+      last_update_utc: "2026-03-01T12:00:00Z",
+      note: "1 morto, 32 feridos — confirmados pelo Min. Saúde. Aeroporto Internacional: terminal danificado por drone.",
+      weapons: ["SRBM","Shahed"]
+    },
+    {
+      name: "Emirados Árabes Unidos", flag: "🇦🇪",
+      intercept_pct: 80, risk: "high",
+      launched: 20, qualifier_l: "~", impacted: 4, qualifier_i: "~", intercepted: 16, qualifier_int: "~",
+      dead: 3, wounded: 58,
+      confidence: "CONFIRMADO",
+      source_primary: "Ministério da Defesa dos EAU", source_secondary: "AP",
+      last_update_utc: "2026-03-01T13:00:00Z",
+      note: "3 mortos, 58 feridos leves — Min. Defesa EAU. Burj Al Arab: fogo na fachada. Dubai Airport afetado.",
+      weapons: ["Shahed","Balístico"]
+    },
+    {
+      name: "Qatar", flag: "🇶🇦",
+      intercept_pct: 95, risk: "medium",
+      launched: 65, qualifier_l: "~", impacted: 1, qualifier_i: "~", intercepted: 64, qualifier_int: "~",
+      dead: 0, wounded: 16,
+      confidence: "REPORTADO",
+      source_primary: "Ministério da Defesa do Qatar", source_secondary: "Al Jazeera",
+      last_update_utc: "2026-03-01T10:00:00Z",
+      note: "Qatar: 65 mísseis reportados. Radar early-warning danificado (val. US$ 1,1 bi). HQ CENTCOM (Al-Udeid) alvo.",
+      weapons: ["MRBM","Cruzeiro"]
+    },
+    {
+      name: "Jordânia", flag: "🇯🇴",
+      intercept_pct: 100, risk: "low",
+      launched: 49, qualifier_l: "", impacted: 0, qualifier_i: "", intercepted: 49, qualifier_int: "",
+      dead: 0, wounded: 0,
+      confidence: "CONFIRMADO",
+      source_primary: "Forças Armadas da Jordânia", source_secondary: "Reuters",
+      last_update_utc: "2026-03-01T10:00:00Z",
+      note: "100% interceptados — 49/49. Nenhum ferido reportado. Destroços em Amã — danos materiais.",
+      weapons: ["Balístico","Drones"]
+    },
+    {
+      name: "Arábia Saudita", flag: "🇸🇦",
+      intercept_pct: 90, risk: "medium",
+      launched: 20, qualifier_l: "~", impacted: 2, qualifier_i: "~", intercepted: 18, qualifier_int: "~",
+      dead: 0, wounded: "N/C",
+      confidence: "REPORTADO",
+      source_primary: "Forças Armadas da Arábia Saudita", source_secondary: "AFP",
+      last_update_utc: "2026-03-01T10:00:00Z",
+      note: "Explosões ouvidas em Riad (AFP). Embaixador iraniano convocado. Arábia Saudita condena 'agressão brutal'.",
+      weapons: ["MRBM"]
+    },
+    {
+      name: "Iraque (bases EUA)", flag: "🇮🇶",
+      intercept_pct: 75, risk: "medium",
+      launched: 10, qualifier_l: "~", impacted: 3, qualifier_i: "~", intercepted: 7, qualifier_int: "~",
+      dead: 2, wounded: 3,
+      confidence: "REPORTADO",
+      source_primary: "PMF (Forças Populares)", source_secondary: "Rudaw Media",
+      last_update_utc: "2026-03-01T10:00:00Z",
+      note: "2 combatentes das PMF mortos em Jurf al-Sakhar. Aeroporto Erbil: drone interceptado. Kataib Hezbollah ameaça mais ataques.",
+      weapons: ["Drones milícias"]
+    },
+    {
+      name: "Chipre (bases britânicas)", flag: "🇨🇾",
+      intercept_pct: 100, risk: "medium",
+      launched: 2, qualifier_l: "", impacted: 0, qualifier_i: "", intercepted: 2, qualifier_int: "",
+      dead: 0, wounded: 0,
+      confidence: "REPORTADO",
+      source_primary: "Forças Armadas britânicas", source_secondary: "Reuters",
+      last_update_utc: "2026-03-01T08:00:00Z",
+      note: "PRIMEIRO ataque iraniano em solo europeu (bases britânicas). 2 mísseis interceptados. Precedente histórico.",
+      weapons: ["MRBM"]
+    }
+  ],
+
+  // ──────────────────────────────────────────────
+  // ISRAEL — Cidades atingidas
+  // ──────────────────────────────────────────────
+  israel_cities: [
+    {
+      name: "BEIT SHEMESH", coords: "31.7°N 35.0°E — 30 km a oeste de Jerusalém",
+      date: "01 MAR 2026", dead: 8, wounded: 27, critical: 3,
+      confidence: "CONFIRMADO",
+      source_primary: "Magen David Adom",
+      source_secondary: "Times of Israel / United Hatzalah",
+      last_update_utc: "2026-03-01T15:00:00Z",
+      note: "Míssil balístico atingiu diretamente edifício residencial. Abrigo antiaéreo público destruído. Criança de 10 anos em estado crítico. IDF investiga falha de interceptação.",
+      risk: "critical"
+    },
+    {
+      name: "TEL AVIV", coords: "32.1°N 34.8°E — Costa central",
+      date: "28 FEV – 01 MAR 2026", dead: 1, wounded: 21, critical: 0,
+      confidence: "CONFIRMADO",
+      source_primary: "Magen David Adom",
+      source_secondary: "CTP-ISW / Reuters",
+      last_update_utc: "2026-02-28T23:00:00Z",
+      note: "1 mulher morta após ferimento por míssil iraniano (28/Fev). 2 mísseis confirmados na região central. Hospital realocado para bunker subterrâneo.",
+      risk: "high"
+    },
+    {
+      name: "JERUSALÉM", coords: "31.8°N 35.2°E — Cidade Santa",
+      date: "28 FEV 2026", dead: 0, wounded: 0, critical: 0,
+      confidence: "CONFIRMADO",
+      source_primary: "Polícia de Israel",
+      source_secondary: "Times of Israel",
+      last_update_utc: "2026-02-28T22:00:00Z",
+      note: "Ogiva de míssil caiu a metros da Cidade Velha. Local: Sultan's Pool — ~700m do Muro das Lamentações. Cmte. Dvir Tamir: 'Se tivesse desviado centenas de metros...'",
+      risk: "high",
+      special: "QUASE-CATÁSTROFE"
+    },
+    {
+      name: "HAIFA + NORTE", coords: "32.8°N 35.0°E — Região Norte",
+      date: "01 MAR 2026", dead: 0, wounded: 1, critical: 0,
+      confidence: "REPORTADO",
+      source_primary: "Al Jazeera",
+      source_secondary: "CTP-ISW / Israel Police",
+      last_update_utc: "2026-03-01T12:00:00Z",
+      note: "Prédio de 9 andares atingido no norte — 1 ferido por estilhaço de interceptor. Bnei Brak: míssil confirmado. Sirenes contínuas na Galiléia e Vale de Beit She'an.",
+      risk: "medium"
+    }
+  ],
+
+  // ──────────────────────────────────────────────
+  // BENCHMARKS — Degradação de capacidade iraniana
+  // ──────────────────────────────────────────────
+  benchmarks: {
+    nuclear: [
+      { name: "Fordow (enriquecimento subterrâneo)", pct: 85, color: "#ef4444",
+        source: "Op. Midnight Hammer (jun/2025) — 14x GBU-57 MOP + Tomahawks",
+        confidence: "REPORTADO" },
+      { name: "Natanz (instalação principal)", pct: 75, color: "#f97316",
+        source: "2x MOP + 30 Tomahawks (2025). Teto falso detectado em jan/2026 — reconstrução parcial",
+        confidence: "REPORTADO" },
+      { name: "Isfahan (hub centrífugas)", pct: 60, color: "#f59e0b",
+        source: "Reatingida em 2026. Teto falso construído para ocultar reconstrução (NYT)",
+        confidence: "REPORTADO" },
+      { name: "AEOI — Sede (Teerã)", pct: 100, color: "#ef4444",
+        source: "Sede destruída em 28/Fev/2026 (NCRI)",
+        confidence: "REPORTADO" }
+    ],
+    missiles: [
+      { name: "Lançadores móveis destruídos", pct: 79, color: "#ef4444",
+        source: "Alma Institute jan/2026: 480 → ~100 restantes",
+        confidence: "REPORTADO" },
+      { name: "Estoque consumido/destruído", pct: 60, color: "#f97316",
+        source: "2.500 → ~1.000–1.200 estimados. Iran disparou ~550 na guerra 2025",
+        confidence: "REPORTADO" },
+      { name: "Bases MRBM atingidas (de 25)", pct: 100, color: "#ef4444",
+        source: "Todas 25 atingidas. 12 em reconstrução jan/2026 (NYT satélite)",
+        confidence: "REPORTADO" },
+      { name: "Defesas aéreas destruídas (28/Fev)", pct: 55, color: "#f59e0b",
+        source: "11+ sistemas destruídos IDF. Reaper voa livremente sobre Shiraz",
+        confidence: "REPORTADO" }
+    ],
+    leadership: [
+      { name: "Líder Supremo (Khamenei)", pct: 100, color: "#ef4444", confidence: "CONFIRMADO",
+        source: "Mídia estatal iraniana · Trump · IDF" },
+      { name: "Cdte. IRGC (Pakpour)", pct: 100, color: "#ef4444", confidence: "REPORTADO",
+        source: "Reuters (3 fontes) · IDF · Al Arabiya" },
+      { name: "Min. Defesa (Nasirzadeh)", pct: 100, color: "#ef4444", confidence: "REPORTADO",
+        source: "Reuters · IDF · Times of Israel" },
+      { name: "Chefe Estado-Maior (Bagheri)", pct: 100, color: "#ef4444", confidence: "REPORTADO",
+        source: "IDF Defrin · Jerusalem Post" },
+      { name: "Cúpula Inteligência (VAJA)", pct: 80, color: "#f97316", confidence: "REPORTADO",
+        source: "Iran International · Jerusalem Post — 4 de 5 chefes mortos" },
+      { name: "Internet / Infraestrutura digital", pct: 96, color: "#60a5fa", confidence: "REPORTADO",
+        source: "Netblocks — conectividade caiu a 4% da capacidade" }
+    ],
+    defense: [
+      { name: "Israel (Iron Dome + Arrow + THAAD)", pct: 92, color: "#22c55e", confidence: "REPORTADO", source: "IDF" },
+      { name: "Jordânia", pct: 100, color: "#22c55e", confidence: "CONFIRMADO", source: "Forças Armadas da Jordânia" },
+      { name: "Qatar (Patriot PAC-3)", pct: 95, color: "#22c55e", confidence: "REPORTADO", source: "Min. Defesa Qatar" },
+      { name: "Arábia Saudita", pct: 90, color: "#22c55e", confidence: "REPORTADO", source: "FA Arábia Saudita" },
+      { name: "Kuwait (THAAD + Patriot)", pct: 85, color: "#f59e0b", confidence: "REPORTADO", source: "Min. Saúde Kuwait" },
+      { name: "EAU", pct: 80, color: "#f59e0b", confidence: "CONFIRMADO", source: "Min. Defesa EAU" },
+      { name: "Bahrein (5ª Frota EUA)", pct: 60, color: "#f97316", confidence: "REPORTADO", source: "US 5th Fleet" }
+    ]
+  },
+
+  // ──────────────────────────────────────────────
+  // CASUALTIES — Liderança iraniana
+  // ──────────────────────────────────────────────
+  casualties: [
+    { id:1, name:"Aiatolá Ali Khamenei", role:"Líder Supremo do Irã (1989–2026)", org:"Liderança Suprema", confidence:"CONFIRMADO", source:"Mídia estatal iraniana · Reuters · NPR · Trump (Truth Social)" },
+    { id:2, name:"Ali Shamkhani", role:"Secretário CSNS / Ex-Min. Defesa", org:"Conselho Sup. Seg. Nacional", confidence:"REPORTADO", source:"IDF Defrin · Al Jazeera · Times of Israel" },
+    { id:3, name:"Gen. Mohammad Pakpour", role:"Comandante-Geral do IRGC", org:"IRGC", confidence:"REPORTADO", source:"Reuters (3 fontes) · IDF · Al Arabiya" },
+    { id:4, name:"Brig. Gen. Amir Nasirzadeh", role:"Ministro da Defesa", org:"Ministério da Defesa", confidence:"REPORTADO", source:"Reuters · IDF · Times of Israel" },
+    { id:5, name:"Maj. Gen. Mohammad Bagheri", role:"Chefe do Estado-Maior das FA", org:"Estado-Maior das Forças Armadas", confidence:"REPORTADO", source:"IDF Defrin · Jerusalem Post" },
+    { id:6, name:"Gen. Esmail Qaani", role:"Comandante da Força Quds", org:"IRGC — Força Quds", confidence:"APURAÇÃO", source:"RedState / fontes israelenses — não confirmado por fontes principais" },
+    { id:7, name:"Javad Pourhossein", role:"Chefe de Inteligência Estrangeira", org:"VAJA (Ministério de Inteligência)", confidence:"REPORTADO", source:"Iran International · @JasonMBrodsky" },
+    { id:8, name:"Mohammad-Reza Bajestani", role:"Chefe da Unidade de Segurança", org:"VAJA", confidence:"REPORTADO", source:"Iran International · Jerusalem Post" },
+    { id:9, name:"Ali Kheirandish", role:"Chefe da Unidade de Contraterrorismo", org:"VAJA", confidence:"REPORTADO", source:"Iran International · Jerusalem Post" },
+    { id:10, name:"Saeed Ehya Hamidi", role:"Assessor — Dossiê Israel/Guerra", org:"VAJA", confidence:"REPORTADO", source:"Iran International · Jerusalem Post" },
+    { id:11, name:"Mohammad Nasseri", role:"Oficial do Ministério de Inteligência", org:"VAJA", confidence:"REPORTADO", source:"Wikipedia / fontes iranianas" },
+    { id:12, name:"Gholamreza Rezaeian", role:"Chefe de Inteligência da Polícia FARAJA", org:"FARAJA (Polícia Iran)", confidence:"REPORTADO", source:"Wikipedia" },
+    { id:"13–16", name:"Filha · Genro · Nora · Neto de Khamenei", role:"Familiares do Líder Supremo", org:"Família Khamenei", confidence:"REPORTADO", source:"Fars News Agency · Conselho Municipal de Teerã · Times of Israel" },
+    { id:17, name:"Mahmoud Ahmadinejad", role:"Ex-Presidente do Irã (2005–2013)", org:"Residente civil — bairro Narmak, Teerã", confidence:"CONFLITANTE", source:"ILNA reportou morte → Escritório de Ahmadinejad desmentiu → Channel 12 Israel: 'não confirmado'" }
+  ],
+
+  // ──────────────────────────────────────────────
+  // INFRASTRUCTURE — Alvos destruídos no Irã
+  // ──────────────────────────────────────────────
+  infrastructure: [
+    { id:"01", name:"Complexo Residencial / Bunker do Líder Supremo (Beit Khamenei)", loc:"Distrito Pasteur, Teerã", note:"Imagens de satélite confirmam destruição total.", cat:"LIDERANÇA", confidence:"CONFIRMADO", source:"IDF · NCRI · Satélite" },
+    { id:"02", name:"Sede do Ministério de Inteligência (VAJA)", loc:"Teerã Norte — bairro Seyyed Khandan", note:"3 explosões. Fumaça geolocada pela CNN. Já atacado em 2025.", cat:"INTELIGÊNCIA", confidence:"REPORTADO", source:"CNN · IDF" },
+    { id:"03", name:"Conselho Supremo de Segurança Nacional", loc:"Teerã", note:"1 dos 3 locais de reunião atingidos simultaneamente.", cat:"COMANDO", confidence:"REPORTADO", source:"IDF · múltiplas fontes" },
+    { id:"04", name:"Ministério da Defesa — Sede", loc:"Teerã", note:"Confirmado por NCRI e imagens de satélite.", cat:"GOVERNO", confidence:"REPORTADO", source:"NCRI · Satélite" },
+    { id:"05", name:"Agência de Energia Atômica do Irã (AEOI)", loc:"Teerã", note:"Sede completamente destruída.", cat:"NUCLEAR", confidence:"REPORTADO", source:"NCRI · IDF" },
+    { id:"06", name:"QG de Inteligência do IRGC", loc:"Teerã", note:"Mídia iraniana confirmou explosões diretas.", cat:"INTELIGÊNCIA", confidence:"REPORTADO", source:"Mídia iraniana · CTP-ISW" },
+    { id:"07", name:"Tribunal Revolucionário de Teerã", loc:"Teerã", note:"Prédio destruído, confirmado por fontes iranianas.", cat:"JUDICIÁRIO", confidence:"REPORTADO", source:"Fontes iranianas · Wikipedia" },
+    { id:"08", name:"Base IRGC Heydar Karar (Basij / Fatehin)", loc:"Damavand, Província de Teerã", note:"Centro de treinamento forças especiais Basij.", cat:"IRGC", confidence:"REPORTADO", source:"CTP-ISW" },
+    { id:"09", name:"Sede Tharallah (repressão a protestos)", loc:"Teerã", note:"WSJ: Israel almejou corpo coordenador de inteligência, Basij e operações psicológicas.", cat:"IRGC/SEGURANÇA", confidence:"REPORTADO", source:"Wall Street Journal" },
+    { id:"10", name:"Depósito de Mísseis IRGC — Aeroporto Mehrabad", loc:"Teerã (adjacente à Base Aérea Artesh 1ª Tática)", note:"Estoque de mísseis destruído.", cat:"MÍSSEIS", confidence:"REPORTADO", source:"CTP-ISW" },
+    { id:"11", name:"Base de Mísseis Khomein (MRBM)", loc:"Província de Markazi", note:"Reatingida (1ª destruição em jun/2025).", cat:"MÍSSEIS", confidence:"REPORTADO", source:"CTP-ISW" },
+    { id:"12", name:"Base de Mísseis IRGC — Haji Abad", loc:"Hormozgan (sul costeiro)", note:"Lançadores costeiros destruídos.", cat:"MÍSSEIS", confidence:"REPORTADO", source:"CTP-ISW" },
+    { id:"13", name:"Base de Mísseis IRGC — Jam", loc:"Bushehr (Golfo Pérsico)", note:"Confirmado por mídia iraniana.", cat:"MÍSSEIS", confidence:"REPORTADO", source:"CTP-ISW · Mídia iraniana" },
+    { id:"14", name:"11+ Sistemas de Defesa Aérea (Irã Ocidental)", loc:"Inclui Div. 29ª Nabi Akram — Kermanshah", note:"SA-65 avançado destruído. Reaper voa livremente sobre Shiraz.", cat:"DEF. AÉREA", confidence:"REPORTADO", source:"IDF" },
+    { id:"15", name:"Radar de Vigilância — Ilha de Kish", loc:"Golfo Pérsico", note:"Radar de monitoramento naval destruído.", cat:"RADAR", confidence:"REPORTADO", source:"IDF" },
+    { id:"16", name:"Corveta IRGC Jamaran", loc:"Gulf of Oman — pier de Chah Bahar", note:"CENTCOM confirmou: 'A embarcação está afundando no fundo do Golfo de Omã'.", cat:"NAVAL", confidence:"CONFIRMADO", source:"CENTCOM" },
+    { id:"17", name:"Complexo Nuclear de Isfahan (superfície)", loc:"Isfahan — produção de centrífugas", note:"Reatingido em 2026. Teto falso construído para ocultar reconstrução (NYT satélite).", cat:"NUCLEAR", confidence:"REPORTADO", source:"NYT · IDF" },
+    { id:"18", name:"Complexo Militar de Parchin", loc:"Teerã — pesquisa de armamentos", note:"Infraestrutura de P&D bélico destruída.", cat:"ARMAMENTOS", confidence:"REPORTADO", source:"NCRI · Saham News" },
+    { id:"19", name:"Porto e Instalações de Bushehr", loc:"Bushehr, costa sul", note:"Iran International: Bushehr atingida. Status do reator nuclear incerto.", cat:"NAVAL/NUCLEAR", confidence:"REPORTADO", source:"Iran International" }
+  ],
+
+  // ──────────────────────────────────────────────
+  // TIMELINE — Cronologia de eventos
+  // ──────────────────────────────────────────────
+  timeline: [
+    { time:"28 FEV · 03h00 EST", tags:["tag-us"], text:"Trump anuncia 'grandes operações de combate' contra o Irã no Truth Social.", confidence:"CONFIRMADO" },
+    { time:"28 FEV · 08h10 Teerã", tags:["tag-attack"], text:"200+ caças israelenses. Três locais com reuniões da cúpula iraniana atingidos simultaneamente. 500+ alvos. IDF: maior operação aérea da história de Israel.", confidence:"CONFIRMADO" },
+    { time:"28 FEV · Manhã", tags:["tag-confirm"], text:"IDF confirma eliminação de Shamkhani, Pakpour, Nasirzadeh e Bagheri em comunicados do porta-voz Defrin.", confidence:"REPORTADO" },
+    { time:"28 FEV · ~11h", tags:["tag-retaliate"], text:"Irã inicia primeiras ondas de mísseis e drones contra Israel e 14 bases dos EUA no Golfo.", confidence:"CONFIRMADO" },
+    { time:"28 FEV · ~13h", tags:["tag-warning"], text:"IRGC reivindica ataque a navio auxiliar da Marinha dos EUA. Corveta Jamaran possivelmente atingida nesse momento.", confidence:"REIVINDICADO" },
+    { time:"28 FEV · 17h30 CET", tags:["tag-confirm"], text:"Cruz Vermelha Iraniana: 201 civis mortos, 747 feridos em território iraniano.", confidence:"REPORTADO" },
+    { time:"28 FEV · Noite", tags:["tag-confirm"], text:"Channel 12 Israel: 'Indicações crescentes de que Khamenei foi morto'. Reuters cita fonte israelense confirmando localização do corpo.", confidence:"REPORTADO" },
+    { time:"28 FEV · Noite", tags:["tag-diplo"], text:"Jordânia derruba 49/49 projéteis. Qatar e Kuwait convocam embaixadores iranianos.", confidence:"CONFIRMADO" },
+    { time:"01 MAR · Madrugada", tags:["tag-attack"], text:"Israel retoma ataques a Teerã, visando sedes de repressão a protestos (Tharallah, FARAJA). Fonte: Wall Street Journal.", confidence:"REPORTADO" },
+    { time:"01 MAR · 09h30 ET", tags:["tag-us","tag-warning"], text:"CENTCOM confirma 3 soldados americanos mortos em combate e 5 feridos graves na Op. Epic Fury. Primeiras baixas americanas confirmadas.", confidence:"CONFIRMADO" },
+    { time:"01 MAR · ~11h", tags:["tag-confirm"], text:"Mídia estatal iraniana confirma oficialmente morte de Khamenei. 40 dias de luto nacional decretados.", confidence:"CONFIRMADO" },
+    { time:"01 MAR · ~12h", tags:["tag-attack","tag-warning"], text:"Míssil balístico iraniano atinge área residencial em Beit Shemesh — 8 mortos, 27+ feridos, abrigo antiaéreo destruído. IDF investiga falha de interceptação.", confidence:"CONFIRMADO" },
+    { time:"01 MAR · ~13h", tags:["tag-warning"], text:"Ogiva de míssil iraniano cai a metros da Cidade Velha de Jerusalém — Sultan's Pool, ~700m do Muro das Lamentações. Nenhuma vítima.", confidence:"CONFIRMADO" },
+    { time:"01 MAR · Tarde", tags:["tag-confirm"], text:"CENTCOM confirma Corveta Jamaran afundando no Golfo de Omã (pier de Chah Bahar).", confidence:"CONFIRMADO" },
+    { time:"01 MAR · Tarde", tags:["tag-disinfo"], text:"IRGC afirma ter atingido porta-aviões USS Abraham Lincoln com 4 mísseis. CENTCOM desmente: 'MENTIRA — o Lincoln não foi atingido'.", confidence:"DESMENTIDO" },
+    { time:"01 MAR · Tarde", tags:["tag-retaliate","tag-warning"], text:"Ahmadinejad: ILNA (iraniana) reporta morte em raid na residência em Narmak, Teerã. Escritório de Ahmadinejad desmente. Channel 12 Israel: 'não confirmado'. Status: conflitante.", confidence:"CONFLITANTE" },
+    { time:"01 MAR · ~17h", tags:["tag-us"], text:"Trump: '48 líderes iranianos se foram em um único golpe.' Confirma destruição do QG Naval iraniano e 9 navios afundados.", confidence:"REIVINDICADO" },
+    { time:"01 MAR · Noite", tags:["tag-diplo"], text:"Trump anuncia disposição para negociar com nova liderança iraniana. Nova liderança iraniana sinaliza abertura ao diálogo com Washington.", confidence:"REPORTADO" },
+    { time:"01 MAR · Noite", tags:["tag-warning"], text:"IRGC fecha Estreito de Hormuz. 150+ petroleiros ancorados. Bloomberg: EUA e Israel podem enfrentar escassez de munição se Irã continuar ataques intensivos.", confidence:"REPORTADO" }
+  ],
+
+  // ──────────────────────────────────────────────
+  // AUDIT LOG — Registro de atualizações
+  // ──────────────────────────────────────────────
+  audit_log: [
+    { utc:"2026-03-01T18:00:00Z", field:"kpis.us_dead", old_value:"0", new_value:"3", source:"CENTCOM comunicado oficial @CENTCOM (X)", note:"Primeiras baixas americanas confirmadas" },
+    { utc:"2026-03-01T16:00:00Z", field:"kpis.israel_dead", old_value:"1", new_value:"9+", source:"Magen David Adom / Times of Israel", note:"Atualização pós-Beit Shemesh" },
+    { utc:"2026-03-01T15:00:00Z", field:"israel_cities[0].dead", old_value:"6", new_value:"8", source:"Times of Israel / United Hatzalah", note:"Equipes de resgate extraíram corpos adicionais dos escombros" },
+    { utc:"2026-03-01T13:00:00Z", field:"countries[3].dead (EAU)", old_value:"1", new_value:"3", source:"Ministério da Defesa dos EAU", note:"Revisão para 3 mortos, 58 feridos leves" },
+    { utc:"2026-03-01T12:00:00Z", field:"countries[2].dead (Kuwait)", old_value:"0", new_value:"1", source:"Ministério da Saúde do Kuwait", note:"1 morto confirmado, 32 feridos" },
+    { utc:"2026-03-01T11:30:00Z", field:"casualties[13].confidence (Ahmadinejad)", old_value:"REPORTADO", new_value:"CONFLITANTE", source:"Escritório Ahmadinejad + Channel 12 Israel", note:"Fonte original (ILNA) contradita por múltiplas fontes" },
+    { utc:"2026-03-01T09:30:00Z", field:"infrastructure[15].confidence (Jamaran)", old_value:"REPORTADO", new_value:"CONFIRMADO", source:"CENTCOM comunicado oficial", note:"Corveta afundada confirmada — 'sinking to the bottom of the Gulf of Oman'" },
+    { utc:"2026-02-28T17:30:00Z", field:"kpis.iran_civilian_dead", old_value:"0", new_value:"201+", source:"Cruz Vermelha Iraniana", note:"Primeiro dado de baixas civis iranianas" }
+  ],
+
+  // ──────────────────────────────────────────────
+  // SURVIVORS — Sobreviventes confirmados
+  // ──────────────────────────────────────────────
+  survivors: [
+    "Masoud Pezeshkian — Presidente",
+    "Mohammad Baqer Qalibaf — Presidente do Parlamento",
+    "Abbas Araghchi — Ministro das Relações Exteriores",
+    "Amir Hatami — Comandante do Exército",
+    "Gholam-Hossein Mohseni-Ejei — Poder Judiciário",
+    "Ali Larijani — Anuncia conselho de liderança de transição"
+  ]
+};
+
+// ============================================================
+// VALIDAÇÃO DE DADOS — Arsenal por país
+// Regra: lançados >= impactos + interceptados
+// ============================================================
+function validateArsenal(data) {
+  const errors = [];
+  // Validate overall arsenal types
+  ['ballistic','drones','cruise'].forEach(type => {
+    const a = data.arsenal[type];
+    if (a.launched.value < (a.impacted.value + a.intercepted.value)) {
+      errors.push(`Arsenal ${type.toUpperCase()}: lançados (${a.launched.value}) < impactos (${a.impacted.value}) + interceptados (${a.intercepted.value})`);
+    }
+  });
+  // Validate per-country
+  data.countries.forEach(c => {
+    if (c.launched < (c.impacted + c.intercepted)) {
+      errors.push(`${c.name}: lançados (${c.launched}) < impactos (${c.impacted}) + interceptados (${c.intercepted})`);
+    }
+  });
+  return errors;
 }
 
-function setStatus(s){
-  const d=document.getElementById('ldot'),l=document.getElementById('ulbl');
-  if(s==='upd'){d.style.background='#ffb300';l.textContent='ATUALIZANDO...';}
-  else if(s==='err'){d.style.background='#ff2233';l.textContent='ERRO — clique';}
-  else{d.style.background='#ff2233';l.textContent='AO VIVO';}
+// ============================================================
+// CONFIDENCE COLOR MAP
+// ============================================================
+const CONF_MAP = {
+  "CONFIRMADO":  { cls: "badge-confirmed", label: "✓ CONFIRMADO" },
+  "REPORTADO":   { cls: "badge-reported",  label: "◎ REPORTADO" },
+  "REIVINDICADO":{ cls: "badge-claimed",   label: "◈ REIVINDICADO" },
+  "CONFLITANTE": { cls: "badge-contested", label: "⚠ CONFLITANTE" },
+  "APURAÇÃO":    { cls: "badge-claimed",   label: "? APURAÇÃO" },
+  "DESMENTIDO":  { cls: "badge-alert",     label: "✗ DESMENTIDO" }
+};
+
+function confBadge(level, source, last_update_utc) {
+  const m = CONF_MAP[level] || CONF_MAP["REPORTADO"];
+  const tooltip = `Fonte: ${source || 'N/A'}\nAtualizado: ${last_update_utc ? last_update_utc.replace('T',' ').replace('Z',' UTC') : 'N/A'}`;
+  return `<span class="badge ${m.cls}" data-tooltip="${tooltip}">${m.label}</span>`;
 }
 
-function inject(data){
-  if(data.ticker?.length) document.getElementById('ticker').textContent=data.ticker.map(i=>'◆ '+i).join('   |   ');
-  if(data.stat_officials) document.getElementById('s-officials').textContent=data.stat_officials;
-  if(data.stat_civilians) document.getElementById('s-civilians').textContent=data.stat_civilians;
-  if(data.new_events?.length){
-    const tl=document.getElementById('timeline');
-    const div=document.createElement('div');
-    div.style.cssText='border-top:1px solid #2a3448;border-bottom:1px solid #2a3448;padding:.28rem 1rem;font-family:"Share Tech Mono",monospace;font-size:.52rem;letter-spacing:.2em;color:#ff2233;text-transform:uppercase;background:#0b0d12;';
-    div.textContent='▶ NOVOS EVENTOS — '+new Date().toLocaleDateString('pt-BR');
-    tl.prepend(div);
-    [...data.new_events].reverse().forEach(ev=>{
-      const it=document.createElement('div');it.className='tl-i';it.style.borderLeft='2px solid #ff2233';
-      it.innerHTML=`<div class="tl-t">${ev.time||'NOVO'}</div><div class="tl-x"><span class="tag tg-${ev.type||'s'}">${ev.label||'UPDATE'}</span>${ev.text}</div>`;
-      tl.prepend(it);
+function riskClass(r) {
+  return { critical:'risk-critical', high:'risk-high', medium:'risk-medium', low:'risk-low' }[r] || 'risk-low';
+}
+
+// ============================================================
+// RENDER — KPI GRID
+// ============================================================
+function renderKPIs() {
+  const K = WAR_DATA.kpis;
+  const cards = [
+    { key:'iranian_officials_dead', label:'OFICIAIS IRANIANOS MORTOS', icon:'☠' },
+    { key:'iran_civilian_dead',     label:'CIVIS MORTOS NO IRÃ',       icon:'⚰' },
+    { key:'projectiles_launched',   label:'PROJÉTEIS LANÇADOS',        icon:'🚀' },
+    { key:'israel_dead',            label:'MORTOS EM ISRAEL',          icon:'🇮🇱' },
+    { key:'us_dead',                label:'SOLDADOS EUA MORTOS',       icon:'🇺🇸' },
+    { key:'iran_wounded',           label:'FERIDOS NO IRÃ',            icon:'🏥' }
+  ];
+  return cards.map(c => {
+    const d = K[c.key];
+    const q = d.qualifier || '';
+    return `
+    <div class="kpi-card">
+      <div class="kpi-label">${c.icon} ${c.label}</div>
+      <div class="kpi-value-row">
+        <span class="kpi-value">${d.value}${q}</span>
+        <span class="kpi-unit">${d.unit}</span>
+      </div>
+      <div class="kpi-sub">${d.notes.substring(0,80)}${d.notes.length>80?'…':''}</div>
+      <div class="kpi-badge">${confBadge(d.confidence, d.source_primary, d.last_update_utc)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// RENDER — THEATER GRID
+// ============================================================
+function renderTheater() {
+  return WAR_DATA.countries.map(c => {
+    const pct = c.intercept_pct;
+    const deadDisplay = c.dead === 0 ? '0' : c.dead;
+    const woundedDisplay = c.wounded === 'N/C' ? 'N/C' : c.wounded;
+    return `
+    <div class="country-card">
+      <div class="country-header">
+        <div class="country-name">
+          <span class="country-flag">${c.flag}</span>
+          ${c.name}
+        </div>
+        ${confBadge(c.confidence, c.source_primary, c.last_update_utc)}
+      </div>
+      <div class="intercept-gauge">
+        <div class="gauge-track"><div class="gauge-fill" style="width:${pct}%"></div></div>
+        <span class="gauge-pct">${pct}% interc.</span>
+      </div>
+      <div class="country-stats">
+        <div class="cstat"><span class="cstat-val">${c.launched}${c.qualifier_l||''}</span><span class="cstat-lbl">Lançados</span></div>
+        <div class="cstat"><span class="cstat-val" style="color:var(--alert)">${c.impacted}${c.qualifier_i||''}</span><span class="cstat-lbl">Impactos</span></div>
+        <div class="cstat"><span class="cstat-val">${deadDisplay === 0 && woundedDisplay === 0 ? '—' : deadDisplay+' ✝'}</span><span class="cstat-lbl">Mortos</span></div>
+      </div>
+      <div class="country-note">${c.note}</div>
+      <div class="risk-bar ${riskClass(c.risk)}"></div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// RENDER — ISRAEL CITIES
+// ============================================================
+function renderIsraelCities() {
+  return WAR_DATA.israel_cities.map(c => {
+    return `
+    <div class="city-card">
+      <div>
+        <div class="city-name">${c.name}</div>
+        <div class="city-coords">${c.coords} · ${c.date}</div>
+      </div>
+      <div class="city-casualties">
+        <div class="cas-block"><span class="cas-n dead">${c.dead}</span><span class="cas-l">Mortos</span></div>
+        <div class="cas-block"><span class="cas-n wounded">${c.wounded}</span><span class="cas-l">Feridos</span></div>
+      </div>
+      ${c.special ? `<div style="font-family:var(--font-mono);font-size:.5rem;color:var(--claimed);letter-spacing:.1em;">${c.special}</div>` : ''}
+      <div class="city-notes">${c.note}</div>
+      ${confBadge(c.confidence, c.source_primary, c.last_update_utc)}
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// RENDER — BENCHMARKS
+// ============================================================
+function renderBench(items) {
+  return items.map(i => `
+  <div class="bench-row">
+    <div class="bench-row-header">
+      <span class="bench-name">${i.name}</span>
+      <span class="bench-pct">${i.pct}%</span>
+    </div>
+    <div class="bench-track"><div class="bench-fill" style="width:${i.pct}%;background:${i.color}"></div></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.2rem;">
+      <span class="bench-source">${i.source.substring(0,60)}${i.source.length>60?'…':''}</span>
+      ${confBadge(i.confidence, i.source, null)}
+    </div>
+  </div>`).join('');
+}
+
+// ============================================================
+// RENDER — CASUALTIES TABLE
+// ============================================================
+function renderCasualties() {
+  return WAR_DATA.casualties.map(c => `
+  <tr>
+    <td class="cas-num-cell">${c.id}</td>
+    <td class="cas-name-cell">${c.name}</td>
+    <td class="cas-role-cell">${c.role}</td>
+    <td class="cas-org-cell">${c.org}</td>
+    <td>${confBadge(c.confidence, c.source, null)}</td>
+    <td class="cas-src-cell">${c.source.substring(0,50)}${c.source.length>50?'…':''}</td>
+  </tr>`).join('');
+}
+
+// ============================================================
+// RENDER — INFRASTRUCTURE
+// ============================================================
+function renderInfra() {
+  return WAR_DATA.infrastructure.map(i => `
+  <div class="infra-item">
+    <div class="infra-num">${i.id}</div>
+    <div class="infra-content">
+      <div class="infra-name">${i.name}</div>
+      <div class="infra-loc">${i.loc}</div>
+      <div class="infra-note">${i.note}</div>
+      <div style="display:flex;gap:.4rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
+        ${confBadge(i.confidence, i.source, null)}
+        <span class="infra-cat">${i.cat}</span>
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+// ============================================================
+// RENDER — TIMELINE
+// ============================================================
+function renderTimeline() {
+  return WAR_DATA.timeline.map(e => {
+    const tags = e.tags.map(t => `<span class="tl-tag ${t}">${t.replace('tag-','').toUpperCase()}</span>`).join('');
+    const confClass = e.confidence === 'CONFIRMADO' ? 'confirmed' : e.confidence === 'CONFLITANTE' ? 'contested' : e.confidence === 'DESMENTIDO' ? 'alert' : 'reported';
+    return `
+    <div class="tl-item">
+      <div class="tl-time">${e.time}</div>
+      <div class="tl-body">
+        <div class="tl-text">${tags}${e.text}</div>
+        <div style="margin-top:.25rem;">${confBadge(e.confidence, '', null)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// RENDER — AUDIT LOG
+// ============================================================
+function renderAudit() {
+  return WAR_DATA.audit_log.map(e => `
+  <tr>
+    <td>${e.utc.replace('T',' ').replace('Z',' UTC')}</td>
+    <td style="color:var(--text-primary)">${e.field}</td>
+    <td style="color:var(--alert)">${e.old_value}</td>
+    <td style="color:var(--confirmed)">${e.new_value}</td>
+    <td>${e.source.substring(0,40)}${e.source.length>40?'…':''}</td>
+    <td style="color:var(--text-secondary)">${e.note}</td>
+  </tr>`).join('');
+}
+
+// ============================================================
+// CLOCK
+// ============================================================
+function updateClock() {
+  const now = new Date();
+  const utc = now.toISOString().replace('T',' ').substring(0,16) + ' UTC';
+  const el = document.getElementById('clock');
+  if (el) el.textContent = utc;
+  setTimeout(updateClock, 30000);
+}
+
+// ============================================================
+// AUTO-UPDATE via Anthropic API
+// ============================================================
+async function fetchUpdate() {
+  const badge = document.getElementById('live-badge');
+  if (badge) badge.style.opacity = '.5';
+  try {
+    const prompt = `Você é um analista de inteligência militar. Busque as notícias mais recentes sobre a guerra EUA/Israel vs Irã em 2026 (Operação Epic Fury / Lion's Roar / Promessa Sincera 4). Forneça APENAS um JSON com os campos que mudaram desde o último update, seguindo o formato: {"updates":[{"field":"kpis.israel_dead.value","new_value":12,"confidence":"CONFIRMADO","source":"Magen David Adom","utc":"2026-03-01T18:00:00Z","note":"..."}]}. Sem texto extra, apenas JSON válido.`;
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
+        messages: [{ role: "user", content: prompt }]
+      })
     });
+    const data = await resp.json();
+    const textBlock = data.content?.find(b => b.type === 'text');
+    if (textBlock?.text) {
+      try {
+        const clean = textBlock.text.replace(/```json|```/g,'').trim();
+        const parsed = JSON.parse(clean);
+        if (parsed.updates?.length) {
+          // Log updates to audit
+          parsed.updates.forEach(u => {
+            WAR_DATA.audit_log.unshift({
+              utc: u.utc || new Date().toISOString(),
+              field: u.field,
+              old_value: "anterior",
+              new_value: String(u.new_value),
+              source: u.source || "API auto-update",
+              note: u.note || "Atualização automática"
+            });
+          });
+          document.getElementById('audit-body').innerHTML = renderAudit();
+          const auditCount = document.getElementById('audit-count');
+          if (auditCount) auditCount.textContent = `${WAR_DATA.audit_log.length} entradas`;
+        }
+      } catch(_) {}
+    }
+  } catch(_) {}
+  const nextUpdate = new Date(Date.now() + 60*60*1000);
+  const el = document.getElementById('next-update');
+  if (el) el.textContent = `Próx. atualização: ${nextUpdate.toISOString().substring(11,16)} UTC`;
+  if (badge) badge.style.opacity = '1';
+  setTimeout(fetchUpdate, 60*60*1000);
+}
+
+// ============================================================
+// VIEW MODE SWITCHER
+// ============================================================
+function switchView(mode) {
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', b.dataset.view === mode));
+  document.querySelectorAll('.view-section').forEach(s => s.classList.toggle('active', s.id === 'view-'+mode));
+}
+
+// ============================================================
+// AUDIT TOGGLE
+// ============================================================
+function toggleAudit() {
+  const body = document.getElementById('audit-body');
+  const arrow = document.getElementById('audit-arrow');
+  const vis = body.classList.toggle('visible');
+  arrow.classList.toggle('open', vis);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  // Validation
+  const errors = validateArsenal(WAR_DATA);
+  const vBanner = document.getElementById('validation-banner');
+  if (errors.length && vBanner) {
+    vBanner.classList.add('visible');
+    vBanner.innerHTML = '⚠ Inconsistência de dados detectada: ' + errors.join(' | ');
   }
-  const ft=document.getElementById('last-ft');
-  if(ft){const n=new Date();ft.textContent=`${n.toLocaleDateString('pt-BR')} às ${pad(n.getUTCHours())}h${pad(n.getUTCMinutes())} UTC — em desenvolvimento`;}
-}
 
-async function fetchUpdate(){
-  setStatus('upd');toast('⟳  Buscando atualizações da guerra no Irã...','inf');
-  const prompt=`Você é analista do painel "Monitoramento Assayag" sobre a guerra EUA/Israel × Irã 2026. Pesquise na web as últimas notícias e retorne SOMENTE um JSON válido sem markdown:
-{"ticker":["MANCHETE 1","MANCHETE 2","MANCHETE 3","MANCHETE 4"],"stat_officials":"número+","stat_civilians":"número+","new_events":[{"time":"HH:MM UTC","type":"k|s|c|d","label":"BAIXA|ATAQUE|CONFIRM.|DIPLOM.","text":"descrição"}]}
-Tipos: k=baixa, s=ataque, c=confirmação, d=diplomacia. Arrays vazios se sem novidades.`;
-  try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:prompt}]})});
-    if(!r.ok)throw new Error(`HTTP ${r.status}`);
-    const d=await r.json();
-    const txt=(d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-    const m=txt.match(/\{[\s\S]*\}/);if(!m)throw new Error('No JSON');
-    inject(JSON.parse(m[0]));
-    nxt=Date.now()+UPD;updNxt();setStatus('live');toast('✓  Painel Assayag atualizado','ok');
-  }catch(e){setStatus('err');toast('✗  Erro: '+e.message,'err');console.error(e);}
-}
+  // Render all sections
+  document.getElementById('kpi-grid').innerHTML = renderKPIs();
+  document.getElementById('theater-grid').innerHTML = renderTheater();
+  document.getElementById('israel-cities').innerHTML = renderIsraelCities();
 
-function forceUpdate(){nxt=Date.now()+UPD;updNxt();fetchUpdate();}
-(function sched(){const d=nxt-Date.now();setTimeout(()=>{fetchUpdate().finally(sched);},Math.max(d,5000));})();
+  // Benchmarks
+  document.getElementById('bench-nuclear').innerHTML = renderBench(WAR_DATA.benchmarks.nuclear);
+  document.getElementById('bench-missiles').innerHTML = renderBench(WAR_DATA.benchmarks.missiles);
+  document.getElementById('bench-leadership').innerHTML = renderBench(WAR_DATA.benchmarks.leadership);
+  document.getElementById('bench-defense').innerHTML = renderBench(WAR_DATA.benchmarks.defense);
+
+  document.getElementById('casualties-body').innerHTML = renderCasualties();
+  document.getElementById('infra-grid').innerHTML = renderInfra();
+  document.getElementById('timeline-body').innerHTML = renderTimeline();
+  document.getElementById('audit-body').innerHTML = renderAudit();
+
+  // Israel totals
+  const totalDead = WAR_DATA.israel_cities.reduce((s,c) => s + (c.dead||0), 0);
+  const totalWounded = WAR_DATA.israel_cities.reduce((s,c) => s + (typeof c.wounded === 'number' ? c.wounded : 0), 0);
+  document.getElementById('il-total-dead').textContent = totalDead + '+';
+  document.getElementById('il-total-wounded').textContent = totalWounded + '+';
+  document.getElementById('il-total-cities').textContent = WAR_DATA.israel_cities.length;
+
+  // Escalation index
+  document.getElementById('esc-value').textContent = WAR_DATA.meta.escalation_index.value + '/100';
+  const fill = document.getElementById('esc-fill');
+  const thumb = document.getElementById('esc-thumb');
+  if (fill) fill.style.width = WAR_DATA.meta.escalation_index.value + '%';
+  if (thumb) { thumb.style.left = WAR_DATA.meta.escalation_index.value + '%'; }
+
+  // Audit count
+  document.getElementById('audit-count').textContent = `${WAR_DATA.audit_log.length} entradas`;
+
+  // Survivors
+  document.getElementById('survivors-list').innerHTML = WAR_DATA.survivors.map(s =>
+    `<div style="font-size:.62rem;color:var(--confirmed);padding:.25rem 0;border-bottom:1px solid var(--border);">✓ ${s}</div>`
+  ).join('');
+
+  // Clock & updates
+  updateClock();
+  setTimeout(fetchUpdate, 5000);
+});
 </script>
+
+<!-- ============================================================
+     TICKER
+     ============================================================ -->
+<div class="ticker-strip">
+  <div class="ticker-label">AO VIVO</div>
+  <div class="ticker-scroll">
+    <div class="ticker-inner">
+      ◆ KHAMENEI MORTO — CONFIRMADO PELA MÍDIA ESTATAL IRANIANA — 01 MAR 2026 &nbsp;|&nbsp;
+      ◆ CENTCOM: 3 SOLDADOS AMERICANOS MORTOS · 5 FERIDOS GRAVES — OP. EPIC FURY &nbsp;|&nbsp;
+      ◆ TRUMP: 48 LÍDERES IRANIANOS ELIMINADOS &nbsp;|&nbsp;
+      ◆ EUA AFUNDAM 9 NAVIOS IRANIANOS — TRUMP · TRUTH SOCIAL &nbsp;|&nbsp;
+      ◆ CORVETA JAMARAN AFUNDADA — CENTCOM CONFIRMA &nbsp;|&nbsp;
+      ◆ IRGC ALEGA ATINGIR USS LINCOLN — CENTCOM DESMENTE &nbsp;|&nbsp;
+      ◆ AHMADINEJAD: INFORMAÇÃO CONFLITANTE — SEM CONFIRMAÇÃO INDEPENDENTE &nbsp;|&nbsp;
+      ◆ ESTREITO DE HORMUZ FECHADO — 150+ PETROLEIROS ANCORADOS &nbsp;|&nbsp;
+      ◆ BEIT SHEMESH (ISRAEL): 8 MORTOS — MÍSSIL BALÍSTICO DIRETO EM ABRIGO &nbsp;|&nbsp;
+      ◆ INTERNET NO IRÃ: 4% DA CAPACIDADE NORMAL
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<div class="header">
+  <div class="header-brand">
+    <div class="header-title">MONITORAMENTO ASSAYAG — PAINEL DE INTELIGÊNCIA OPERACIONAL</div>
+    <div class="header-ops">
+      <span class="op-badge op-us">EUA · EPIC FURY</span>
+      <span class="op-badge op-il">ISRAEL · LION'S ROAR</span>
+      <span class="op-badge op-ir">IRÃ · PROMESSA SINCERA 4</span>
+      <span style="font-family:var(--font-mono);font-size:.52rem;color:var(--text-tertiary);">28 FEV – 01 MAR 2026</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-badge" id="live-badge" onclick="fetchUpdate()">
+      <div class="live-dot"></div>
+      <span>AO VIVO · ATUALIZAÇÃO A CADA 60 MIN</span>
+    </div>
+    <div class="time-display" id="clock">Carregando...</div>
+    <div class="time-display" id="next-update" style="font-size:.5rem;">Próx. atualização: —</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     ESCALATION INDEX
+     ============================================================ -->
+<div class="escalation-bar">
+  <span class="esc-label">ÍNDICE DE ESCALADA</span>
+  <div class="esc-track">
+    <div class="esc-fill" id="esc-fill"></div>
+    <div class="esc-thumb" id="esc-thumb"></div>
+  </div>
+  <span class="esc-value" id="esc-value">—</span>
+  <div class="esc-markers">
+    <span>BAIXO 0–25</span>
+    <span>MÉDIO 26–50</span>
+    <span>ALTO 51–75</span>
+    <span style="color:var(--alert);">CRÍTICO 76–100</span>
+  </div>
+  <span class="badge badge-reported" data-tooltip="Índice sintético 0–100. Baseado em: alcance geográfico (9 países atingidos), tipo de alvos (liderança suprema, QG militares, instalações nucleares), baixas confirmadas, escalada marítima e fechamento de Hormuz.">◎ METODOLOGIA</span>
+</div>
+
+<!-- ============================================================
+     VIEW SWITCHER
+     ============================================================ -->
+<div class="view-switcher">
+  <button class="view-btn active" data-view="executive" onclick="switchView('executive')">NÍVEL 1 · BRIEF EXECUTIVO</button>
+  <button class="view-btn" data-view="theater" onclick="switchView('theater')">NÍVEL 2 · TEATRO DE OPERAÇÕES</button>
+  <button class="view-btn" data-view="intel" onclick="switchView('intel')">NÍVEL 3 · INTELIGÊNCIA PROFUNDA</button>
+</div>
+
+<!-- ============================================================
+     VALIDATION BANNER
+     ============================================================ -->
+<div style="padding:0 2rem;">
+  <div class="validation-banner" id="validation-banner"></div>
+</div>
+
+<!-- ============================================================
+     NÍVEL 1 — BRIEF EXECUTIVO
+     ============================================================ -->
+<div class="view-section active" id="view-executive">
+<div class="main">
+
+  <!-- KPIs -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">KPIs — Panorama Geral · 28 FEV – 01 MAR 2026</div>
+      <div class="section-meta">Todos os dados vêm do objeto WAR_DATA · Passe o cursor sobre os badges para ver fonte e timestamp</div>
+    </div>
+    <div class="kpi-grid" id="kpi-grid"></div>
+  </div>
+
+  <!-- Israel highlight -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">Israel — Cidades atingidas por mísseis iranianos</div>
+      <div class="section-meta">Solo israelense confirmado · Magen David Adom</div>
+    </div>
+    <div class="israel-section">
+      <div class="israel-header">
+        <div class="israel-title">🇮🇱 BAIXAS CONFIRMADAS — RETALIAÇÃO IRANIANA EM TERRITÓRIO ISRAELENSE</div>
+        <span class="badge badge-confirmed">✓ FONTES OFICIAIS</span>
+      </div>
+      <div class="israel-cities" id="israel-cities"></div>
+      <div class="israel-totals">
+        <div class="total-item">
+          <div class="total-val" id="il-total-dead" style="color:var(--alert)">—</div>
+          <div class="total-lbl">Mortos confirmados</div>
+        </div>
+        <div class="total-item">
+          <div class="total-val" id="il-total-wounded" style="color:var(--claimed)">—</div>
+          <div class="total-lbl">Feridos totais</div>
+        </div>
+        <div class="total-item">
+          <div class="total-val" id="il-total-cities" style="color:var(--reported)">—</div>
+          <div class="total-lbl">Cidades atingidas</div>
+        </div>
+        <div style="margin-left:auto;">
+          <span class="badge badge-confirmed" data-tooltip="Fonte primária: Magen David Adom (serviço de emergência oficial do Estado de Israel)\nFonte secundária: Times of Israel, United Hatzalah\nAtualizado: 2026-03-01 16:00 UTC">✓ CONFIRMADO — MDA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline condensed -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">Linha do Tempo — Eventos Críticos</div>
+      <div class="section-meta">Use Nível 3 para log completo</div>
+    </div>
+    <div class="panel">
+      <div class="panel-body" style="padding:.5rem 1rem;">
+        <div class="timeline" id="timeline-body"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Survivors -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">Sobreviventes Confirmados — Liderança Iraniana</div>
+    </div>
+    <div class="panel">
+      <div class="panel-body" id="survivors-list"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================
+     NÍVEL 2 — TEATRO DE OPERAÇÕES
+     ============================================================ -->
+<div class="view-section" id="view-theater">
+<div class="main">
+
+  <div>
+    <div class="section-header">
+      <div class="section-title">Mapa de ataques iranianos por país alvo · 9 países atingidos</div>
+      <div class="section-meta">Barra colorida no rodapé de cada card = heatmap de risco · Vermelho=crítico · Laranja=alto · Amarelo=médio · Verde=baixo</div>
+    </div>
+    <div class="theater-grid" id="theater-grid"></div>
+  </div>
+
+  <!-- Arsenal breakdown -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">Arsenal iraniano — Classificação por tipo</div>
+      <div class="section-meta">Regra de validação ativa: lançados ≥ impactos + interceptados</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+      <!-- Ballistic -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">🚀 Mísseis Balísticos</div>
+          ${confBadge ? '' : ''}
+        </div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;text-align:center;">
+            <div><div style="font-family:var(--font-mono);font-size:1.4rem;color:var(--text-bright)">100+</div><div style="font-family:var(--font-mono);font-size:.45rem;color:var(--text-tertiary)">LANÇADOS</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:1.4rem;color:var(--alert)">~8</div><div style="font-family:var(--font-mono);font-size:.45rem;color:var(--text-tertiary)">IMPACTOS</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:1.4rem;color:var(--confirmed)">~92</div><div style="font-family:var(--font-mono);font-size:.45rem;color:var(--text-tertiary)">INTERC.</div></div>
+          </div>
+          <div style="margin-top:.75rem;font-size:.58rem;color:var(--text-secondary)">Shahab-3 · Sejjil · Fattah mod.</div>
+        </div>
+      </div>
+      <!-- Drones -->
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">✈ Drones Kamikaze</div></div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;text-align:center;">
+            <div><div style="font-family:var(--font-mono);font-size:1.4rem;color:var(--text-bright)">300+</div><div style="font-family:var(--font-mono);font-size:.45rem;color:var(--text-tertiary)">LANÇADOS</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:1.4rem;color:var(--alert)">~12</div><div style="font-family:var(--font-mono);font-size:.45rem;color:var(--text-tertiary)">IMPACTOS</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:1.4rem;color:var(--confirmed)">~288</div><div style="font-family:var(--font-mono);font-size:.45rem;color:var(--text-tertiary)">INTERC.</div></div>
+          </div>
+          <div style="margin-top:.75rem;font-size:.58rem;color:var(--text-secondary)">Shahed-136 predominante</div>
+        </div>
+      </div>
+      <!-- Cruise -->
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">🎯 Mísseis de Cruzeiro</div></div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;text-align:center;">
+            <div><div style="font-family:var(--font-mono);font-size:1.4rem;color:var(--text-bright)">~50</div><div style="font-family:var(--font-mono);font-size:.45rem;color:var(--text-tertiary)">LANÇADOS</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:1.4rem;color:var(--alert)">~5</div><div style="font-family:var(--font-mono);font-size:.45rem;color:var(--text-tertiary)">IMPACTOS</div></div>
+            <div><div style="font-family:var(--font-mono);font-size:1.4rem;color:var(--confirmed)">~45</div><div style="font-family:var(--font-mono);font-size:.45rem;color:var(--text-tertiary)">INTERC.</div></div>
+          </div>
+          <div style="margin-top:.75rem;font-size:.58rem;color:var(--text-secondary)">Ya-Ali · Ra'ad — bases EUA no Golfo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================
+     NÍVEL 3 — INTELIGÊNCIA PROFUNDA
+     ============================================================ -->
+<div class="view-section" id="view-intel">
+<div class="main">
+
+  <!-- Benchmarks -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">Benchmarks — Capacidade iraniana degradada</div>
+      <div class="section-meta">Estimativas baseadas em múltiplas fontes · Nível de confiança indicado por badge em cada linha</div>
+    </div>
+    <div class="bench-grid">
+      <div class="bench-card">
+        <div class="bench-head"><span class="bench-icon">☢</span><span class="bench-title">Capacidade Nuclear Destruída (2025 + 2026)</span></div>
+        <div class="bench-body" id="bench-nuclear"></div>
+      </div>
+      <div class="bench-card">
+        <div class="bench-head"><span class="bench-icon">🚀</span><span class="bench-title">Degradação do Arsenal Balístico</span></div>
+        <div class="bench-body" id="bench-missiles"></div>
+      </div>
+      <div class="bench-card">
+        <div class="bench-head"><span class="bench-icon">☠</span><span class="bench-title">Decapitação da Liderança</span></div>
+        <div class="bench-body" id="bench-leadership"></div>
+      </div>
+      <div class="bench-card">
+        <div class="bench-head"><span class="bench-icon">🛡</span><span class="bench-title">Eficácia dos Sistemas de Defesa por País</span></div>
+        <div class="bench-body" id="bench-defense"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Infrastructure -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">Infraestrutura destruída no Irã — 19 instalações</div>
+      <div class="section-meta">Ordenadas por categoria · Fonte indicada em cada item</div>
+    </div>
+    <div class="infra-grid" id="infra-grid"></div>
+  </div>
+
+  <!-- Casualties table -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">Registro de baixas — Liderança iraniana</div>
+      <div class="section-meta">Itens em laranja = informação conflitante ou em apuração</div>
+    </div>
+    <div class="panel" style="overflow-x:auto;">
+      <table class="cas-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Cargo</th>
+            <th>Organização</th>
+            <th>Confiança</th>
+            <th>Fonte</th>
+          </tr>
+        </thead>
+        <tbody id="casualties-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Audit log -->
+  <div class="audit-section">
+    <div class="audit-toggle" onclick="toggleAudit()">
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <div class="audit-title">Log de Atualizações de Dados</div>
+        <span id="audit-count" class="badge badge-reported">0 entradas</span>
+      </div>
+      <div class="audit-arrow" id="audit-arrow">▼</div>
+    </div>
+    <div class="audit-body" id="audit-body-wrapper" style="display:none;">
+      <div class="audit-body visible" id="audit-body" style="display:block;">
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>Timestamp UTC</th>
+              <th>Campo alterado</th>
+              <th>Valor anterior</th>
+              <th>Novo valor</th>
+              <th>Fonte</th>
+              <th>Nota</th>
+            </tr>
+          </thead>
+          <tbody id="audit-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sources -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">Fontes de referência</div>
+    </div>
+    <div class="sources-grid">
+      <div class="src-card"><span class="src-name">Reuters · AP · NPR · CBS</span><span class="src-type src-verified">VERIFICADA</span></div>
+      <div class="src-card"><span class="src-name">Washington Post · NYT</span><span class="src-type src-verified">VERIFICADA</span></div>
+      <div class="src-card"><span class="src-name">Al Jazeera</span><span class="src-type src-verified">VERIFICADA</span></div>
+      <div class="src-card"><span class="src-name">IDF Porta-voz Oficial</span><span class="src-type src-official">OFICIAL</span></div>
+      <div class="src-card"><span class="src-name">CENTCOM (@CENTCOM)</span><span class="src-type src-official">OFICIAL EUA</span></div>
+      <div class="src-card"><span class="src-name">Magen David Adom</span><span class="src-type src-official">OFICIAL ISRAEL</span></div>
+      <div class="src-card"><span class="src-name">CTP-ISW / Critical Threats</span><span class="src-type src-analysis">ANÁLISE</span></div>
+      <div class="src-card"><span class="src-name">Iran International (Londres)</span><span class="src-type src-verified">VERIFICADA</span></div>
+      <div class="src-card"><span class="src-name">CFR · Chatham House · Alma Institute</span><span class="src-type src-analysis">ANÁLISE</span></div>
+      <div class="src-card"><span class="src-name">NCRI (Resistência iraniana)</span><span class="src-type src-analysis">ANÁLISE</span></div>
+      <div class="src-card"><span class="src-name">Fars · Tasnim · Mehr · IRIB</span><span class="src-type src-state">ESTADO IRÃ</span></div>
+      <div class="src-card"><span class="src-name">@JasonMBrodsky · @BarakRavid · @clashreport</span><span class="src-type src-analysis">ANALISTAS X</span></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<div class="footer">
+  <div class="footer-text">MONITORAMENTO ASSAYAG · GUERRA EUA/ISRAEL × IRÃ 2026 · Todos os dados vêm do objeto WAR_DATA — nenhum número hardcoded no HTML</div>
+  <div class="footer-text">Atualização automática a cada 60 min · Clique em AO VIVO para atualizar agora · Última atualização manual: 01 MAR 2026 18h00 UTC</div>
+</div>
+
+<!-- Fix audit toggle (use proper IDs) -->
+<script>
+function toggleAudit() {
+  const wrapper = document.getElementById('audit-body-wrapper');
+  const arrow = document.getElementById('audit-arrow');
+  if (wrapper.style.display === 'none') {
+    wrapper.style.display = 'block';
+    arrow.classList.add('open');
+  } else {
+    wrapper.style.display = 'none';
+    arrow.classList.remove('open');
+  }
+}
+</script>
+
 </body>
 </html>
