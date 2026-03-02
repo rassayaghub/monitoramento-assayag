@@ -953,8 +953,46 @@ body {
 .src-state     { background: var(--claimed-bg); color: var(--claimed); border: 1px solid var(--claimed-border); }
 
 /* ============================================================
-   FOOTER
+   UPDATE STATUS BAR
    ============================================================ */
+.update-progress-bar {
+  height: 2px;
+  background: var(--bg3);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+.update-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--reported), var(--confirmed));
+  width: 0%;
+  transition: width .5s ease;
+  box-shadow: 0 0 8px var(--reported);
+}
+.update-status-bar {
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  padding: .3rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.update-status-text {
+  font-family: var(--font-mono);
+  font-size: .52rem;
+  color: var(--text-tertiary);
+}
+.update-status-panel-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: .6rem 1rem;
+  margin-bottom: .5rem;
+}
+
 .footer {
   background: var(--bg1);
   border-top: 1px solid var(--border);
@@ -1675,53 +1713,323 @@ function updateClock() {
 }
 
 // ============================================================
-// AUTO-UPDATE via Anthropic API
+// AUTO-UPDATE — SISTEMA DE DUPLA CAMADA
+//
+// CAMADA 1: Busca dados brutos de múltiplas fontes via web_search
+// CAMADA 2: Verifica e estrutura os dados encontrados
+//
+// Intervalo: 30 minutos
 // ============================================================
-async function fetchUpdate() {
-  const badge = document.getElementById('live-badge');
-  if (badge) badge.style.opacity = '.5';
-  try {
-    const prompt = `Você é um analista de inteligência militar. Busque as notícias mais recentes sobre a guerra EUA/Israel vs Irã em 2026 (Operação Epic Fury / Lion's Roar / Promessa Sincera 4). Forneça APENAS um JSON com os campos que mudaram desde o último update, seguindo o formato: {"updates":[{"field":"kpis.israel_dead.value","new_value":12,"confidence":"CONFIRMADO","source":"Magen David Adom","utc":"2026-03-01T18:00:00Z","note":"..."}]}. Sem texto extra, apenas JSON válido.`;
-    const resp = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        tools: [{ type: "web_search_20250305", name: "web_search" }],
-        messages: [{ role: "user", content: prompt }]
-      })
-    });
-    const data = await resp.json();
-    const textBlock = data.content?.find(b => b.type === 'text');
-    if (textBlock?.text) {
-      try {
-        const clean = textBlock.text.replace(/```json|```/g,'').trim();
-        const parsed = JSON.parse(clean);
-        if (parsed.updates?.length) {
-          // Log updates to audit
-          parsed.updates.forEach(u => {
-            WAR_DATA.audit_log.unshift({
-              utc: u.utc || new Date().toISOString(),
-              field: u.field,
-              old_value: "anterior",
-              new_value: String(u.new_value),
-              source: u.source || "API auto-update",
-              note: u.note || "Atualização automática"
-            });
-          });
-          document.getElementById('audit-body').innerHTML = renderAudit();
-          const auditCount = document.getElementById('audit-count');
-          if (auditCount) auditCount.textContent = `${WAR_DATA.audit_log.length} entradas`;
-        }
-      } catch(_) {}
+
+const UPDATE_INTERVAL = 30 * 60 * 1000; // 30 minutos
+let updateCount = 0;
+let lastUpdateResult = null;
+
+// ── STATUS UI ────────────────────────────────────────────────
+function setUpdateStatus(state, msg) {
+  const badge  = document.getElementById('live-badge');
+  const status = document.getElementById('update-status');
+  const bar    = document.getElementById('update-progress');
+  if (state === 'loading') {
+    if (badge)  badge.style.opacity = '.5';
+    if (status) { status.textContent = msg || 'Buscando dados…'; status.style.color = 'var(--claimed)'; }
+    if (bar)    bar.style.width = '30%';
+  } else if (state === 'verifying') {
+    if (status) { status.textContent = msg || 'Verificando…'; status.style.color = 'var(--reported)'; }
+    if (bar)    bar.style.width = '70%';
+  } else if (state === 'done') {
+    if (badge)  badge.style.opacity = '1';
+    if (status) { status.textContent = msg || 'Atualizado'; status.style.color = 'var(--confirmed)'; }
+    if (bar)    bar.style.width = '100%';
+    setTimeout(() => { if (bar) bar.style.width = '0%'; }, 2000);
+  } else if (state === 'error') {
+    if (badge)  badge.style.opacity = '1';
+    if (status) { status.textContent = msg || 'Erro na atualização'; status.style.color = 'var(--alert)'; }
+    if (bar)    bar.style.width = '0%';
+  }
+}
+
+// ── CAMADA 1: COLETA DE DADOS BRUTOS ────────────────────────
+async function layer1_fetchRawData() {
+
+  // Prompt de coleta: instrui o modelo a usar web_search
+  // em múltiplas queries cobrindo todas as dimensões do conflito
+  const LAYER1_PROMPT = `Você é um analista de inteligência militar sênior monitorando o conflito EUA/Israel × Irã de 2026 (Operação Epic Fury / Lion's Roar / Promessa Sincera 4, iniciada em 28 de fevereiro de 2026).
+
+TAREFA: Use a ferramenta web_search para buscar as informações MAIS RECENTES disponíveis sobre este conflito. Execute OBRIGATORIAMENTE as seguintes buscas:
+
+1. "Iran war casualties March 2026" — baixas totais atualizadas
+2. "Israel Iran missile attack victims latest" — baixas em Israel
+3. "CENTCOM Epic Fury update" — comunicados oficiais dos EUA
+4. "Iran nuclear sites destroyed 2026" — status das instalações nucleares
+5. "Iran leadership killed 2026 confirmed" — liderança iraniana morta
+6. "Iran US Israel war ceasefire negotiations" — status diplomático
+7. "Strait of Hormuz Iran closure latest" — Estreito de Hormuz
+8. "Iran missiles Gulf states casualties" — baixas nos países do Golfo
+
+Após executar as buscas, compile os dados encontrados e responda EXCLUSIVAMENTE com um objeto JSON válido neste formato exato (sem texto antes ou depois, sem markdown, sem \`\`\`):
+
+{
+  "search_timestamp": "ISO8601_UTC",
+  "sources_searched": ["lista de URLs ou domínios consultados"],
+  "updates": [
+    {
+      "category": "kpi|country|israel_city|benchmark|timeline|casualty|infrastructure",
+      "field": "nome_do_campo_afetado",
+      "current_value": "valor_atual_no_painel",
+      "new_value": "novo_valor_encontrado_nas_buscas",
+      "unit": "unidade",
+      "confidence": "CONFIRMADO|REPORTADO|REIVINDICADO|CONFLITANTE",
+      "source_primary": "fonte_primária",
+      "source_url": "url_da_fonte",
+      "utc": "timestamp_ISO8601",
+      "note": "contexto_adicional_em_1_frase"
     }
-  } catch(_) {}
-  const nextUpdate = new Date(Date.now() + 60*60*1000);
-  const el = document.getElementById('next-update');
-  if (el) el.textContent = `Próx. atualização: ${nextUpdate.toISOString().substring(11,16)} UTC`;
-  if (badge) badge.style.opacity = '1';
-  setTimeout(fetchUpdate, 60*60*1000);
+  ],
+  "new_timeline_events": [
+    {
+      "time": "DD MMM · HH:MM UTC",
+      "tags": ["tag-confirm|tag-attack|tag-retaliate|tag-diplo|tag-us|tag-warning|tag-disinfo"],
+      "text": "Descrição factual do evento, máximo 120 caracteres.",
+      "confidence": "CONFIRMADO|REPORTADO|REIVINDICADO|CONFLITANTE"
+    }
+  ],
+  "no_change": false,
+  "summary": "Resumo em 1 frase do que mudou"
+}
+
+REGRAS OBRIGATÓRIAS:
+- Inclua APENAS dados verificados por pelo menos uma fonte jornalística ou oficial
+- Para cada número, indique a fonte primária
+- Se não encontrar mudanças, retorne {"no_change": true, "search_timestamp": "...", "sources_searched": [...], "updates": [], "new_timeline_events": [], "summary": "Sem novas atualizações"}
+- Nunca invente dados. Se incerto, use confidence: "REPORTADO"
+- O JSON deve ser parseável diretamente por JSON.parse()`;
+
+  const resp = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 4000,
+      tools: [{ type: "web_search_20250305", name: "web_search" }],
+      messages: [{ role: "user", content: LAYER1_PROMPT }]
+    })
+  });
+
+  if (!resp.ok) throw new Error(`API HTTP ${resp.status}`);
+  const data = await resp.json();
+
+  // Extrair bloco de texto da resposta (pode vir após tool_use blocks)
+  const textBlocks = (data.content || []).filter(b => b.type === 'text');
+  const rawText = textBlocks.map(b => b.text).join('\n');
+
+  // Extrair JSON — pode estar em markdown fence ou direto
+  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('Nenhum JSON encontrado na resposta da Camada 1');
+
+  const parsed = JSON.parse(jsonMatch[0]);
+  return parsed;
+}
+
+// ── CAMADA 2: VERIFICAÇÃO E APLICAÇÃO DOS DADOS ─────────────
+async function layer2_verifyAndApply(layer1Data) {
+
+  if (layer1Data.no_change) return { applied: 0, skipped: 0, events_added: 0 };
+
+  // Prompt de verificação: valida os dados da camada 1
+  const LAYER2_PROMPT = `Você é um editor-chefe de um centro de inteligência militar. Sua função é VERIFICAR os dados a seguir antes de publicá-los num painel ao vivo.
+
+DADOS RECEBIDOS DA CAMADA DE COLETA:
+${JSON.stringify(layer1Data, null, 2)}
+
+TAREFA: Analise cada item em "updates" e "new_timeline_events". Para cada um:
+1. Verifique se o valor é plausível dado o contexto do conflito EUA/Israel × Irã 2026
+2. Verifique se a fonte citada é reconhecida (Reuters, AP, NYT, WaPo, Al Jazeera, Times of Israel, CENTCOM, IDF, Magen David Adom, CBS, NPR, ABC, BBC, CTP-ISW, Iran International, Haaretz)
+3. Rejeite dados sem fonte verificável ou com valores implausíveis
+
+Responda EXCLUSIVAMENTE com JSON válido (sem texto extra, sem markdown):
+{
+  "verified_updates": [...apenas os itens verificados e aprovados, no mesmo formato recebido...],
+  "verified_events": [...apenas os eventos verificados...],
+  "rejected": ["lista de campos rejeitados e motivo"],
+  "verification_note": "resumo da verificação em 1 frase"
+}`;
+
+  const resp = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 3000,
+      messages: [{ role: "user", content: LAYER2_PROMPT }]
+    })
+  });
+
+  if (!resp.ok) throw new Error(`API Camada 2 HTTP ${resp.status}`);
+  const data = await resp.json();
+  const rawText = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('Nenhum JSON da Camada 2');
+
+  return JSON.parse(jsonMatch[0]);
+}
+
+// ── APLICADOR DE DADOS AO WAR_DATA ──────────────────────────
+function applyUpdatesToData(verifiedData, layer1Data) {
+  let applied = 0;
+  const now = new Date().toISOString();
+
+  (verifiedData.verified_updates || []).forEach(u => {
+    try {
+      // Registrar no audit log
+      WAR_DATA.audit_log.unshift({
+        utc: u.utc || now,
+        field: u.field,
+        old_value: String(u.current_value || '—'),
+        new_value: String(u.new_value),
+        source: u.source_primary || 'auto-update',
+        note: `[AUTO] ${u.note || ''}`
+      });
+
+      // Aplicar ao WAR_DATA por categoria
+      if (u.category === 'kpi') {
+        const fieldMap = {
+          'israel_dead': 'israel_dead',
+          'us_dead': 'us_dead',
+          'iranian_officials_dead': 'iranian_officials_dead',
+          'iran_civilian_dead': 'iran_civilian_dead',
+          'projectiles_launched': 'projectiles_launched',
+          'iran_wounded': 'iran_wounded'
+        };
+        const key = Object.keys(fieldMap).find(k => u.field.includes(k));
+        if (key && WAR_DATA.kpis[fieldMap[key]]) {
+          WAR_DATA.kpis[fieldMap[key]].value = u.new_value;
+          WAR_DATA.kpis[fieldMap[key]].confidence = u.confidence;
+          WAR_DATA.kpis[fieldMap[key]].source_primary = u.source_primary;
+          WAR_DATA.kpis[fieldMap[key]].last_update_utc = u.utc || now;
+        }
+      }
+      applied++;
+    } catch(e) { console.warn('Erro ao aplicar update:', u.field, e); }
+  });
+
+  // Adicionar novos eventos à timeline
+  const newEvents = verifiedData.verified_events || [];
+  newEvents.forEach(e => {
+    WAR_DATA.timeline.unshift(e);
+  });
+
+  return { applied, events_added: newEvents.length,
+           rejected: (verifiedData.rejected || []).length };
+}
+
+// ── RE-RENDER SECTIONS ───────────────────────────────────────
+function rerenderAll() {
+  document.getElementById('kpi-grid').innerHTML = renderKPIs();
+  document.getElementById('timeline-body').innerHTML = renderTimeline();
+  document.getElementById('audit-body').innerHTML = renderAudit();
+  const auditCount = document.getElementById('audit-count');
+  if (auditCount) auditCount.textContent = `${WAR_DATA.audit_log.length} entradas`;
+  // Re-render Israel totals
+  const totalDead = WAR_DATA.israel_cities.reduce((s,c) => s + (c.dead||0), 0);
+  const totalWounded = WAR_DATA.israel_cities.reduce((s,c) => s + (typeof c.wounded === 'number' ? c.wounded : 0), 0);
+  const d = document.getElementById('il-total-dead');
+  const w = document.getElementById('il-total-wounded');
+  if (d) d.textContent = totalDead + '+';
+  if (w) w.textContent = totalWounded + '+';
+}
+
+// ── ORQUESTRADOR PRINCIPAL ───────────────────────────────────
+async function fetchUpdate() {
+  updateCount++;
+  const cycleId = `#${updateCount} · ${new Date().toISOString().substring(11,16)} UTC`;
+  console.log(`[UPDATE ${cycleId}] Iniciando ciclo de atualização`);
+
+  setUpdateStatus('loading', `Camada 1: buscando fontes… (ciclo ${updateCount})`);
+
+  try {
+    // ── CAMADA 1 ──
+    const layer1 = await layer1_fetchRawData();
+    console.log(`[UPDATE ${cycleId}] Camada 1 concluída. Sources: ${(layer1.sources_searched||[]).length}. Updates: ${(layer1.updates||[]).length}`);
+
+    lastUpdateResult = {
+      cycle: updateCount,
+      timestamp: new Date().toISOString(),
+      layer1_updates: (layer1.updates||[]).length,
+      layer1_sources: layer1.sources_searched || [],
+      no_change: layer1.no_change,
+      summary: layer1.summary || ''
+    };
+
+    if (layer1.no_change) {
+      setUpdateStatus('done', `Ciclo ${updateCount} — sem novas atualizações`);
+      scheduleNextUpdate();
+      updateStatusPanel(lastUpdateResult);
+      return;
+    }
+
+    // ── CAMADA 2 ──
+    setUpdateStatus('verifying', `Camada 2: verificando ${(layer1.updates||[]).length} atualizações…`);
+    const layer2 = await layer2_verifyAndApply(layer1);
+    console.log(`[UPDATE ${cycleId}] Camada 2 concluída. Aprovados: ${(layer2.verified_updates||[]).length}. Rejeitados: ${(layer2.rejected||[]).length}`);
+
+    // ── APLICAR ──
+    const result = applyUpdatesToData(layer2, layer1);
+    lastUpdateResult.layer2_approved = result.applied;
+    lastUpdateResult.layer2_rejected = result.rejected;
+    lastUpdateResult.events_added = result.events_added;
+
+    // ── RE-RENDER ──
+    rerenderAll();
+    updateStatusPanel(lastUpdateResult);
+
+    setUpdateStatus('done', `✓ Ciclo ${updateCount} — ${result.applied} atualizações aplicadas${result.events_added > 0 ? ` · ${result.events_added} eventos novos` : ''}`);
+    console.log(`[UPDATE ${cycleId}] Concluído. Aplicados: ${result.applied}, Eventos: ${result.events_added}, Rejeitados: ${result.rejected}`);
+
+  } catch(err) {
+    console.error(`[UPDATE ${cycleId}] ERRO:`, err);
+    setUpdateStatus('error', `Erro no ciclo ${updateCount}: ${err.message.substring(0,40)}`);
+    if (lastUpdateResult) {
+      lastUpdateResult.last_error = err.message;
+      updateStatusPanel(lastUpdateResult);
+    }
+  }
+
+  scheduleNextUpdate();
+}
+
+function scheduleNextUpdate() {
+  const next = new Date(Date.now() + UPDATE_INTERVAL);
+  const timeStr = next.toISOString().substring(11,16) + ' UTC';
+  const el1 = document.getElementById('next-update');
+  const el2 = document.getElementById('next-update-top');
+  if (el1) el1.textContent = `Próx. atualização: ${timeStr}`;
+  if (el2) el2.textContent = `Próx. atualização: ${timeStr} · Intervalo: 30 min`;
+  setTimeout(fetchUpdate, UPDATE_INTERVAL);
+}
+
+// ── PAINEL DE STATUS DA ATUALIZAÇÃO ─────────────────────────
+function updateStatusPanel(r) {
+  const panel = document.getElementById('update-status-panel');
+  if (!panel || !r) return;
+  panel.innerHTML = `
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center;">
+      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">CICLO</div>
+           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-bright);">#${r.cycle}</div></div>
+      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">ÚLTIMA BUSCA</div>
+           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-bright);">${r.timestamp.substring(11,16)} UTC</div></div>
+      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">FONTES CONSULTADAS</div>
+           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--reported);">${r.layer1_sources.length}</div></div>
+      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">ATUALIZAÇÕES APLICADAS</div>
+           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--confirmed);">${r.layer2_approved || 0}</div></div>
+      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">EVENTOS NOVOS</div>
+           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--reported);">${r.events_added || 0}</div></div>
+      ${r.last_error ? `<div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--alert);letter-spacing:.1em;">ÚLTIMO ERRO</div>
+           <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--alert);">${r.last_error.substring(0,50)}</div></div>` : ''}
+    </div>
+    ${r.summary ? `<div style="font-size:.6rem;color:var(--text-secondary);margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border);">${r.summary}</div>` : ''}
+    ${r.layer1_sources.length > 0 ? `<div style="font-family:var(--font-mono);font-size:.48rem;color:var(--text-tertiary);margin-top:.4rem;">Fontes: ${r.layer1_sources.slice(0,5).join(' · ')}</div>` : ''}
+  `;
 }
 
 // ============================================================
@@ -1794,9 +2102,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Clock & updates
   updateClock();
-  setTimeout(fetchUpdate, 5000);
+  // Primeiro ciclo após 8 segundos (deixa a página carregar)
+  setTimeout(fetchUpdate, 8000);
+  // Atualizar footer com próximo horário
+  const firstNext = new Date(Date.now() + UPDATE_INTERVAL + 8000);
+  const nextEl = document.getElementById('next-update');
+  const nextTopEl = document.getElementById('next-update-top');
+  if (nextEl) nextEl.textContent = `Próx. atualização: ${firstNext.toISOString().substring(11,16)} UTC`;
+  if (nextTopEl) nextTopEl.textContent = `Próx. atualização: ${firstNext.toISOString().substring(11,16)} UTC · Intervalo: 30 min`;
 });
 </script>
+
+<!-- PROGRESS BAR (fixed top) -->
+<div class="update-progress-bar">
+  <div class="update-progress-fill" id="update-progress"></div>
+</div>
+
+<!-- UPDATE STATUS BAR -->
+<div class="update-status-bar">
+  <span class="update-status-text" id="update-status">Inicializando sistema de atualização…</span>
+  <span class="update-status-text" id="next-update-top" style="color:var(--text-tertiary)"></span>
+</div>
 
 <!-- ============================================================
      TICKER
@@ -1835,7 +2161,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="header-right">
     <div class="live-badge" id="live-badge" onclick="fetchUpdate()">
       <div class="live-dot"></div>
-      <span>AO VIVO · ATUALIZAÇÃO A CADA 60 MIN</span>
+      <span>AO VIVO · DUPLA CAMADA · 30 MIN</span>
     </div>
     <div class="time-display" id="clock">Carregando...</div>
     <div class="time-display" id="next-update" style="font-size:.5rem;">Próx. atualização: —</div>
@@ -2108,6 +2434,17 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 
+  <!-- Update Status Panel -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">Status do Sistema de Atualização Automática</div>
+      <div class="section-meta">Dupla camada: Coleta + Verificação · Intervalo: 30 min</div>
+    </div>
+    <div class="update-status-panel-wrap" id="update-status-panel">
+      <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--text-tertiary);">Aguardando primeiro ciclo de atualização…</div>
+    </div>
+  </div>
+
   <!-- Sources -->
   <div>
     <div class="section-header">
@@ -2137,7 +2474,7 @@ document.addEventListener('DOMContentLoaded', () => {
      ============================================================ -->
 <div class="footer">
   <div class="footer-text">MONITORAMENTO ASSAYAG · GUERRA EUA/ISRAEL × IRÃ 2026 · Todos os dados vêm do objeto WAR_DATA — nenhum número hardcoded no HTML</div>
-  <div class="footer-text">Atualização automática a cada 60 min · Clique em AO VIVO para atualizar agora · Última atualização manual: 01 MAR 2026 18h00 UTC</div>
+  <div class="footer-text">Atualização automática a cada 30 min · Dupla camada: Coleta (web_search) + Verificação · Clique em AO VIVO para forçar atualização</div>
 </div>
 
 <!-- Fix audit toggle (use proper IDs) -->
