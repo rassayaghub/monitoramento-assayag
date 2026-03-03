@@ -1059,23 +1059,205 @@ body {
   .israel-cities { grid-template-columns: 1fr; }
   .infra-grid { grid-template-columns: 1fr; }
 }
-.leaders-hero{background:#fff;border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(185,28,28,.25);box-shadow:0 3px 16px rgba(185,28,28,.1);}
-.leaders-hero-head{background:linear-gradient(135deg,#7f1d1d,#b91c1c);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;}
-.leaders-hero-title{font-family:var(--font-mono);font-size:.65rem;font-weight:700;letter-spacing:.22em;color:#fff;text-transform:uppercase;}
-.leaders-big-num{font-family:var(--font-mono);font-size:2rem;font-weight:700;color:#fca5a5;line-height:1;}
-.leaders-big-lbl{font-family:var(--font-mono);font-size:.42rem;color:rgba(255,255,255,.55);letter-spacing:.1em;text-transform:uppercase;margin-top:.15rem;}
-.leaders-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(0,0,0,.07);}
-.leader-card{background:#fff;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.28rem;transition:background .15s;position:relative;}
-.leader-card:hover{background:#fef2f2;}
-.leader-num{font-family:var(--font-mono);font-size:.46rem;color:#b91c1c;font-weight:700;letter-spacing:.08em;}
-.leader-name{font-size:.72rem;font-weight:700;color:#0d1520;line-height:1.25;}
-.leader-role{font-size:.58rem;color:#4a5568;line-height:1.4;}
-.leader-org{font-family:var(--font-mono);font-size:.47rem;color:#8896aa;letter-spacing:.05em;}
-.leader-badge{position:absolute;top:.55rem;right:.55rem;}
-.leaders-footer{background:#fef2f2;border-top:1px solid rgba(185,28,28,.12);padding:.65rem 1.5rem;display:flex;align-items:center;gap:2rem;}
-.lf-stat{display:flex;align-items:baseline;gap:.35rem;}
-.lf-val{font-family:var(--font-mono);font-size:1rem;font-weight:700;}
-.lf-lbl{font-family:var(--font-mono);font-size:.44rem;color:#8896aa;letter-spacing:.08em;text-transform:uppercase;}
+/* ============================================================
+   LEADERSHIP — REDESIGN v3
+   3 categorias bem separadas: RELIGIOSO / MILITAR / POLÍTICO
+   ============================================================ */
+.leaders-wrapper { display:flex; flex-direction:column; gap:1rem; }
+
+/* Sumário executivo no topo */
+.leaders-summary {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+  background:var(--border); border-radius:var(--r-lg); overflow:hidden;
+  border:1px solid var(--border);
+}
+.leaders-summary-cell {
+  background:#fff; padding:1rem 1.25rem;
+  display:flex; flex-direction:column; gap:.3rem;
+}
+.lsc-icon { font-size:1.2rem; margin-bottom:.1rem; }
+.lsc-count { font-family:var(--font-mono); font-size:1.8rem; font-weight:700; line-height:1; }
+.lsc-label { font-family:var(--font-mono); font-size:.48rem; letter-spacing:.12em; color:var(--text-tertiary); text-transform:uppercase; }
+.lsc-impact { font-size:.58rem; color:var(--text-secondary); margin-top:.2rem; }
+.lsc-rel  .lsc-count { color:#7c2d12; }
+.lsc-mil  .lsc-count { color:#1e3a5f; }
+.lsc-pol  .lsc-count { color:#3b1f6e; }
+
+/* Categoria wrapper */
+.leaders-category { border-radius:var(--r-lg); overflow:hidden; border:1px solid var(--border); }
+
+.cat-header {
+  padding:.7rem 1.25rem;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.cat-header-left { display:flex; align-items:center; gap:.6rem; }
+.cat-icon { font-size:1rem; }
+.cat-title {
+  font-family:var(--font-mono); font-size:.6rem; font-weight:700;
+  letter-spacing:.2em; text-transform:uppercase;
+}
+.cat-subtitle { font-family:var(--font-mono); font-size:.48rem; opacity:.65; margin-top:.1rem; }
+.cat-impact-pill {
+  font-family:var(--font-mono); font-size:.52rem; font-weight:700;
+  padding:3px 10px; border-radius:20px; border:1px solid;
+}
+
+/* RELIGIOSO — warm red/brown */
+.cat-religioso .cat-header { background:linear-gradient(135deg,#7c2d12,#9a3412); }
+.cat-religioso .cat-title { color:#fef2f2; }
+.cat-religioso .cat-subtitle { color:rgba(255,242,242,.6); }
+.cat-religioso .cat-impact-pill { color:#fca5a5; border-color:rgba(252,165,165,.3); background:rgba(252,165,165,.1); }
+
+/* MILITAR — navy blue */
+.cat-militar .cat-header { background:linear-gradient(135deg,#1e3a5f,#1d4ed8); }
+.cat-militar .cat-title { color:#eff6ff; }
+.cat-militar .cat-subtitle { color:rgba(239,246,255,.6); }
+.cat-militar .cat-impact-pill { color:#93c5fd; border-color:rgba(147,197,253,.3); background:rgba(147,197,253,.1); }
+
+/* POLÍTICO — deep purple */
+.cat-politico .cat-header { background:linear-gradient(135deg,#3b1f6e,#6d28d9); }
+.cat-politico .cat-title { color:#faf5ff; }
+.cat-politico .cat-subtitle { color:rgba(250,245,255,.6); }
+.cat-politico .cat-impact-pill { color:#d8b4fe; border-color:rgba(216,180,254,.3); background:rgba(216,180,254,.1); }
+
+/* Cards dentro de cada categoria */
+.cat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(0,0,0,.06); }
+
+.leader-card {
+  background:#fff; padding:.9rem 1rem;
+  display:flex; flex-direction:column; gap:.3rem;
+  transition:background .15s; position:relative;
+}
+.leader-card:hover { background:#f8faff; }
+.leader-rank {
+  font-family:var(--font-mono); font-size:.44rem; font-weight:700;
+  letter-spacing:.08em; color:var(--text-tertiary);
+}
+.leader-name { font-size:.72rem; font-weight:700; color:#0d1520; line-height:1.25; }
+.leader-title-tag {
+  display:inline-block; font-family:var(--font-mono); font-size:.44rem;
+  font-weight:600; letter-spacing:.1em; padding:2px 7px; border-radius:3px;
+  text-transform:uppercase; margin-bottom:.1rem;
+}
+.lt-rel  { background:rgba(124,45,18,.1); color:#7c2d12; border:1px solid rgba(124,45,18,.2); }
+.lt-mil  { background:rgba(29,78,216,.1); color:#1d4ed8; border:1px solid rgba(29,78,216,.2); }
+.lt-pol  { background:rgba(109,40,217,.1); color:#6d28d9; border:1px solid rgba(109,40,217,.2); }
+
+.leader-role { font-size:.58rem; color:#4a5568; line-height:1.4; }
+.leader-org  { font-family:var(--font-mono); font-size:.46rem; color:#8896aa; letter-spacing:.04em; }
+.leader-badge { position:absolute; top:.6rem; right:.6rem; }
+
+/* Impact bar */
+.leader-impact-bar {
+  margin-top:.3rem; height:2px; background:var(--bg4); border-radius:1px;
+}
+.lib-fill { height:100%; border-radius:1px; }
+.lib-rel  { background:#b91c1c; }
+.lib-mil  { background:#1d4ed8; }
+.lib-pol  { background:#7c3aed; }
+
+/* Footer por categoria */
+.cat-footer {
+  padding:.55rem 1.25rem; border-top:1px solid var(--border);
+  background:var(--bg2); display:flex; align-items:center; gap:1.5rem;
+  flex-wrap:wrap;
+}
+.cf-stat { display:flex; align-items:baseline; gap:.3rem; }
+.cf-val  { font-family:var(--font-mono); font-size:.85rem; font-weight:700; }
+.cf-lbl  { font-family:var(--font-mono); font-size:.42rem; color:var(--text-tertiary); letter-spacing:.08em; text-transform:uppercase; }
+.cf-src  { margin-left:auto; font-family:var(--font-mono); font-size:.46rem; color:var(--text-tertiary); }
+
+/* Overall leaders footer */
+.leaders-footer {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:.7rem 1.5rem;
+  display:flex; align-items:center; gap:2rem; flex-wrap:wrap;
+}
+.lf-stat { display:flex; align-items:baseline; gap:.35rem; }
+.lf-val  { font-family:var(--font-mono); font-size:1rem; font-weight:700; }
+.lf-lbl  { font-family:var(--font-mono); font-size:.44rem; color:#8896aa; letter-spacing:.08em; text-transform:uppercase; }
+
+/* ============================================================
+   HEZBOLLAH / LÍBANO TAB
+   ============================================================ */
+.hzb-kpi-grid {
+  display:grid; grid-template-columns:repeat(5,1fr);
+  gap:1px; background:var(--border); border-radius:var(--r-lg); overflow:hidden;
+}
+.hzb-kpi {
+  background:#fff; padding:1rem 1.1rem;
+  display:flex; flex-direction:column; gap:.35rem; position:relative;
+}
+.hzb-kpi:hover { background:var(--bg3); }
+.hzb-kpi-label { font-family:var(--font-mono); font-size:.5rem; letter-spacing:.1em; color:var(--text-tertiary); text-transform:uppercase; }
+.hzb-kpi-val   { font-family:var(--font-mono); font-size:1.6rem; font-weight:500; color:var(--text-bright); line-height:1; }
+.hzb-kpi-sub   { font-size:.58rem; color:var(--text-secondary); line-height:1.4; }
+
+/* Front map — text-based tactical grid */
+.hzb-front-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1rem;
+}
+.hzb-front-card {
+  background:#fff; border:1px solid var(--border);
+  border-radius:var(--r-lg); overflow:hidden;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.hzb-front-head {
+  padding:.65rem 1rem; background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.hzb-front-title {
+  font-family:var(--font-mono); font-size:.58rem; font-weight:600;
+  letter-spacing:.12em; color:var(--text-secondary); text-transform:uppercase;
+}
+.hzb-front-body { padding:.8rem 1rem; display:flex; flex-direction:column; gap:.5rem; }
+.hzb-event {
+  display:flex; gap:.6rem; align-items:flex-start;
+  padding:.4rem 0; border-bottom:1px solid var(--border); font-size:.6rem;
+}
+.hzb-event:last-child { border-bottom:none; }
+.hzb-dot {
+  width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:.35rem;
+}
+.hzb-dot-crit  { background:var(--alert); }
+.hzb-dot-high  { background:var(--claimed); }
+.hzb-dot-rep   { background:var(--reported); }
+
+/* Leadership elimination cards — Hezbollah */
+.hzb-leaders-grid {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:1px; background:rgba(0,0,0,.07);
+}
+.hzb-leader {
+  background:#fff; padding:.8rem 1rem;
+  display:flex; flex-direction:column; gap:.25rem;
+  position:relative; transition:background .15s;
+}
+.hzb-leader:hover { background:#f0f4ff; }
+
+/* Displacement / humanitarian */
+.hzb-humanitarian {
+  display:grid; grid-template-columns:repeat(2,1fr); gap:1rem;
+}
+.hzb-hum-card {
+  background:#fff; border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:1rem 1.25rem;
+}
+.hzb-hum-title {
+  font-family:var(--font-mono); font-size:.55rem; font-weight:600;
+  letter-spacing:.12em; color:var(--text-tertiary); text-transform:uppercase;
+  margin-bottom:.6rem; padding-bottom:.4rem; border-bottom:1px solid var(--border);
+}
+.hzb-hum-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:.3rem 0; border-bottom:1px solid var(--border); font-size:.6rem;
+}
+.hzb-hum-row:last-child { border-bottom:none; }
+.hzb-hum-num {
+  font-family:var(--font-mono); font-size:.85rem; font-weight:600;
+}
 </style>
 </head>
 <body>
@@ -1327,18 +1509,18 @@ const WAR_DATA = {
   },
 
   casualties: [
-    { id:1, name:"Aiatolá Ali Khamenei", role:"Líder Supremo do Irã (1989–2026)", org:"Liderança Suprema", confidence:"CONFIRMADO", source:"Mídia estatal iraniana (01/Mar) · Reuters · NPR · Trump · IDF" },
-    { id:2, name:"Esposa de Khamenei", role:"Familiar do Líder Supremo", org:"Família Khamenei", confidence:"CONFIRMADO", source:"Wikipedia 2026 Iran conflict · múltiplas fontes (02/Mar)" },
-    { id:3, name:"Ali Shamkhani", role:"Secretário CSNS", org:"Conselho Sup. Seg. Nacional", confidence:"REPORTADO", source:"IDF Defrin · Al Jazeera · Times of Israel" },
-    { id:4, name:"Gen. Mohammad Pakpour", role:"Comandante-Geral do IRGC", org:"IRGC", confidence:"REPORTADO", source:"Reuters (3 fontes) · IDF · Al Arabiya" },
-    { id:5, name:"Brig. Gen. Amir Nasirzadeh", role:"Ministro da Defesa", org:"Ministério da Defesa", confidence:"REPORTADO", source:"Reuters · IDF · Times of Israel" },
-    { id:6, name:"Maj. Gen. Mohammad Bagheri", role:"Chefe do Estado-Maior das FA", org:"Estado-Maior das Forças Armadas", confidence:"REPORTADO", source:"IDF Defrin · Jerusalem Post" },
-    { id:7, name:"Hussein Makled", role:"Chefe de Inteligência do Hezbollah", org:"Hezbollah — Líbano", confidence:"CONFIRMADO", source:"IDF Defrin (02/Mar) · Wikipedia 2026" },
-    { id:8, name:"Abu Hamza Rami", role:"Comandante PIJ no Líbano", org:"Jihad Islâmica Palestina", confidence:"CONFIRMADO", source:"IDF Defrin (02/Mar) · Fox News" },
-    { id:9, name:"Javad Pourhossein", role:"Chefe de Inteligência Estrangeira VAJA", org:"VAJA", confidence:"REPORTADO", source:"Iran International · @JasonMBrodsky" },
-    { id:10, name:"Filha · Genro · Nora · Neto de Khamenei", role:"Familiares do Líder Supremo", org:"Família Khamenei", confidence:"REPORTADO", source:"Fars News Agency · Times of Israel" },
-    { id:11, name:"Mahmoud Ahmadinejad", role:"Ex-Presidente do Irã (2005–2013)", org:"Civil — Narmak, Teerã", confidence:"CONFLITANTE", source:"ILNA reportou → Escritório desmentiu → Channel 12: não confirmado" }
-  ],
+    { id:1, cat:"RELIGIOSO", impact:10, title:"Lider Supremo", name:"Aiatolá Ali Khamenei", role:"Lider Supremo (1989-2026)", org:"Wilayat al-Faqih", confidence:"CONFIRMADO", source:"Mídia estatal iraniana (01/Mar) · Reuters · @IDF · @CENTCOM · Trump" },
+    { id:2, cat:"RELIGIOSO", impact:4, title:"Familia Khamenei", name:"Esposa de Khamenei", role:"Familiar do Lider Supremo, morta em 02/Mar", org:"Familia Khamenei", confidence:"CONFIRMADO", source:"Wikipedia 2026 · Times of Israel · @EylonALevy" },
+    { id:10, cat:"RELIGIOSO", impact:3, title:"Familia Khamenei", name:"Filha, Genro, Nora, Neto de Khamenei", role:"4 membros da familia mortos", org:"Familia Khamenei", confidence:"REPORTADO", source:"Fars News Agency · Times of Israel · @IranRevReport" },
+    { id:4, cat:"MILITAR", impact:9, title:"Cmdt-Geral IRGC", name:"Gen. Mohammad Pakpour", role:"Comandante-Geral Forcas Terrestres IRGC", org:"IRGC", confidence:"REPORTADO", source:"Reuters (3 fontes) · IDF · Al Arabiya · @Defence_Journl" },
+    { id:6, cat:"MILITAR", impact:8, title:"Chefe Estado-Maior", name:"Maj. Gen. Mohammad Bagheri", role:"Chefe do Estado-Maior das Forcas Armadas", org:"Estado-Maior FA", confidence:"REPORTADO", source:"IDF Defrin · Jerusalem Post · @UKikaski" },
+    { id:5, cat:"MILITAR", impact:7, title:"Ministro da Defesa", name:"Brig. Gen. Amir Nasirzadeh", role:"Ministro da Defesa e Logistica das FA", org:"Ministerio da Defesa", confidence:"REPORTADO", source:"Reuters · IDF · Times of Israel · @SamPancher" },
+    { id:9, cat:"MILITAR", impact:6, title:"Dir. Intel. Exterior", name:"Javad Pourhossein", role:"Chefe de Inteligencia Estrangeira (VAJA)", org:"VAJA", confidence:"REPORTADO", source:"Iran International · @JasonMBrodsky · @GhorbaniiNiyak" },
+    { id:7, cat:"MILITAR", impact:7, title:"Intel Hezbollah", name:"Hussein Makled", role:"Chefe de Inteligencia do Hezbollah, eliminado em Beirute (02/Mar)", org:"Hezbollah - Libano", confidence:"CONFIRMADO", source:"IDF Defrin (02/Mar) · Wikipedia 2026 · @IDF" },
+    { id:8, cat:"MILITAR", impact:5, title:"Cmdt PIJ Libano", name:"Abu Hamza Rami", role:"Comandante Jihad Islamica Palestina no Libano, eliminado em Beirute (02/Mar)", org:"Jihad Islamica Palestina", confidence:"CONFIRMADO", source:"IDF Defrin (02/Mar) · @FoxNews · @IDF" },
+    { id:3, cat:"POLITICO", impact:8, title:"Sec. Conselho Seg. Nacional", name:"Ali Shamkhani", role:"Secretario CSNS - arquiteto das politicas de seguranca nacional", org:"CSNS", confidence:"REPORTADO", source:"IDF Defrin · Al Jazeera · Times of Israel · @EylonALevy" },
+    { id:11, cat:"POLITICO", impact:2, title:"Ex-Presidente", name:"Mahmoud Ahmadinejad", role:"Ex-Presidente Ira (2005-2013) - civil em Narmak, Teera. CONTESTADO.", org:"Civil", confidence:"CONFLITANTE", source:"ILNA reportou · Escritorio desmentiu · Channel 12 nao confirmou · @IranRevReport" }
+    ],
 
   infrastructure: [
     { id:"01", name:"Complexo / Bunker de Khamenei", loc:"Distrito Pasteur, Teerã", note:"Destruído Dia 1. Confirmado IDF + satélite.", cat:"LIDERANÇA", confidence:"CONFIRMADO", source:"IDF · NCRI · Satélite" },
@@ -1402,7 +1584,108 @@ const WAR_DATA = {
     "Ali Larijani — Ex-assessor de Khamenei ('Não negociaremos com os EUA')",
     "Abbas Araghchi — Ministro das Relações Exteriores (publicou foto de valas para 160 crianças)",
     "Amir Hatami — Comandante do Exército Regular"
-  ]
+  ],
+
+  // ── HEZBOLLAH / LÍBANO DATA ──────────────────────────────────
+  hezbollah: {
+    kpis: {
+      lb_dead:      { value: 52, qualifier:"+", unit:"mortos Líbano", confidence:"CONFIRMADO",
+        source_primary:"Min. Saúde do Líbano", source_secondary:"Al Jazeera · Reuters · OPB",
+        last_update_utc:"2026-03-03T06:00:00Z",
+        notes:"52 mortos confirmados pelo Min. Saúde do Líbano após retaliação IDF em 02/Mar." },
+      lb_wounded:   { value: 154, qualifier:"+", unit:"feridos Líbano", confidence:"CONFIRMADO",
+        source_primary:"Min. Saúde do Líbano", source_secondary:"Reuters",
+        last_update_utc:"2026-03-03T06:00:00Z",
+        notes:"154 feridos após strikes IDF em resposta ao ataque Hezbollah de 02/Mar." },
+      lb_displaced: { value: 28500, qualifier:"+", unit:"deslocados", confidence:"REPORTADO",
+        source_primary:"OCHA · Al Jazeera", source_secondary:"OPB",
+        last_update_utc:"2026-03-03T06:00:00Z",
+        notes:"28.500+ civis deslocados no sul do Líbano após invasão terrestre IDF (03/Mar)." },
+      il_north_fire:{ value: 50, qualifier:"", unit:"comunidades evacuadas", confidence:"CONFIRMADO",
+        source_primary:"IDF · Israel Police", source_secondary:"Al Jazeera · Times of Israel",
+        last_update_utc:"2026-03-03T00:00:00Z",
+        notes:"IDF emitiu ordens de evacuação em 50 comunidades no norte de Israel após rockets Hezbollah." },
+      hzb_targets:  { value: 70, qualifier:"+", unit:"alvos IDF no Líbano", confidence:"CONFIRMADO",
+        source_primary:"IDF Defrin", source_secondary:"@EylonALevy · @IDF",
+        last_update_utc:"2026-03-03T06:00:00Z",
+        notes:"IDF realizou 70+ strikes aéreos no Líbano em retaliação — infraestrutura Hezbollah." }
+    },
+
+    timeline: [
+      { time:"03 MAR · 04h UTC", icon:"🪖", tag:"INVASÃO", tagcls:"tag-attack",
+        text:"IDF avança para sul do Líbano — OPERAÇÃO TERRESTRE. Netanyahu e Katz autorizaram avanço para posições estratégicas. 59 aldeias com evacuação urgente emitida.", confidence:"CONFIRMADO",
+        source:"IDF · Netanyahu · @EylonALevy" },
+      { time:"02 MAR · Noite", icon:"✈", tag:"STRIKES IDF", tagcls:"tag-retaliate",
+        text:"IDF retalia: 70+ alvos aéreos no Líbano destruídos — depósitos de armas, infra Hezbollah, posições de foguetes. Strikes simultâneos em Teerã e Beirute (02→03/Mar).", confidence:"CONFIRMADO",
+        source:"IDF Defrin · @IDF · @EylonALevy" },
+      { time:"02 MAR · ~10h UTC", icon:"☠", tag:"ELIMINAÇÕES", tagcls:"tag-confirm",
+        text:"IDF elimina Hussein Makled (Chefe Intel Hezbollah) e Abu Hamza Rami (Cmdt. PIJ Líbano) em Beirute. Confirmado por IDF Defrin.", confidence:"CONFIRMADO",
+        source:"IDF Defrin (02/Mar) · @IDF · Wikipedia 2026" },
+      { time:"02 MAR · Manhã", icon:"🚀", tag:"ATAQUE HZB", tagcls:"tag-attack",
+        text:"NOVA FRENTE: Hezbollah lança mísseis e drones contra Israel pela 1ª vez desde cessar-fogo de novembro 2024. Ataque coordenado com ofensiva iraniana.", confidence:"CONFIRMADO",
+        source:"IDF · Al Jazeera · Reuters · @UKikaski" },
+      { time:"NOV 2024", icon:"🤝", tag:"CESSAR-FOGO", tagcls:"tag-diplo",
+        text:"Cessar-fogo Israel-Hezbollah mediado por EUA e França. IDF retirou maioria das tropas do sul do Líbano. Vigência: ~3 meses antes da reabertura em Mar 2026.", confidence:"CONFIRMADO",
+        source:"Reuters · Al Jazeera · NYT" }
+    ],
+
+    targets_israel: [
+      { area:"Norte da Galiléia — fronteira", type:"Rockets + drones", dead:0, wounded:8,
+        note:"1ª vez desde cessar-fogo 2024. Áreas abertas — sem mortes diretas.", confidence:"CONFIRMADO" },
+      { area:"Kiryat Shmona + região", type:"Foguetes Katyusha mod.", dead:0, wounded:4,
+        note:"Evacuação preventiva. IDF emitiu ordens para 50 comunidades.", confidence:"REPORTADO" },
+      { area:"Safed + entorno", type:"Foguetes", dead:0, wounded:3,
+        note:"Danos materiais em residências. Sirenes em toda Galiléia.", confidence:"REPORTADO" },
+      { area:"Haifa (tentativa interceptada)", type:"Drones", dead:0, wounded:0,
+        note:"IDF interceptou tentativa de drone Hezbollah em direção a Haifa.", confidence:"REPORTADO" }
+    ],
+
+    strikes_lebanon: [
+      { target:"Infra. de comando Hezbollah — Tiro", type:"Aéreo", result:"Destruído",
+        note:"QG subregional Hezbollah na cidade de Tiro. Confirmado IDF.", confidence:"CONFIRMADO" },
+      { target:"Depósitos armas — Vale Bekaa", type:"Aéreo múltiplo", result:"Destruído",
+        note:"Depósitos de foguetes Katyusha e drones Hezbollah no vale.", confidence:"CONFIRMADO" },
+      { target:"Posições Hezbollah — Litani", type:"Aéreo + artilharia", result:"Destruído",
+        note:"Posições ao norte do rio Litani — além da linha acordada em 2024.", confidence:"CONFIRMADO" },
+      { target:"Rede de tuneis — sul Líbano", type:"Aéreo JDAM", result:"Parcial",
+        note:"IDF: 20+ entradas de tuneis seladas com bombas penetradoras.", confidence:"REPORTADO" },
+      { target:"Aeroporto Rafic Hariri — Beirute", type:"Strike cirúrgico", result:"Parcial",
+        note:"Pista atingida para impedir reabastecimento Hezbollah. Aeroporto fechado temporariamente.", confidence:"REPORTADO" }
+    ],
+
+    leaders: [
+      { name:"Hussein Makled", role:"Chefe de Inteligência do Hezbollah", org:"Hezbollah — Departamento de Inteligência",
+        impact:9, location:"Beirute — Dahieh (subúrbio sul)", date:"02 MAR 2026",
+        confidence:"CONFIRMADO", source:"IDF Defrin · @IDF · Wikipedia 2026 Iran conflict" },
+      { name:"Abu Hamza Rami", role:"Comandante Jihad Islâmica Palestina no Líbano", org:"Jihad Islâmica Palestina (PIJ)",
+        impact:7, location:"Beirute", date:"02 MAR 2026",
+        confidence:"CONFIRMADO", source:"IDF Defrin · @FoxNews · @IDF" },
+      { name:"Fuad Shukr (legado)", role:"Comandante Operacional Hezbollah — eliminado jul/2024", org:"Hezbollah — Forças Especiais",
+        impact:10, location:"Beirute — jul 2024 (contexto)", date:"JUL 2024",
+        confidence:"CONFIRMADO", source:"IDF · Reuters · NYT (2024) — contexto pré-conflito" },
+      { name:"Hassan Nasrallah (legado)", role:"Sec.-Geral do Hezbollah — eliminado set/2024", org:"Hezbollah — Liderança Suprema",
+        impact:10, location:"Beirute — set 2024 (contexto)", date:"SET 2024",
+        confidence:"CONFIRMADO", source:"IDF · CNN · Reuters (2024) — contexto pré-conflito" }
+    ],
+
+    ground_objectives: [
+      "Criar zona de buffer além do rio Litani (linha do Cessar-Fogo 2024)",
+      "Destruir infra. de foguetes no raio de 40 km da fronteira",
+      "Eliminar rede de tuneis transfronteiriços",
+      "Capturar posições de observação estratégica no Jabal al-Sheikh (Monte Hermon)",
+      "Impedir reabastecimento Hezbollah via Síria (corredor Bekaa–Damascó)",
+      "Manter pressão em dois teatros simultâneos: Irã + Líbano"
+    ],
+
+    displace: [
+      { label:"Civis deslocados no Líbano", value:"28.500+", source:"OCHA · Al Jazeera", confidence:"REPORTADO" },
+      { label:"Aldeias com evacuação urgente (Líbano)", value:"59", source:"IDF · Min. Saúde Líbano", confidence:"CONFIRMADO" },
+      { label:"Comunidades israelenses evacuadas (norte)", value:"50+", source:"IDF · Israel Police", confidence:"CONFIRMADO" },
+      { label:"Ben Gurion Airport fechado", value:"Dia 4", source:"IDF · Autoridade Aeroportos", confidence:"CONFIRMADO" },
+      { label:"Hospitais sul Líbano sobrecarregados", value:"3 hospitais", source:"Min. Saúde Líbano · OCHA", confidence:"REPORTADO" },
+      { label:"Corredor humanitário aberto", value:"NÃO", source:"OCHA — pedido rejeitado até 03/Mar", confidence:"REPORTADO" }
+    ]
+  }
 };
 
 // VALIDAÇÃO DE DADOS — Arsenal por país
@@ -1453,36 +1736,113 @@ function riskClass(r) {
 // ============================================================
 
 function renderLeaders(){
-  const cas=WAR_DATA.casualties;
-  const confirmed=cas.filter(x=>x.confidence==='CONFIRMADO').length;
-  const reported=cas.filter(x=>x.confidence==='REPORTADO').length;
-  const contested=cas.filter(x=>x.confidence==='CONFLITANTE').length;
-  const cards=cas.map(p=>`<div class="leader-card">
-    <div class="leader-num">#${p.id}</div>
-    <div class="leader-name">${p.name}</div>
-    <div class="leader-role">${p.role}</div>
-    <div class="leader-org">${p.org}</div>
-    <div class="leader-badge">${confBadge(p.confidence,p.source,null)}</div>
-  </div>`).join('');
-  return `<div class="leaders-hero">
-    <div class="leaders-hero-head">
-      <div>
-        <div class="leaders-hero-title">☠ Decapitação da liderança iraniana</div>
-        <div style="font-family:var(--font-mono);font-size:.48rem;color:rgba(255,255,255,.5);margin-top:.3rem;letter-spacing:.08em;">OP. EPIC FURY + ROARING LION · 28 FEV – 03 MAR 2026</div>
+  const cas = WAR_DATA.casualties;
+
+  // Separate into 3 categories
+  const rel = cas.filter(x=>x.cat==='RELIGIOSO');
+  const mil = cas.filter(x=>x.cat==='MILITAR');
+  const pol = cas.filter(x=>x.cat==='POLITICO');
+
+  const confirmed = cas.filter(x=>x.confidence==='CONFIRMADO').length;
+  const reported  = cas.filter(x=>x.confidence==='REPORTADO').length;
+  const contested = cas.filter(x=>x.confidence==='CONFLITANTE').length;
+
+  // Calculate impact scores
+  const relImpact = rel.reduce((s,x)=>s+(x.impact||0),0);
+  const milImpact = mil.reduce((s,x)=>s+(x.impact||0),0);
+  const polImpact = pol.reduce((s,x)=>s+(x.impact||0),0);
+  const maxImpact = 10;
+
+  function renderCard(p, catCls, tagCls, barCls) {
+    const pct = ((p.impact||0)/maxImpact*100).toFixed(0);
+    return `<div class="leader-card">
+      <div class="leader-rank">#${p.id} · IMPACTO ${p.impact||'?'}/10</div>
+      <span class="leader-title-tag ${tagCls}">${p.title||p.cat}</span>
+      <div class="leader-name">${p.name}</div>
+      <div class="leader-role">${p.role}</div>
+      <div class="leader-org">${p.org}</div>
+      <div class="leader-impact-bar"><div class="lib-fill ${barCls}" style="width:${pct}%"></div></div>
+      <div class="leader-badge">${confBadge(p.confidence,p.source,null)}</div>
+    </div>`;
+  }
+
+  function renderCategory(title, subtitle, icon, catCls, tagCls, barCls, lscCls, persons, impactSum, impactDesc) {
+    const conf = persons.filter(x=>x.confidence==='CONFIRMADO').length;
+    const rep  = persons.filter(x=>x.confidence==='REPORTADO').length;
+    const con  = persons.filter(x=>x.confidence==='CONFLITANTE').length;
+    const cards = persons.map(p=>renderCard(p,catCls,tagCls,barCls)).join('');
+    return `
+    <div class="leaders-category ${catCls}">
+      <div class="cat-header">
+        <div class="cat-header-left">
+          <span class="cat-icon">${icon}</span>
+          <div>
+            <div class="cat-title">${title}</div>
+            <div class="cat-subtitle">${subtitle}</div>
+          </div>
+        </div>
+        <span class="cat-impact-pill">IMPACTO ESTRATÉGICO: ${impactSum}/${persons.length*maxImpact}</span>
       </div>
-      <div style="text-align:right">
-        <div class="leaders-big-num">${cas.length}</div>
-        <div class="leaders-big-lbl">registros</div>
+      <div class="cat-grid">${cards}</div>
+      <div class="cat-footer">
+        <div class="cf-stat"><span class="cf-val" style="color:#15803d">${conf}</span><span class="cf-lbl">Confirmados</span></div>
+        <div class="cf-stat"><span class="cf-val" style="color:#1d4ed8">${rep}</span><span class="cf-lbl">Reportados</span></div>
+        ${con ? `<div class="cf-stat"><span class="cf-val" style="color:#c2410c">${con}</span><span class="cf-lbl">Conflitantes</span></div>` : ''}
+        <div class="cf-src">${impactDesc}</div>
       </div>
+    </div>`;
+  }
+
+  const summaryHtml = `
+  <div class="leaders-summary">
+    <div class="leaders-summary-cell lsc-rel">
+      <div class="lsc-icon">☪</div>
+      <div class="lsc-count">${rel.length}</div>
+      <div class="lsc-label">Lideranças Religiosas</div>
+      <div class="lsc-impact">Impacto acumulado: ${relImpact} pts · Khamenei morto — maior vácuo de poder desde 1979</div>
     </div>
-    <div class="leaders-grid">${cards}</div>
-    <div class="leaders-footer">
-      <div class="lf-stat"><span class="lf-val" style="color:#15803d">${confirmed}</span><span class="lf-lbl">Confirmados</span></div>
-      <div class="lf-stat"><span class="lf-val" style="color:#1d4ed8">${reported}</span><span class="lf-lbl">Reportados</span></div>
-      <div class="lf-stat"><span class="lf-val" style="color:#c2410c">${contested}</span><span class="lf-lbl">Conflitantes</span></div>
-      <div style="margin-left:auto;font-family:var(--font-mono);font-size:.47rem;color:#8896aa">Fontes: IDF Defrin · Reuters · Fox News · Mídia estatal iraniana</div>
+    <div class="leaders-summary-cell lsc-mil">
+      <div class="lsc-icon">⚔</div>
+      <div class="lsc-count">${mil.length}</div>
+      <div class="lsc-label">Lideranças Militares</div>
+      <div class="lsc-impact">Impacto acumulado: ${milImpact} pts · IRGC, Estado-Maior e intel externa decapitados</div>
+    </div>
+    <div class="leaders-summary-cell lsc-pol">
+      <div class="lsc-icon">🏛</div>
+      <div class="lsc-count">${pol.length}</div>
+      <div class="lsc-label">Lideranças Políticas</div>
+      <div class="lsc-impact">Impacto acumulado: ${polImpact} pts · CSNS eliminado, Ahmadinejad: informação conflitante</div>
     </div>
   </div>`;
+
+  const relHtml = renderCategory(
+    'LIDERANÇA RELIGIOSA', 'Wali al-Faqih · Marja · Família Khamenei',
+    '☪', 'cat-religioso', 'lt-rel', 'lib-rel', 'lsc-rel',
+    rel, relImpact, 'Fontes: Mídia estatal iraniana · Reuters · @EylonALevy · @IranRevReport'
+  );
+  const milHtml = renderCategory(
+    'LIDERANÇA MILITAR', 'IRGC · Estado-Maior · Força Quds · Inteligência · Proxy',
+    '⚔', 'cat-militar', 'lt-mil', 'lib-mil', 'lsc-mil',
+    mil, milImpact, 'Fontes: IDF Defrin · CENTCOM · Reuters · @UKikaski · @Defence_Journl'
+  );
+  const polHtml = renderCategory(
+    'LIDERANÇA POLÍTICA', 'CSNS · Governo · Ex-presidentes',
+    '🏛', 'cat-politico', 'lt-pol', 'lib-pol', 'lsc-pol',
+    pol, polImpact, 'Fontes: IDF Defrin · Al Jazeera · Times of Israel · @EylonALevy'
+  );
+
+  const footerHtml = `
+  <div class="leaders-footer">
+    <div class="lf-stat"><span class="lf-val">${cas.length}</span><span class="lf-lbl">Total registros</span></div>
+    <div class="lf-stat"><span class="lf-val" style="color:#15803d">${confirmed}</span><span class="lf-lbl">Confirmados</span></div>
+    <div class="lf-stat"><span class="lf-val" style="color:#1d4ed8">${reported}</span><span class="lf-lbl">Reportados</span></div>
+    <div class="lf-stat"><span class="lf-val" style="color:#c2410c">${contested}</span><span class="lf-lbl">Conflitantes</span></div>
+    <div style="margin-left:auto;font-family:var(--font-mono);font-size:.46rem;color:#8896aa;">
+      OP. EPIC FURY + ROARING LION · 28 FEV – 03 MAR 2026 · Impacto 1–10: capacidade operacional perdida pelo regime
+    </div>
+  </div>`;
+
+  return `<div class="leaders-wrapper">${summaryHtml}${relHtml}${milHtml}${polHtml}${footerHtml}</div>`;
 }
 function renderKPIs() {
   const K = WAR_DATA.kpis;
@@ -1650,6 +2010,160 @@ function renderAudit() {
 }
 
 // ============================================================
+// RENDER — HEZBOLLAH / LÍBANO TAB
+// ============================================================
+function renderHzbKPIs() {
+  const K = WAR_DATA.hezbollah.kpis;
+  const items = [
+    { key:'lb_dead',      icon:'⚰', label:'MORTOS NO LÍBANO' },
+    { key:'lb_wounded',   icon:'🏥', label:'FERIDOS NO LÍBANO' },
+    { key:'lb_displaced', icon:'🏘', label:'DESLOCADOS' },
+    { key:'il_north_fire',icon:'🇮🇱', label:'COM. ISRAEL EVACUADAS' },
+    { key:'hzb_targets',  icon:'🎯', label:'ALVOS IDF NO LÍBANO' }
+  ];
+  return items.map(i => {
+    const d = K[i.key];
+    const q = d.qualifier||'';
+    return `<div class="hzb-kpi">
+      <div class="hzb-kpi-label">${i.icon} ${i.label}</div>
+      <div class="hzb-kpi-val">${d.value.toLocaleString('pt-BR')}${q}</div>
+      <div class="hzb-kpi-sub">${d.notes.substring(0,70)}${d.notes.length>70?'…':''}</div>
+      <div style="position:absolute;top:.65rem;right:.65rem;">${confBadge(d.confidence,d.source_primary,d.last_update_utc)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderHzbTimeline() {
+  return WAR_DATA.hezbollah.timeline.map(e => `
+  <div class="hzb-event">
+    <div class="hzb-dot ${e.tagcls==='tag-attack'?'hzb-dot-crit':e.tagcls==='tag-confirm'?'hzb-dot-rep':'hzb-dot-high'}"></div>
+    <div style="flex:1">
+      <div style="font-family:var(--font-mono);font-size:.48rem;color:var(--text-tertiary);">${e.time}</div>
+      <span class="tl-tag ${e.tagcls}" style="margin-bottom:.15rem;display:inline-block;">${e.tag}</span>
+      <div style="font-size:.6rem;color:var(--text-primary);line-height:1.5;">${e.text}</div>
+      <div style="font-family:var(--font-mono);font-size:.44rem;color:var(--text-tertiary);margin-top:.2rem;">${e.source}</div>
+    </div>
+  </div>`).join('');
+}
+
+function renderHzbTargets() {
+  return WAR_DATA.hezbollah.targets_israel.map(t => `
+  <div class="hzb-event">
+    <div class="hzb-dot ${t.dead>0?'hzb-dot-crit':t.wounded>0?'hzb-dot-high':'hzb-dot-rep'}"></div>
+    <div style="flex:1">
+      <div style="font-size:.62rem;font-weight:600;color:var(--text-bright);">${t.area}</div>
+      <div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);">${t.type}</div>
+      <div style="font-size:.58rem;color:var(--text-secondary);margin-top:.15rem;">${t.note}</div>
+      <div style="display:flex;gap:.5rem;margin-top:.2rem;font-family:var(--font-mono);font-size:.48rem;">
+        <span style="color:var(--alert);">✡ ${t.dead} mortos</span>
+        <span style="color:var(--claimed);">${t.wounded} feridos</span>
+        ${confBadge(t.confidence,'IDF · Israel Police',null)}
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+function renderHzbStrikes() {
+  return WAR_DATA.hezbollah.strikes_lebanon.map(s => `
+  <div class="hzb-event">
+    <div class="hzb-dot ${s.result==='Destruído'?'hzb-dot-crit':'hzb-dot-high'}"></div>
+    <div style="flex:1">
+      <div style="font-size:.62rem;font-weight:600;color:var(--text-bright);">${s.target}</div>
+      <div style="display:flex;gap:.5rem;align-items:center;margin:.1rem 0;">
+        <span style="font-family:var(--font-mono);font-size:.48rem;color:var(--text-tertiary);">${s.type}</span>
+        <span style="font-family:var(--font-mono);font-size:.46rem;font-weight:600;color:${s.result==='Destruído'?'var(--alert)':'var(--claimed)'};">${s.result.toUpperCase()}</span>
+      </div>
+      <div style="font-size:.58rem;color:var(--text-secondary);">${s.note}</div>
+      <div style="margin-top:.2rem;">${confBadge(s.confidence,'IDF Defrin · @IDF',null)}</div>
+    </div>
+  </div>`).join('');
+}
+
+function renderHzbLeaders() {
+  return WAR_DATA.hezbollah.leaders.map(l => `
+  <div class="hzb-leader">
+    <div style="font-family:var(--font-mono);font-size:.48rem;color:var(--text-tertiary);">${l.date} · ${l.location}</div>
+    <div style="font-size:.7rem;font-weight:700;color:#0d1520;margin:.15rem 0;">${l.name}</div>
+    <div style="font-size:.58rem;color:#4a5568;">${l.role}</div>
+    <div style="font-family:var(--font-mono);font-size:.46rem;color:#8896aa;">${l.org}</div>
+    <div style="display:flex;align-items:center;gap:.4rem;margin-top:.35rem;">
+      <span style="font-family:var(--font-mono);font-size:.44rem;color:var(--text-tertiary);">IMPACTO ${l.impact}/10</span>
+      <div style="flex:1;height:2px;background:var(--bg4);border-radius:1px;"><div style="width:${l.impact*10}%;height:100%;background:#1d4ed8;border-radius:1px;"></div></div>
+    </div>
+    <div style="position:absolute;top:.6rem;right:.6rem;">${confBadge(l.confidence,l.source,null)}</div>
+  </div>`).join('');
+}
+
+function renderHzbGroundObj() {
+  return WAR_DATA.hezbollah.ground_objectives.map((o,i) => `
+  <div class="hzb-hum-row">
+    <span style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);min-width:1.2rem;">${i+1}.</span>
+    <span style="font-size:.6rem;color:var(--text-primary);">${o}</span>
+  </div>`).join('');
+}
+
+function renderHzbDisplace() {
+  return WAR_DATA.hezbollah.displace.map(d => `
+  <div class="hzb-hum-row">
+    <div style="font-size:.6rem;color:var(--text-secondary);">${d.label}</div>
+    <div style="display:flex;align-items:center;gap:.4rem;">
+      <span class="hzb-hum-num" style="color:var(--text-bright);font-size:.75rem;">${d.value}</span>
+      ${confBadge(d.confidence,d.source,null)}
+    </div>
+  </div>`).join('');
+}
+
+function renderHzbHumanitarian() {
+  return `
+  <div class="hzb-hum-card">
+    <div class="hzb-hum-title">📊 Baixas e impacto humano — Líbano</div>
+    <div class="hzb-hum-row">
+      <span style="font-size:.6rem;">Mortos confirmados</span>
+      <span class="hzb-hum-num" style="color:var(--alert);">52+</span>
+    </div>
+    <div class="hzb-hum-row">
+      <span style="font-size:.6rem;">Feridos</span>
+      <span class="hzb-hum-num" style="color:var(--claimed);">154+</span>
+    </div>
+    <div class="hzb-hum-row">
+      <span style="font-size:.6rem;">Deslocados</span>
+      <span class="hzb-hum-num" style="color:var(--reported);">28.500+</span>
+    </div>
+    <div class="hzb-hum-row">
+      <span style="font-size:.6rem;">Hospitais em colapso (sul Líbano)</span>
+      <span class="hzb-hum-num" style="color:var(--alert);">3</span>
+    </div>
+    <div class="hzb-hum-row">
+      <span style="font-size:.6rem;">Acesso ONU bloqueado</span>
+      <span class="hzb-hum-num" style="color:var(--alert);">SIM</span>
+    </div>
+  </div>
+  <div class="hzb-hum-card">
+    <div class="hzb-hum-title">⚠️ Situação nordeste Israel — Impacto Hezbollah</div>
+    <div class="hzb-hum-row">
+      <span style="font-size:.6rem;">Mortos em Israel por Hezbollah</span>
+      <span class="hzb-hum-num" style="color:var(--alert);">0</span>
+    </div>
+    <div class="hzb-hum-row">
+      <span style="font-size:.6rem;">Feridos em Israel</span>
+      <span class="hzb-hum-num" style="color:var(--claimed);">8+</span>
+    </div>
+    <div class="hzb-hum-row">
+      <span style="font-size:.6rem;">Comunidades evacuadas</span>
+      <span class="hzb-hum-num" style="color:var(--claimed);">50+</span>
+    </div>
+    <div class="hzb-hum-row">
+      <span style="font-size:.6rem;">Ben Gurion Airport</span>
+      <span class="hzb-hum-num" style="color:var(--alert);">FECHADO</span>
+    </div>
+    <div class="hzb-hum-row">
+      <span style="font-size:.6rem;">Status Acordos de Cessar-Fogo 2024</span>
+      <span class="hzb-hum-num" style="color:var(--alert);">NULO</span>
+    </div>
+  </div>`;
+}
+
+// ============================================================
 // CLOCK
 // ============================================================
 function updateClock() {
@@ -1702,7 +2216,7 @@ async function layer1_fetchRawData() {
 
   // Prompt de coleta: instrui o modelo a usar web_search
   // em múltiplas queries cobrindo todas as dimensões do conflito
-  const LAYER1_PROMPT = `Você é um analista de inteligência militar sênior monitorando o conflito EUA/Israel × Irã de 2026 (Operação Epic Fury / Lion's Roar / Promessa Sincera 4, iniciada em 28 de fevereiro de 2026).
+  const LAYER1_PROMPT = `Você é um analista de inteligência militar sênior monitorando o conflito EUA/Israel × Irã de 2026 (Operação Epic Fury / Lion's Roar / Promessa Sincera 4, iniciada em 28 de fevereiro de 2026), e a FRENTE NORTE Israel × Hezbollah no Líbano (reaberta em 02/Mar/2026).
 
 TAREFA: Use a ferramenta web_search para buscar as informações MAIS RECENTES disponíveis sobre este conflito. Execute OBRIGATORIAMENTE as seguintes buscas:
 
@@ -1714,6 +2228,22 @@ TAREFA: Use a ferramenta web_search para buscar as informações MAIS RECENTES d
 6. "Iran US Israel war ceasefire negotiations" — status diplomático
 7. "Strait of Hormuz Iran closure latest" — Estreito de Hormuz
 8. "Iran missiles Gulf states casualties" — baixas nos países do Golfo
+9. "Israel Hezbollah Lebanon war 2026" — frente norte Israel-Hezbollah
+10. "IDF Lebanon ground operation 2026" — operação terrestre IDF no Líbano
+11. "Hezbollah casualties Lebanon 2026" — baixas Líbano por retaliação IDF
+
+FONTES PRIORITÁRIAS para verificação (X/Twitter):
+- @IDF (IDF oficial)
+- @EylonALevy (porta-voz IDF)
+- @Defence_Journl (Defence Journal)
+- @IranRevReport (Iran Revolution Report)
+- @CENTCOM (CENTCOM oficial)
+- @SamPancher (correspondente)
+- @UKikaski (analista militar)
+- @GhorbaniiNiyak (intel iraniana)
+- @usembassyjlm (Embaixada EUA Jerusalém)
+- @FoxNews
+- @g1 (G1 Globo Brasil)
 
 Após executar as buscas, compile os dados encontrados e responda EXCLUSIVAMENTE com um objeto JSON válido neste formato exato (sem texto antes ou depois, sem markdown, sem \`\`\`):
 
@@ -2057,6 +2587,16 @@ document.addEventListener('DOMContentLoaded', () => {
     `<div style="font-size:.62rem;color:var(--confirmed);padding:.25rem 0;border-bottom:1px solid var(--border);">✓ ${s}</div>`
   ).join('');
 
+  // Hezbollah tab
+  document.getElementById('hzb-kpi-grid').innerHTML = renderHzbKPIs();
+  document.getElementById('hzb-timeline-panel').innerHTML = renderHzbTimeline();
+  document.getElementById('hzb-targets-panel').innerHTML = renderHzbTargets();
+  document.getElementById('hzb-strikes-panel').innerHTML = renderHzbStrikes();
+  document.getElementById('hzb-leaders-grid').innerHTML = renderHzbLeaders();
+  document.getElementById('hzb-ground-obj').innerHTML = renderHzbGroundObj();
+  document.getElementById('hzb-displace').innerHTML = renderHzbDisplace();
+  document.getElementById('hzb-humanitarian').innerHTML = renderHzbHumanitarian();
+
   // Clock & updates
   updateClock();
   // Primeiro ciclo após 8 segundos (deixa a página carregar)
@@ -2152,6 +2692,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <button class="view-btn active" data-view="executive" onclick="switchView('executive')">NÍVEL 1 · BRIEF EXECUTIVO</button>
   <button class="view-btn" data-view="theater" onclick="switchView('theater')">NÍVEL 2 · TEATRO DE OPERAÇÕES</button>
   <button class="view-btn" data-view="intel" onclick="switchView('intel')">NÍVEL 3 · INTELIGÊNCIA PROFUNDA</button>
+  <button class="view-btn" data-view="hezbollah" onclick="switchView('hezbollah')" style="color:#16a34a;border-bottom-color:transparent;">🇱🇧 ISRAEL × HEZBOLLAH</button>
 </div>
 
 <!-- ============================================================
@@ -2420,15 +2961,128 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="src-card"><span class="src-name">Reuters · AP · NPR · CBS</span><span class="src-type src-verified">VERIFICADA</span></div>
       <div class="src-card"><span class="src-name">Washington Post · NYT</span><span class="src-type src-verified">VERIFICADA</span></div>
       <div class="src-card"><span class="src-name">Al Jazeera</span><span class="src-type src-verified">VERIFICADA</span></div>
-      <div class="src-card"><span class="src-name">IDF Porta-voz Oficial</span><span class="src-type src-official">OFICIAL</span></div>
+      <div class="src-card"><span class="src-name">IDF Porta-voz Oficial (@IDF)</span><span class="src-type src-official">OFICIAL</span></div>
       <div class="src-card"><span class="src-name">CENTCOM (@CENTCOM)</span><span class="src-type src-official">OFICIAL EUA</span></div>
-      <div class="src-card"><span class="src-name">Magen David Adom</span><span class="src-type src-official">OFICIAL ISRAEL</span></div>
+      <div class="src-card"><span class="src-name">Magen David Adom · ZAKA</span><span class="src-type src-official">OFICIAL ISRAEL</span></div>
+      <div class="src-card"><span class="src-name">Embaixada EUA Jerusalém (@usembassyjlm)</span><span class="src-type src-official">OFICIAL EUA</span></div>
+      <div class="src-card"><span class="src-name">G1 · Globo News</span><span class="src-type src-verified">MÍDIA BR</span></div>
+      <div class="src-card"><span class="src-name">Fox News (@FoxNews)</span><span class="src-type src-verified">VERIFICADA</span></div>
       <div class="src-card"><span class="src-name">CTP-ISW / Critical Threats</span><span class="src-type src-analysis">ANÁLISE</span></div>
       <div class="src-card"><span class="src-name">Iran International (Londres)</span><span class="src-type src-verified">VERIFICADA</span></div>
       <div class="src-card"><span class="src-name">CFR · Chatham House · Alma Institute</span><span class="src-type src-analysis">ANÁLISE</span></div>
       <div class="src-card"><span class="src-name">NCRI (Resistência iraniana)</span><span class="src-type src-analysis">ANÁLISE</span></div>
       <div class="src-card"><span class="src-name">Fars · Tasnim · Mehr · IRIB</span><span class="src-type src-state">ESTADO IRÃ</span></div>
+      <div class="src-card"><span class="src-name">@EylonALevy — Porta-voz IDF (EN)</span><span class="src-type src-official">OFICIAL IDF</span></div>
+      <div class="src-card"><span class="src-name">@Defence_Journl — Defence Journal</span><span class="src-type src-analysis">ANÁLISE MIL.</span></div>
+      <div class="src-card"><span class="src-name">@IranRevReport — Iran Revolution Report</span><span class="src-type src-analysis">ANÁLISE IRÃ</span></div>
+      <div class="src-card"><span class="src-name">@SamPancher — Correspondente war</span><span class="src-type src-analysis">CAMPO</span></div>
+      <div class="src-card"><span class="src-name">@UKikaski — Intel mil. Ucrânia/Oriente</span><span class="src-type src-analysis">ANALISTA X</span></div>
+      <div class="src-card"><span class="src-name">@GhorbaniiNiyak — Intel iraniana</span><span class="src-type src-analysis">ANALISTA X</span></div>
       <div class="src-card"><span class="src-name">@JasonMBrodsky · @BarakRavid · @clashreport</span><span class="src-type src-analysis">ANALISTAS X</span></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================================================
+     NÍVEL 4 — ISRAEL × HEZBOLLAH / LÍBANO
+     ============================================================ -->
+<div class="view-section" id="view-hezbollah">
+<div class="main">
+
+  <!-- KPIs Hezbollah -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">🇱🇧 Frente Norte — Israel × Hezbollah · NOVA FRENTE 02 MAR 2026</div>
+      <div class="section-meta">Fontes: Min. Saúde Líbano · IDF Defrin · Al Jazeera · Reuters · @IDF · @EylonALevy</div>
+    </div>
+    <div class="hzb-kpi-grid" id="hzb-kpi-grid"></div>
+  </div>
+
+  <!-- Escalation context -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">Contexto — Reabertura da Frente Norte</div>
+      <div class="section-meta">Após cessar-fogo de novembro 2024 · Hezbollah voltou a atacar em 02/Mar/2026</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">📅 Linha do Tempo — Reabertura</div></div>
+        <div class="panel-body" id="hzb-timeline-panel"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">🎯 Áreas israelenses sob fogo</div></div>
+        <div class="panel-body" id="hzb-targets-panel"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">💥 Ataques israelenses no Líbano</div></div>
+        <div class="panel-body" id="hzb-strikes-panel"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decapitação Hezbollah -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">Eliminações confirmadas — Liderança Hezbollah e PIJ (02 MAR 2026)</div>
+      <div class="section-meta">Fonte: IDF Defrin (02/Mar) · @IDF · Wikipedia 2026</div>
+    </div>
+    <div style="background:#fff;border:1px solid rgba(29,78,216,.2);border-radius:var(--r-lg);overflow:hidden;">
+      <div style="background:linear-gradient(135deg,#1e3a5f,#1d4ed8);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-family:var(--font-mono);font-size:.62rem;font-weight:700;letter-spacing:.2em;color:#eff6ff;text-transform:uppercase;">⚔ Decapitação da Liderança — Hezbollah e PIJ</div>
+          <div style="font-family:var(--font-mono);font-size:.46rem;color:rgba(239,246,255,.55);margin-top:.2rem;">IDF Defrin · 02 Março 2026 · Beirute e sul do Líbano</div>
+        </div>
+        <span class="badge badge-confirmed">✓ CONFIRMADO IDF</span>
+      </div>
+      <div class="hzb-leaders-grid" id="hzb-leaders-grid"></div>
+    </div>
+  </div>
+
+  <!-- Operação terrestre IDF -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">🪖 Operação Terrestre IDF — Sul do Líbano (03 MAR 2026)</div>
+      <div class="section-meta">Netanyahu + Katz autorizaram avanço · Ordens de evacuação em 59 aldeias</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
+      <div class="hzb-hum-card">
+        <div class="hzb-hum-title">🪖 Objetivos declarados IDF — Invasão</div>
+        <div id="hzb-ground-obj"></div>
+      </div>
+      <div class="hzb-hum-card">
+        <div class="hzb-hum-title">🏘 Evacuações e deslocamentos</div>
+        <div id="hzb-displace"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Humanitarian -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">🏥 Situação humanitária — Líbano</div>
+      <div class="section-meta">Min. Saúde Líbano · OCHA · Al Jazeera · Reuters</div>
+    </div>
+    <div class="hzb-humanitarian" id="hzb-humanitarian"></div>
+  </div>
+
+  <!-- Sources Hezbollah -->
+  <div>
+    <div class="section-header">
+      <div class="section-title">Fontes — Frente Líbano/Hezbollah</div>
+    </div>
+    <div class="sources-grid">
+      <div class="src-card"><span class="src-name">IDF Defrin (@IDF)</span><span class="src-type src-official">OFICIAL IDF</span></div>
+      <div class="src-card"><span class="src-name">@EylonALevy — Porta-voz IDF (EN)</span><span class="src-type src-official">OFICIAL IDF</span></div>
+      <div class="src-card"><span class="src-name">Ministério da Saúde do Líbano</span><span class="src-type src-official">OFICIAL LÍBANO</span></div>
+      <div class="src-card"><span class="src-name">CENTCOM (@CENTCOM)</span><span class="src-type src-official">OFICIAL EUA</span></div>
+      <div class="src-card"><span class="src-name">Al Jazeera · Reuters · AP</span><span class="src-type src-verified">VERIFICADA</span></div>
+      <div class="src-card"><span class="src-name">@UKikaski — Intel militar</span><span class="src-type src-analysis">ANALISTA X</span></div>
+      <div class="src-card"><span class="src-name">@Defence_Journl</span><span class="src-type src-analysis">ANÁLISE MIL.</span></div>
+      <div class="src-card"><span class="src-name">@SamPancher — correspondente</span><span class="src-type src-analysis">CAMPO</span></div>
+      <div class="src-card"><span class="src-name">Alma Research Center (norte Israel)</span><span class="src-type src-analysis">ANÁLISE</span></div>
+      <div class="src-card"><span class="src-name">Al-Manar · Naharnet (Líbano)</span><span class="src-type src-state">MÍDIA LOCAL</span></div>
     </div>
   </div>
 
