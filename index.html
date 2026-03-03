@@ -11,48 +11,48 @@
    ============================================================ */
 :root {
   /* Backgrounds — layered neutrals, not pure black */
-  --bg0: #0a0c0f;
-  --bg1: #0f1217;
-  --bg2: #141820;
-  --bg3: #1a2030;
-  --bg4: #1f2636;
+  --bg0: #f0f3f7;
+  --bg1: #ffffff;
+  --bg2: #f7f9fc;
+  --bg3: #edf0f6;
+  --bg4: #dde3ed;
 
   /* Borders */
-  --border: rgba(255,255,255,.07);
-  --border2: rgba(255,255,255,.12);
+  --border: rgba(0,0,0,.09);
+  --border2: rgba(0,0,0,.15);
 
   /* Text */
-  --text-primary: #e2e8f0;
-  --text-secondary: #8892a4;
-  --text-tertiary: #556070;
-  --text-bright: #f8fafc;
+  --text-primary: #1a2236;
+  --text-secondary: #4a5568;
+  --text-tertiary: #8896aa;
+  --text-bright: #0d1520;
 
   /* Confidence colors — calibrated, not loud */
-  --confirmed: #22c55e;    /* green — CONFIRMADO */
-  --confirmed-bg: rgba(34,197,94,.08);
-  --confirmed-border: rgba(34,197,94,.25);
+  --confirmed: #15803d; /* — CONFIRMADO */
+  --confirmed-bg: rgba(21,128,61,.08);
+  --confirmed-border: rgba(21,128,61,.28);
 
-  --reported: #60a5fa;     /* blue — REPORTADO */
-  --reported-bg: rgba(96,165,250,.08);
-  --reported-border: rgba(96,165,250,.25);
+  --reported: #1d4ed8; /* — REPORTADO */
+  --reported-bg: rgba(29,78,216,.07);
+  --reported-border: rgba(29,78,216,.28);
 
-  --claimed: #f59e0b;      /* amber — REIVINDICADO */
-  --claimed-bg: rgba(245,158,11,.08);
-  --claimed-border: rgba(245,158,11,.25);
+  --claimed: #b45309; /* — REIVINDICADO */
+  --claimed-bg: rgba(180,83,9,.07);
+  --claimed-border: rgba(180,83,9,.28);
 
-  --contested: #f97316;    /* orange — CONFLITANTE */
-  --contested-bg: rgba(249,115,22,.08);
-  --contested-border: rgba(249,115,22,.25);
+  --contested: #c2410c; /* — CONFLITANTE */
+  --contested-bg: rgba(194,65,12,.07);
+  --contested-border: rgba(194,65,12,.28);
 
-  --alert: #ef4444;        /* red — only for critical alerts */
-  --alert-bg: rgba(239,68,68,.08);
-  --alert-border: rgba(239,68,68,.25);
+  --alert: #b91c1c; /* — only for critical alerts */
+  --alert-bg: rgba(185,28,28,.07);
+  --alert-border: rgba(185,28,28,.22);
 
   /* Escalation index colors */
-  --esc-low: #22c55e;
-  --esc-med: #f59e0b;
-  --esc-high: #f97316;
-  --esc-crit: #ef4444;
+  --esc-low: #15803d;
+  --esc-med: #b45309;
+  --esc-high: #c2410c;
+  --esc-crit: #b91c1c;
 
   /* Typography */
   --font-ui: 'DM Sans', sans-serif;
@@ -89,8 +89,8 @@ body {
    TICKER
    ============================================================ */
 .ticker-strip {
-  background: var(--bg1);
-  border-bottom: 1px solid var(--alert-border);
+  background: #1a2236;
+  border-bottom: 1px solid rgba(185,28,28,.35);
   padding: .35rem 1rem;
   display: flex;
   align-items: center;
@@ -117,7 +117,7 @@ body {
 .ticker-inner {
   font-family: var(--font-mono);
   font-size: .6rem;
-  color: var(--text-secondary);
+  color: #b0bcd0;
   white-space: nowrap;
   animation: ticker 60s linear infinite;
   letter-spacing: .03em;
@@ -206,7 +206,7 @@ body {
    ESCALATION INDEX BAR
    ============================================================ */
 .escalation-bar {
-  background: var(--bg2);
+  background: #e8edf5;
   border-bottom: 1px solid var(--border);
   padding: .75rem 2rem;
   display: flex;
@@ -265,8 +265,8 @@ body {
    VIEW MODE SWITCHER
    ============================================================ */
 .view-switcher {
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border);
+  background: #edf0f6;
+  border-bottom: 1px solid rgba(0,0,0,.09);
   padding: 0 2rem;
   display: flex;
   align-items: center;
@@ -370,7 +370,9 @@ body {
   overflow: hidden;
 }
 .kpi-card {
-  background: var(--bg2);
+  background: #fff;
+  border:1px solid rgba(0,0,0,.08);
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
   padding: 1.1rem 1.25rem;
   display: flex;
   flex-direction: column;
@@ -453,7 +455,7 @@ body {
   max-width: 240px;
   z-index: 100;
   line-height: 1.6;
-  box-shadow: 0 4px 20px rgba(0,0,0,.5);
+  box-shadow: 0 4px 20px rgba(0,0,0,.15);
 }
 
 /* ============================================================
@@ -468,14 +470,14 @@ body {
   overflow: hidden;
 }
 .country-card {
-  background: var(--bg2);
+  background: #fff;
   padding: 1rem 1.1rem;
   display: flex;
   flex-direction: column;
   gap: .6rem;
   transition: background .2s;
 }
-.country-card:hover { background: var(--bg3); }
+.country-card:hover { background: #f0f3f7; }
 .country-header {
   display: flex;
   align-items: center;
@@ -524,7 +526,7 @@ body {
   gap: 4px;
 }
 .cstat {
-  background: var(--bg3);
+  background: #edf0f6;
   border-radius: var(--r-sm);
   padding: .35rem .5rem;
   text-align: center;
@@ -567,13 +569,14 @@ body {
    ISRAEL SECTION — Special treatment
    ============================================================ */
 .israel-section {
-  background: var(--bg2);
+  background: #fff;
   border-radius: var(--r-lg);
   overflow: hidden;
-  border: 1px solid rgba(239,68,68,.2);
+  border: 1px solid rgba(185,28,28,.2);
+  box-shadow:0 2px 8px rgba(185,28,28,.06);
 }
 .israel-header {
-  background: rgba(239,68,68,.06);
+  background: rgba(185,28,28,.05);
   border-bottom: 1px solid rgba(239,68,68,.2);
   padding: .75rem 1.25rem;
   display: flex;
@@ -595,7 +598,7 @@ body {
   background: var(--border);
 }
 .city-card {
-  background: var(--bg2);
+  background: #fff;
   padding: .9rem 1rem;
   display: flex;
   flex-direction: column;
@@ -619,7 +622,7 @@ body {
   gap: 4px;
 }
 .cas-block {
-  background: var(--bg3);
+  background: #f0f3f8;
   border-radius: var(--r-sm);
   padding: .4rem .5rem;
   text-align: center;
@@ -646,7 +649,7 @@ body {
   line-height: 1.5;
 }
 .israel-totals {
-  background: var(--bg3);
+  background: #f8eaea;
   border-top: 1px solid var(--border);
   padding: .6rem 1.25rem;
   display: flex;
@@ -681,10 +684,11 @@ body {
   gap: 1rem;
 }
 .bench-card {
-  background: var(--bg2);
+  background: #fff;
   border-radius: var(--r-lg);
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(0,0,0,.1);
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
 }
 .bench-head {
   padding: .75rem 1rem;
@@ -753,7 +757,7 @@ body {
   padding: .5rem .75rem;
   text-align: left;
   border-bottom: 1px solid var(--border);
-  background: var(--bg2);
+  background: #f7f9fc;
 }
 .cas-table td {
   padding: .55rem .75rem;
@@ -785,14 +789,14 @@ body {
   overflow: hidden;
 }
 .infra-item {
-  background: var(--bg2);
+  background: #fff;
   padding: .75rem 1rem;
   display: flex;
   gap: .75rem;
   align-items: flex-start;
   transition: background .15s;
 }
-.infra-item:hover { background: var(--bg3); }
+.infra-item:hover { background: #f0f3f7; }
 .infra-num {
   font-family: var(--font-mono);
   font-size: .55rem;
@@ -994,7 +998,7 @@ body {
 }
 
 .footer {
-  background: var(--bg1);
+  background: #1a2236;
   border-top: 1px solid var(--border);
   padding: .75rem 2rem;
   display: flex;
@@ -1013,7 +1017,8 @@ body {
    PANEL WRAPPER
    ============================================================ */
 .panel {
-  background: var(--bg2);
+  background: #fff;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
   border-radius: var(--r-lg);
   overflow: hidden;
   border: 1px solid var(--border);
@@ -1054,6 +1059,23 @@ body {
   .israel-cities { grid-template-columns: 1fr; }
   .infra-grid { grid-template-columns: 1fr; }
 }
+.leaders-hero{background:#fff;border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(185,28,28,.25);box-shadow:0 3px 16px rgba(185,28,28,.1);}
+.leaders-hero-head{background:linear-gradient(135deg,#7f1d1d,#b91c1c);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;}
+.leaders-hero-title{font-family:var(--font-mono);font-size:.65rem;font-weight:700;letter-spacing:.22em;color:#fff;text-transform:uppercase;}
+.leaders-big-num{font-family:var(--font-mono);font-size:2rem;font-weight:700;color:#fca5a5;line-height:1;}
+.leaders-big-lbl{font-family:var(--font-mono);font-size:.42rem;color:rgba(255,255,255,.55);letter-spacing:.1em;text-transform:uppercase;margin-top:.15rem;}
+.leaders-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(0,0,0,.07);}
+.leader-card{background:#fff;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.28rem;transition:background .15s;position:relative;}
+.leader-card:hover{background:#fef2f2;}
+.leader-num{font-family:var(--font-mono);font-size:.46rem;color:#b91c1c;font-weight:700;letter-spacing:.08em;}
+.leader-name{font-size:.72rem;font-weight:700;color:#0d1520;line-height:1.25;}
+.leader-role{font-size:.58rem;color:#4a5568;line-height:1.4;}
+.leader-org{font-family:var(--font-mono);font-size:.47rem;color:#8896aa;letter-spacing:.05em;}
+.leader-badge{position:absolute;top:.55rem;right:.55rem;}
+.leaders-footer{background:#fef2f2;border-top:1px solid rgba(185,28,28,.12);padding:.65rem 1.5rem;display:flex;align-items:center;gap:2rem;}
+.lf-stat{display:flex;align-items:baseline;gap:.35rem;}
+.lf-val{font-family:var(--font-mono);font-size:1rem;font-weight:700;}
+.lf-lbl{font-family:var(--font-mono);font-size:.44rem;color:#8896aa;letter-spacing:.08em;text-transform:uppercase;}
 </style>
 </head>
 <body>
@@ -1070,7 +1092,7 @@ const WAR_DATA = {
   meta: {
     operation_us: "EPIC FURY", operation_il: "ROARING LION", operation_iran: "PROMESSA SINCERA 4",
     start_utc: "2026-02-28T08:00:00Z", last_manual_update: "2026-03-03T06:00:00Z", day_of_conflict: 4,
-    escalation_index: { value: 91, confidence: "REPORTADO",
+    escalation_index: { value: 93, confidence: "REPORTADO",
       note: "DIA 4: Hezbollah abriu nova frente, 3 F-15 derrubados por fogo amigo no Kuwait, embaixada EUA atingida, base britânica em Chipre atingida (Europa). 11+ países envolvidos." }
   },
 
@@ -1083,11 +1105,11 @@ const WAR_DATA = {
       notes: "Trump: 48 líderes iraninos eliminados. Inclui Khamenei (confirmado), esposa de Khamenei (02/Mar), cúpula IRGC e inteligência."
     },
     iran_civilian_dead: {
-      value: 742, unit: "civis", qualifier: "+",
-      source_primary: "HRANA (Human Rights Activists News Agency) — 03 Mar",
+      value: 787, unit: "civis", qualifier: "+",
+      source_primary: "Cruz Vermelha Iraniana / Red Crescent — 03 Mar (Al Jazeera LIVE)",
       source_secondary: "Cruz Vermelha Iraniana: 555+ confirmados · Al Jazeera",
       last_update_utc: "2026-03-03T03:00:00Z", confidence: "REPORTADO",
-      notes: "HRANA: 742 mortos em 03/Mar. Red Crescent: 555+ (dado oficial). Inclui ~168 crianças em escola de Minab — NYT e WaPo verificaram imagens parcialmente."
+      notes: "Red Crescent (03/Mar — Al Jazeera live): 787 mortos confirmados. HRANA: 742 (estimativa anterior). Inclui ~168 crianças em escola de Minab — NYT/WaPo verificaram imagens parcialmente."
     },
     iran_wounded: {
       value: 2100, unit: "feridos", qualifier: "+",
@@ -1174,7 +1196,7 @@ const WAR_DATA = {
       dead: 52, wounded: 154, confidence: "CONFIRMADO",
       source_primary: "Min. Saúde do Líbano", source_secondary: "Al Jazeera · Reuters · OPB",
       last_update_utc: "2026-03-03T00:00:00Z",
-      note: "NOVA FRENTE (02/Mar): Hezbollah lançou mísseis e drones contra Israel. Israel retaliu: 52 mortos, 154 feridos no Líbano, 28.500 deslocados. IDF: 70+ alvos. PM Líbano baniu atividade militar do Hezbollah.",
+      note: "NOVA FRENTE (02/Mar): Hezbollah lançou mísseis e drones contra Israel. Israel retaliu: 52 mortos, 154 feridos no Líbano, 28.500 deslocados. IDF lancou INVASAO TERRESTRE no sul do Libano (03/Mar). Netanyahu+Katz autorizaram ocupar posicoes estrategicas. 59 aldeias com ordem de evacuacao. 70+ alvos aereos. Beirute: strikes simultaneos em Teerao e Beirute (03/Mar).",
       weapons: ["Foguetes Hezbollah","Drones Hezbollah"] },
     { name: "Bahrein", flag: "🇧🇭", intercept_pct: 55, risk: "high",
       launched: 30, qualifier_l: "~", impacted: 8, qualifier_i: "~", intercepted: 22, qualifier_int: "~",
@@ -1202,7 +1224,7 @@ const WAR_DATA = {
       dead: 0, wounded: 5, confidence: "REPORTADO",
       source_primary: "FA Arábia Saudita · Reuters", source_secondary: "RTE · OPB",
       last_update_utc: "2026-03-02T18:00:00Z",
-      note: "Refinaria Ras Tanura atingida — incêndio limitado, controlado. Embaixada EUA em Riad: fumaça reportada (Iran atingiu zona da embaixada). Sauditas derrubaram 2 drones sobre Ras Tanura.",
+      note: "EMBAIXADA EUA RIAD ATINGIDA (03/Mar): 2 drones + 4 drones no Bairro Diplomatico. Incendio limitado, sem feridos (Min. Defesa Saudita). Saudita interceptou 8 drones Riad/Al-Kharj. Trump prometeu retaliar. Embaixada fechada. Ras Tanura: controlado.",
       weapons: ["Shahed","Drone"] },
     { name: "Jordânia", flag: "🇯🇴", intercept_pct: 100, risk: "low",
       launched: 49, qualifier_l: "", impacted: 0, qualifier_i: "", intercepted: 49, qualifier_int: "",
@@ -1332,10 +1354,14 @@ const WAR_DATA = {
     { id:"11", name:"Refinaria Ras Tanura (Arábia Saudita)", loc:"Costa leste, Arábia Saudita", note:"Drone causou incêndio limitado — controlado. Sauditas derrubaram 2 drones sobre o local.", cat:"ENERGIA", confidence:"CONFIRMADO", source:"FA Arábia Saudita" },
     { id:"12", name:"Produção LNG do Qatar interrompida", loc:"Qatar — costa norte", note:"Qatar suspendeu produção de LNG após ataques. Impacto global nos mercados de energia.", cat:"ENERGIA", confidence:"CONFIRMADO", source:"Reuters · Al Jazeera" },
     { id:"13", name:"Escola elementar — Minab (CONTROVÉRSIA)", loc:"Minab, Hormozgan — sudeste do Irã", note:"Irã: ~168 crianças mortas. NYT e WaPo verificaram imagens parcialmente. Sem conf. independente do número. Crise humanitária e de imagem.", cat:"CIVIL — CONTESTADO", confidence:"CONFLITANTE", source:"Governo iraniano · NYT · WaPo (verificação parcial de imagens)" },
+    { id:"15", name:"Embaixada EUA Riad", loc:"Bairro Diplomatico, Riad", note:"03/Mar: 2 drones iranianos atingiram embaixada. Incendio limitado, sem feridos. +4 drones no bairro. Min. Defesa Saudita confirmou. Trump prometeu retaliacao. Embaixada fechada.", cat:"DIPLOMATICO", confidence:"CONFIRMADO", source:"Min. Defesa Saudita - Al Jazeera - ABC News - CBS News (03/Mar)" },
     { id:"14", name:"Embaixada EUA Kuwait + arredores", loc:"Kuwait City", note:"Embaixada EUA atingida por drones iranianos (02/Mar). Fechada indefinidamente. Fumaça visível de ruas próximas (Reuters).", cat:"DIPLOMÁTICO", confidence:"CONFIRMADO", source:"PBS · Reuters · CNBC (02/Mar)" }
   ],
 
   timeline: [
+    { time:"03 MAR · 09h UTC", tags:["tag-confirm","tag-warning"], text:"Red Crescent confirma 787 mortos no Irã — maior contagem oficial. Frete supertankers para China subiu 94% num dia (LSEG). Hormuz travou 1/5 comercio global. Trump: abastecimento de munição 'virtualmente ilimitado'.", confidence:"CONFIRMADO" },
+    { time:"03 MAR · ~06h UTC", tags:["tag-attack"], text:"ISRAEL INVADE SUL DO LÍBANO — IDF avança para posições estratégicas. Netanyahu e Katz autorizaram operação. 59 aldeias com evacuação urgente. Strikes simultâneos em Teerã e Beirute.", confidence:"CONFIRMADO" },
+    { time:"03 MAR · ~04h UTC", tags:["tag-attack","tag-warning"], text:"EMBAIXADA EUA EM RIAD atingida por 2 drones iranianos + 4 drones no Bairro Diplomático. Incêndio limitado, sem feridos (Min. Defesa Saudita). Trump: 'vocês vão descobrir em breve' a retaliação.", confidence:"CONFIRMADO" },
     { time:"03 MAR · 02h54 EST", tags:["tag-warning"], text:"WaPo encerra cobertura ao vivo. Trump não descarta tropas terrestres no Irã se 'necessário'. Dia 4 sem sinal de cessar-fogo.", confidence:"REPORTADO" },
     { time:"02 MAR · Madrugada", tags:["tag-attack","tag-warning"], text:"HISTÓRICO: Drone iraniano atinge base RAF Akrotiri, Chipre. 1º ataque iraniano em solo europeu. Sirenes em Akrotiri e Dhekelia. Sem vítimas.", confidence:"CONFIRMADO" },
     { time:"02 MAR · Noite", tags:["tag-us","tag-warning"], text:"CENTCOM: 6 soldados EUA mortos — todos no Kuwait, mesma unidade logística. 18 feridos graves. Gen. Caine: 'Esperamos baixas adicionais'.", confidence:"CONFIRMADO" },
@@ -1357,8 +1383,10 @@ const WAR_DATA = {
   ],
 
   audit_log: [
+    { utc:"2026-03-03T09:00:00Z", field:"kpis.iran_civilian_dead — 787 Red Crescent", old_value:"742 HRANA", new_value:"787 Red Crescent — Al Jazeera LIVE", source:"Al Jazeera liveblog 03/Mar · CBS News", note:"Maior contagem confirmada desde o início do conflito." },
+    { utc:"2026-03-03T06:00:00Z", field:"countries.Lebanon — IDF invasão terrestre + Riyadh", old_value:"apenas ataques aéreos / sem ataque Riyadh", new_value:"IDF invade sul Líbano + Embaixada EUA Riad atingida", source:"IDF · Netanyahu · Min. Defesa Saudita · Al Jazeera (03/Mar)", note:"Dois novos desenvolvimentos críticos Dia 4: invasão Líbano e embaixada Riad." },
     { utc:"2026-03-03T06:00:00Z", field:"ATUALIZAÇÃO GERAL — DIA 4 DO CONFLITO", old_value:"Dados de 01 Mar (Dia 2)", new_value:"Dados de 03 Mar (Dia 4)", source:"Al Jazeera · NPR · CNN · Reuters · WaPo · OPB · Wikipedia 2026 Iran conflict", note:"Redesign completo com dados de D3–D4. Sistema de auto-update corrigido." },
-    { utc:"2026-03-03T03:00:00Z", field:"kpis.iran_civilian_dead", old_value:"201+", new_value:"742+ (HRANA) / 555+ (Red Crescent)", source:"HRANA 03/Mar + Cruz Vermelha Iraniana 02/Mar", note:"Inclui ~168 crianças mortas em escola de Minab (contestado)" },
+    { utc:"2026-03-03T09:00:00Z", field:"kpis.iran_civilian_dead", old_value:"742+ (HRANA)", new_value:"787 (Red Crescent — Al Jazeera LIVE 03/Mar)", source:"Al Jazeera liveblog 03/Mar · CBS News 03/Mar", note:"787 confirmados pelo Red Crescent às 09h UTC de 03/Mar. Maior contagem desde o início." },
     { utc:"2026-03-02T20:00:00Z", field:"kpis.us_dead", old_value:"3", new_value:"6", source:"CENTCOM 02/Mar · NPR · CNN · Washington Post", note:"6 soldados confirmados — todos no Kuwait, mesma unidade logística. 18 feridos graves." },
     { utc:"2026-03-02T22:00:00Z", field:"kpis.israel_dead", old_value:"9+", new_value:"10+", source:"CNN 03/Mar · Magen David Adom", note:"CNN: 10 mortos, 200+ feridos em Israel" },
     { utc:"2026-03-03T00:00:00Z", field:"countries — Líbano adicionado", old_value:"não existia", new_value:"52 mortos, 154 feridos — nova frente", source:"Min. Saúde Líbano · OPB · Al Jazeera", note:"Hezbollah abriu 2ª frente em 02/Mar. Israel retaliu com 70+ alvos no Líbano." },
@@ -1423,13 +1451,46 @@ function riskClass(r) {
 // ============================================================
 // RENDER — KPI GRID
 // ============================================================
+
+function renderLeaders(){
+  const cas=WAR_DATA.casualties;
+  const confirmed=cas.filter(x=>x.confidence==='CONFIRMADO').length;
+  const reported=cas.filter(x=>x.confidence==='REPORTADO').length;
+  const contested=cas.filter(x=>x.confidence==='CONFLITANTE').length;
+  const cards=cas.map(p=>`<div class="leader-card">
+    <div class="leader-num">#${p.id}</div>
+    <div class="leader-name">${p.name}</div>
+    <div class="leader-role">${p.role}</div>
+    <div class="leader-org">${p.org}</div>
+    <div class="leader-badge">${confBadge(p.confidence,p.source,null)}</div>
+  </div>`).join('');
+  return `<div class="leaders-hero">
+    <div class="leaders-hero-head">
+      <div>
+        <div class="leaders-hero-title">☠ Decapitação da liderança iraniana</div>
+        <div style="font-family:var(--font-mono);font-size:.48rem;color:rgba(255,255,255,.5);margin-top:.3rem;letter-spacing:.08em;">OP. EPIC FURY + ROARING LION · 28 FEV – 03 MAR 2026</div>
+      </div>
+      <div style="text-align:right">
+        <div class="leaders-big-num">${cas.length}</div>
+        <div class="leaders-big-lbl">registros</div>
+      </div>
+    </div>
+    <div class="leaders-grid">${cards}</div>
+    <div class="leaders-footer">
+      <div class="lf-stat"><span class="lf-val" style="color:#15803d">${confirmed}</span><span class="lf-lbl">Confirmados</span></div>
+      <div class="lf-stat"><span class="lf-val" style="color:#1d4ed8">${reported}</span><span class="lf-lbl">Reportados</span></div>
+      <div class="lf-stat"><span class="lf-val" style="color:#c2410c">${contested}</span><span class="lf-lbl">Conflitantes</span></div>
+      <div style="margin-left:auto;font-family:var(--font-mono);font-size:.47rem;color:#8896aa">Fontes: IDF Defrin · Reuters · Fox News · Mídia estatal iraniana</div>
+    </div>
+  </div>`;
+}
 function renderKPIs() {
   const K = WAR_DATA.kpis;
   const cards = [
     { key:'iranian_officials_dead', label:'OFICIAIS IRANIANOS MORTOS', icon:'☠' },
     { key:'iran_civilian_dead',     label:'CIVIS MORTOS NO IRÃ',       icon:'⚰' },
     { key:'projectiles_launched',   label:'PROJÉTEIS LANÇADOS',        icon:'🚀' },
-    { key:'israel_dead',            label:'MORTOS EM ISRAEL',          icon:'🇮🇱' },
+    { key:'israel_dead',            label:'MORTOS EM ISRAEL ✡',          icon:'🇮🇱' },
     { key:'us_dead',                label:'SOLDADOS EUA MORTOS',       icon:'🇺🇸' },
     { key:'iran_wounded',           label:'FERIDOS NO IRÃ',            icon:'🏥' }
   ];
@@ -1473,7 +1534,7 @@ function renderTheater() {
       <div class="country-stats">
         <div class="cstat"><span class="cstat-val">${c.launched}${c.qualifier_l||''}</span><span class="cstat-lbl">Lançados</span></div>
         <div class="cstat"><span class="cstat-val" style="color:var(--alert)">${c.impacted}${c.qualifier_i||''}</span><span class="cstat-lbl">Impactos</span></div>
-        <div class="cstat"><span class="cstat-val">${deadDisplay === 0 && woundedDisplay === 0 ? '—' : deadDisplay+' ✝'}</span><span class="cstat-lbl">Mortos</span></div>
+        <div class="cstat"><span class="cstat-val">${deadDisplay === 0 && woundedDisplay === 0 ? '—' : deadDisplay+' ✡'}</span><span class="cstat-lbl">Mortos</span></div>
       </div>
       <div class="country-note">${c.note}</div>
       <div class="risk-bar ${riskClass(c.risk)}"></div>
@@ -1493,7 +1554,7 @@ function renderIsraelCities() {
         <div class="city-coords">${c.coords} · ${c.date}</div>
       </div>
       <div class="city-casualties">
-        <div class="cas-block"><span class="cas-n dead">${c.dead}</span><span class="cas-l">Mortos</span></div>
+        <div class="cas-block"><span class="cas-n dead">${c.dead}</span><span class="cas-l">✡ Mortos</span></div>
         <div class="cas-block"><span class="cas-n wounded">${c.wounded}</span><span class="cas-l">Feridos</span></div>
       </div>
       ${c.special ? `<div style="font-family:var(--font-mono);font-size:.5rem;color:var(--claimed);letter-spacing:.1em;">${c.special}</div>` : ''}
@@ -1969,6 +2030,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('bench-defense').innerHTML = renderBench(WAR_DATA.benchmarks.defense);
 
   document.getElementById('casualties-body').innerHTML = renderCasualties();
+  if(document.getElementById('leaders-hero-panel')) document.getElementById('leaders-hero-panel').innerHTML = renderLeaders();
   document.getElementById('infra-grid').innerHTML = renderInfra();
   document.getElementById('timeline-body').innerHTML = renderTimeline();
   document.getElementById('audit-body').innerHTML = renderAudit();
@@ -2025,18 +2087,19 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="ticker-strip">
   <div class="ticker-label">AO VIVO</div>
   <div class="ticker-scroll">
-    <div class="ticker-inner">
-      ◆ KHAMENEI MORTO — CONFIRMADO PELA MÍDIA ESTATAL IRANIANA — 01 MAR 2026 &nbsp;|&nbsp;
-      ◆ CENTCOM: 3 SOLDADOS AMERICANOS MORTOS · 5 FERIDOS GRAVES — OP. EPIC FURY &nbsp;|&nbsp;
-      ◆ TRUMP: 48 LÍDERES IRANIANOS ELIMINADOS &nbsp;|&nbsp;
-      ◆ EUA AFUNDAM 9 NAVIOS IRANIANOS — TRUMP · TRUTH SOCIAL &nbsp;|&nbsp;
-      ◆ CORVETA JAMARAN AFUNDADA — CENTCOM CONFIRMA &nbsp;|&nbsp;
-      ◆ IRGC ALEGA ATINGIR USS LINCOLN — CENTCOM DESMENTE &nbsp;|&nbsp;
-      ◆ AHMADINEJAD: INFORMAÇÃO CONFLITANTE — SEM CONFIRMAÇÃO INDEPENDENTE &nbsp;|&nbsp;
-      ◆ ESTREITO DE HORMUZ FECHADO — 150+ PETROLEIROS ANCORADOS &nbsp;|&nbsp;
-      ◆ BEIT SHEMESH (ISRAEL): 8 MORTOS — MÍSSIL BALÍSTICO DIRETO EM ABRIGO &nbsp;|&nbsp;
-      ◆ INTERNET NO IRÃ: 4% DA CAPACIDADE NORMAL
-    </div>
+     <div class="ticker-inner">
+       ◆ DIA 4 · 03 MAR 2026 · IRÃ: 787 MORTOS (RED CRESCENT) · ÍNDICE ESCALADA 93/100 CRÍTICO &nbsp;|&nbsp;
+       ◆ EMBAIXADA EUA RIAD ATINGIDA — 2 DRONES IRANIANOS · SEM FERIDOS · TRUMP PROMETE RETALIAÇÃO &nbsp;|&nbsp;
+       ◆ ISRAEL INVADE SUL DO LÍBANO — IDF AVANÇA · 59 ALDEIAS EVACUADAS &nbsp;|&nbsp;
+       ◆ CENTCOM: 6 SOLDADOS EUA MORTOS (KUWAIT) · 18 FERIDOS GRAVES &nbsp;|&nbsp;
+       ◆ FOGO AMIGO: KUWAIT DERRUBOU 3 F-15E AMERICANOS — TODOS PILOTOS RECUPERADOS &nbsp;|&nbsp;
+       ◆ HISTÓRICO: DRONE IRANIANO ATINGE BASE RAF AKROTIRI (CHIPRE) — 1º ATAQUE EM SOLO EUROPEU &nbsp;|&nbsp;
+       ◆ HEZBOLLAH NOVA FRENTE (02/MAR): 52 MORTOS NO LÍBANO — ISRAEL: 70+ ALVOS RETALIADOS &nbsp;|&nbsp;
+       ◆ HORMUZ FECHADO · FRETE SUPERTANKERS CHINA +94% EM 1 DIA · PETRÓLEO RUMO A $100/BARRIL &nbsp;|&nbsp;
+       ◆ QATAR: ABATEU 2 Su-24 IRANIANOS — 1ª AERONAVE IRANIANA DERRUBADA NO CONFLITO &nbsp;|&nbsp;
+       ◆ KHAMENEI + ESPOSA MORTOS CONFIRMADOS · 48 LÍDERES IRANIANOS ELIMINADOS (TRUMP) &nbsp;|&nbsp;
+       ◆ TRUMP: "GRANDE ONDA" DE ATAQUES AINDA POR VIR · EUA COM "ABASTECIMENTO VIRTUALMENTE ILIMITADO"
+     </div>
   </div>
 </div>
 
@@ -2115,6 +2178,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   <!-- Israel highlight -->
   <div>
+    <div>
+      <div class="section-header">
+        <div class="section-title">Líderes iranianos mortos — Decapitação da liderança</div>
+        <div class="section-meta">Badges indicam nível de confiança · Verde=confirmado · Azul=reportado · Laranja=conflitante</div>
+      </div>
+      <div id="leaders-hero-panel"></div>
+    </div>
+
     <div class="section-header">
       <div class="section-title">Israel — Cidades atingidas por mísseis iranianos</div>
       <div class="section-meta">Solo israelense confirmado · Magen David Adom</div>
@@ -2128,11 +2199,11 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="israel-totals">
         <div class="total-item">
           <div class="total-val" id="il-total-dead" style="color:var(--alert)">—</div>
-          <div class="total-lbl">Mortos confirmados</div>
+          <div class="total-lbl">✡ Mortos confirmados</div>
         </div>
         <div class="total-item">
           <div class="total-val" id="il-total-wounded" style="color:var(--claimed)">—</div>
-          <div class="total-lbl">Feridos totais</div>
+          <div class="total-lbl">✡ Feridos totais</div>
         </div>
         <div class="total-item">
           <div class="total-val" id="il-total-cities" style="color:var(--reported)">—</div>
@@ -2179,7 +2250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   <div>
     <div class="section-header">
-      <div class="section-title">Mapa de ataques iranianos por país alvo · 9 países atingidos</div>
+      <div class="section-title">Mapa de ataques iranianos por país alvo · 11 países atingidos</div>
       <div class="section-meta">Barra colorida no rodapé de cada card = heatmap de risco · Vermelho=crítico · Laranja=alto · Amarelo=médio · Verde=baixo</div>
     </div>
     <div class="theater-grid" id="theater-grid"></div>
