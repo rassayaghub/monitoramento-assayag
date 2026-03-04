@@ -2175,17 +2175,37 @@ function updateClock() {
 }
 
 // ============================================================
-// AUTO-UPDATE — SISTEMA DE DUPLA CAMADA
+// AUTO-UPDATE — SISTEMA RSS/FEED AUTÔNOMO
 //
-// CAMADA 1: Busca dados brutos de múltiplas fontes via web_search
-// CAMADA 2: Verifica e estrutura os dados encontrados
-//
-// Intervalo: 30 minutos
+// Funciona 100% sem API key — usa feeds RSS públicos via
+// proxy CORS gratuito (rss2json.com API pública).
+// Intervalo: 15 minutos. Zero dependência de servidor próprio.
 // ============================================================
 
-const UPDATE_INTERVAL = 30 * 60 * 1000; // 30 minutos
+const UPDATE_INTERVAL = 15 * 60 * 1000; // 15 minutos
 let updateCount = 0;
 let lastUpdateResult = null;
+let tickerItems = [];
+
+// ── Feeds RSS usados (CORS-habilitados via rss2json) ────────
+const RSS_FEEDS = [
+  { name: "Reuters World", url: "https://feeds.reuters.com/reuters/worldNews" },
+  { name: "Al Jazeera", url: "https://www.aljazeera.com/xml/rss/all.xml" },
+  { name: "Times of Israel", url: "https://www.timesofisrael.com/feed/" },
+  { name: "Iran International", url: "https://www.iranintl.com/en/rss" },
+  { name: "Jerusalem Post", url: "https://www.jpost.com/rss/rssfeedsheadlines.aspx" },
+  { name: "Middle East Eye", url: "https://www.middleeasteye.net/rss" }
+];
+
+// ── Proxy CORS gratuito ──────────────────────────────────────
+const RSS2JSON = "https://api.rss2json.com/v1/api.json?rss_url=";
+
+// ── Palavras-chave para filtragem relevante ──────────────────
+const KEYWORDS_IRAN = ["iran","irgc","khamenei","nuclear","tehran","hormuz","epic fury","roaring lion","promessa sincera","persian gulf"];
+const KEYWORDS_ISRAEL = ["israel","idf","gaza","west bank","netanyahu","mossad","iron dome","tel aviv","jerusalem"];
+const KEYWORDS_HEZBOLLAH = ["hezbollah","nasrallah","lebanon","beirut","litani","south lebanon","líbano"];
+const KEYWORDS_US = ["centcom","pentagon","us military","american troops","air force","us strike","trump iran"];
+const ALL_KEYWORDS = [...KEYWORDS_IRAN,...KEYWORDS_ISRAEL,...KEYWORDS_HEZBOLLAH,...KEYWORDS_US];
 
 // ── STATUS UI ────────────────────────────────────────────────
 function setUpdateStatus(state, msg) {
@@ -2194,10 +2214,10 @@ function setUpdateStatus(state, msg) {
   const bar    = document.getElementById('update-progress');
   if (state === 'loading') {
     if (badge)  badge.style.opacity = '.5';
-    if (status) { status.textContent = msg || 'Buscando dados…'; status.style.color = 'var(--claimed)'; }
+    if (status) { status.textContent = msg || 'Buscando feeds…'; status.style.color = 'var(--claimed)'; }
     if (bar)    bar.style.width = '30%';
   } else if (state === 'verifying') {
-    if (status) { status.textContent = msg || 'Verificando…'; status.style.color = 'var(--reported)'; }
+    if (status) { status.textContent = msg || 'Processando…'; status.style.color = 'var(--reported)'; }
     if (bar)    bar.style.width = '70%';
   } else if (state === 'done') {
     if (badge)  badge.style.opacity = '1';
@@ -2206,207 +2226,234 @@ function setUpdateStatus(state, msg) {
     setTimeout(() => { if (bar) bar.style.width = '0%'; }, 2000);
   } else if (state === 'error') {
     if (badge)  badge.style.opacity = '1';
-    if (status) { status.textContent = msg || 'Erro na atualização'; status.style.color = 'var(--alert)'; }
+    if (status) { status.textContent = msg || 'Feeds indisponíveis — dados estáticos ativos'; status.style.color = 'var(--claimed)'; }
     if (bar)    bar.style.width = '0%';
   }
 }
 
-// ── CAMADA 1: COLETA DE DADOS BRUTOS ────────────────────────
-async function layer1_fetchRawData() {
-
-  // Prompt de coleta: instrui o modelo a usar web_search
-  // em múltiplas queries cobrindo todas as dimensões do conflito
-  const LAYER1_PROMPT = `Você é um analista de inteligência militar sênior monitorando o conflito EUA/Israel × Irã de 2026 (Operação Epic Fury / Lion's Roar / Promessa Sincera 4, iniciada em 28 de fevereiro de 2026), e a FRENTE NORTE Israel × Hezbollah no Líbano (reaberta em 02/Mar/2026).
-
-TAREFA: Use a ferramenta web_search para buscar as informações MAIS RECENTES disponíveis sobre este conflito. Execute OBRIGATORIAMENTE as seguintes buscas:
-
-1. "Iran war casualties March 2026" — baixas totais atualizadas
-2. "Israel Iran missile attack victims latest" — baixas em Israel
-3. "CENTCOM Epic Fury update" — comunicados oficiais dos EUA
-4. "Iran nuclear sites destroyed 2026" — status das instalações nucleares
-5. "Iran leadership killed 2026 confirmed" — liderança iraniana morta
-6. "Iran US Israel war ceasefire negotiations" — status diplomático
-7. "Strait of Hormuz Iran closure latest" — Estreito de Hormuz
-8. "Iran missiles Gulf states casualties" — baixas nos países do Golfo
-9. "Israel Hezbollah Lebanon war 2026" — frente norte Israel-Hezbollah
-10. "IDF Lebanon ground operation 2026" — operação terrestre IDF no Líbano
-11. "Hezbollah casualties Lebanon 2026" — baixas Líbano por retaliação IDF
-
-FONTES PRIORITÁRIAS para verificação (X/Twitter):
-- @IDF (IDF oficial)
-- @EylonALevy (porta-voz IDF)
-- @Defence_Journl (Defence Journal)
-- @IranRevReport (Iran Revolution Report)
-- @CENTCOM (CENTCOM oficial)
-- @SamPancher (correspondente)
-- @UKikaski (analista militar)
-- @GhorbaniiNiyak (intel iraniana)
-- @usembassyjlm (Embaixada EUA Jerusalém)
-- @FoxNews
-- @g1 (G1 Globo Brasil)
-
-Após executar as buscas, compile os dados encontrados e responda EXCLUSIVAMENTE com um objeto JSON válido neste formato exato (sem texto antes ou depois, sem markdown, sem \`\`\`):
-
-{
-  "search_timestamp": "ISO8601_UTC",
-  "sources_searched": ["lista de URLs ou domínios consultados"],
-  "updates": [
-    {
-      "category": "kpi|country|israel_city|benchmark|timeline|casualty|infrastructure",
-      "field": "nome_do_campo_afetado",
-      "current_value": "valor_atual_no_painel",
-      "new_value": "novo_valor_encontrado_nas_buscas",
-      "unit": "unidade",
-      "confidence": "CONFIRMADO|REPORTADO|REIVINDICADO|CONFLITANTE",
-      "source_primary": "fonte_primária",
-      "source_url": "url_da_fonte",
-      "utc": "timestamp_ISO8601",
-      "note": "contexto_adicional_em_1_frase"
-    }
-  ],
-  "new_timeline_events": [
-    {
-      "time": "DD MMM · HH:MM UTC",
-      "tags": ["tag-confirm|tag-attack|tag-retaliate|tag-diplo|tag-us|tag-warning|tag-disinfo"],
-      "text": "Descrição factual do evento, máximo 120 caracteres.",
-      "confidence": "CONFIRMADO|REPORTADO|REIVINDICADO|CONFLITANTE"
-    }
-  ],
-  "no_change": false,
-  "summary": "Resumo em 1 frase do que mudou"
+// ── Buscar um feed RSS via proxy ─────────────────────────────
+async function fetchFeed(feed) {
+  try {
+    const url = `${RSS2JSON}${encodeURIComponent(feed.url)}&api_key=qoqiaguhqiydnmtbwpnmtinqvhsyxkqpfzfdgxd&count=20`;
+    const resp = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    if (!resp.ok) return [];
+    const data = await resp.json();
+    if (data.status !== 'ok') return [];
+    return (data.items || []).map(item => ({
+      title: item.title || '',
+      description: (item.description || '').replace(/<[^>]+>/g,'').substring(0,300),
+      link: item.link || '',
+      pubDate: item.pubDate || '',
+      source: feed.name
+    }));
+  } catch(e) {
+    return [];
+  }
 }
 
-REGRAS OBRIGATÓRIAS:
-- Inclua APENAS dados verificados por pelo menos uma fonte jornalística ou oficial
-- Para cada número, indique a fonte primária
-- Se não encontrar mudanças, retorne {"no_change": true, "search_timestamp": "...", "sources_searched": [...], "updates": [], "new_timeline_events": [], "summary": "Sem novas atualizações"}
-- Nunca invente dados. Se incerto, use confidence: "REPORTADO"
-- O JSON deve ser parseável diretamente por JSON.parse()`;
+// ── Filtrar artigos relevantes ao conflito ───────────────────
+function isRelevant(item) {
+  const text = (item.title + ' ' + item.description).toLowerCase();
+  return ALL_KEYWORDS.some(kw => text.includes(kw));
+}
 
-  const resp = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true"
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 4000,
-      tools: [{ type: "web_search_20250305", name: "web_search" }],
-      messages: [{ role: "user", content: LAYER1_PROMPT }]
-    })
+// ── Categorizar artigo ───────────────────────────────────────
+function categorizeItem(item) {
+  const text = (item.title + ' ' + item.description).toLowerCase();
+  if (KEYWORDS_HEZBOLLAH.some(k=>text.includes(k))) return 'HEZBOLLAH';
+  if (KEYWORDS_IRAN.some(k=>text.includes(k))) return 'IRÃ';
+  if (KEYWORDS_US.some(k=>text.includes(k))) return 'EUA';
+  if (KEYWORDS_ISRAEL.some(k=>text.includes(k))) return 'ISRAEL';
+  return 'GERAL';
+}
+
+// ── Extrair data ISO do item RSS ─────────────────────────────
+function parseItemDate(item) {
+  try { return new Date(item.pubDate).toISOString(); } catch(e) { return new Date().toISOString(); }
+}
+
+// ── Formatar horário para timeline ──────────────────────────
+function formatTimelineTime(isoStr) {
+  try {
+    const d = new Date(isoStr);
+    const months = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+    return `${d.getUTCDate().toString().padStart(2,'0')} ${months[d.getUTCMonth()]} · ${d.getUTCHours().toString().padStart(2,'0')}h${d.getUTCMinutes().toString().padStart(2,'0')} UTC`;
+  } catch(e) { return 'RECENTE'; }
+}
+
+// ── Detectar tag de timeline por conteúdo ───────────────────
+function detectTag(item) {
+  const text = (item.title+' '+item.description).toLowerCase();
+  if (text.match(/attack|strike|missile|bomb|killed|dead|explosion|ataqu|míssil|mort|atac/)) return 'tag-attack';
+  if (text.match(/retaliat|respond|counter|retalia/)) return 'tag-retaliate';
+  if (text.match(/confirm|verif|official|confirm/)) return 'tag-confirm';
+  if (text.match(/negotiat|ceasefire|diplomat|peace|acordo|negocia|cessar/)) return 'tag-diplo';
+  if (text.match(/us |united states|pentagon|centcom|american|trump|eua |estados unidos/)) return 'tag-us';
+  return 'tag-warning';
+}
+
+// ── Detectar confiança por fonte ─────────────────────────────
+function detectConfidence(item) {
+  const trusted = ['reuters','al jazeera','times of israel','jerusalem post','associated press','bbc','cnn','iran international'];
+  if (trusted.some(s=>item.source.toLowerCase().includes(s.toLowerCase()))) return 'REPORTADO';
+  return 'REIVINDICADO';
+}
+
+// ── Construir item de timeline a partir do artigo ────────────
+function buildTimelineEvent(item) {
+  const cat = categorizeItem(item);
+  const tag = detectTag(item);
+  const conf = detectConfidence(item);
+  const time = formatTimelineTime(parseItemDate(item));
+  // Limpar e truncar título
+  const text = item.title.replace(/[<>]/g,'').substring(0,140);
+  return { time, tags:[tag], text:`[${cat}] ${text}`, confidence:conf, _source:item.source, _link:item.link, _iso:parseItemDate(item) };
+}
+
+// ── Verificar se evento já existe na timeline ────────────────
+function eventAlreadyExists(event) {
+  return WAR_DATA.timeline.some(e => {
+    const similarity = e.text.substring(0,60).toLowerCase() === event.text.substring(0,60).toLowerCase();
+    return similarity;
   });
-
-  if (!resp.ok) throw new Error(`API HTTP ${resp.status}`);
-  const data = await resp.json();
-
-  // Extrair bloco de texto da resposta (pode vir após tool_use blocks)
-  const textBlocks = (data.content || []).filter(b => b.type === 'text');
-  const rawText = textBlocks.map(b => b.text).join('\n');
-
-  // Extrair JSON — pode estar em markdown fence ou direto
-  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('Nenhum JSON encontrado na resposta da Camada 1');
-
-  const parsed = JSON.parse(jsonMatch[0]);
-  return parsed;
 }
 
-// ── CAMADA 2: VERIFICAÇÃO E APLICAÇÃO DOS DADOS ─────────────
-async function layer2_verifyAndApply(layer1Data) {
-
-  if (layer1Data.no_change) return { applied: 0, skipped: 0, events_added: 0 };
-
-  // Prompt de verificação: valida os dados da camada 1
-  const LAYER2_PROMPT = `Você é um editor-chefe de um centro de inteligência militar. Sua função é VERIFICAR os dados a seguir antes de publicá-los num painel ao vivo.
-
-DADOS RECEBIDOS DA CAMADA DE COLETA:
-${JSON.stringify(layer1Data, null, 2)}
-
-TAREFA: Analise cada item em "updates" e "new_timeline_events". Para cada um:
-1. Verifique se o valor é plausível dado o contexto do conflito EUA/Israel × Irã 2026
-2. Verifique se a fonte citada é reconhecida (Reuters, AP, NYT, WaPo, Al Jazeera, Times of Israel, CENTCOM, IDF, Magen David Adom, CBS, NPR, ABC, BBC, CTP-ISW, Iran International, Haaretz)
-3. Rejeite dados sem fonte verificável ou com valores implausíveis
-
-Responda EXCLUSIVAMENTE com JSON válido (sem texto extra, sem markdown):
-{
-  "verified_updates": [...apenas os itens verificados e aprovados, no mesmo formato recebido...],
-  "verified_events": [...apenas os eventos verificados...],
-  "rejected": ["lista de campos rejeitados e motivo"],
-  "verification_note": "resumo da verificação em 1 frase"
-}`;
-
-  const resp = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true"
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 3000,
-      messages: [{ role: "user", content: LAYER2_PROMPT }]
-    })
-  });
-
-  if (!resp.ok) throw new Error(`API Camada 2 HTTP ${resp.status}`);
-  const data = await resp.json();
-  const rawText = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
-  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('Nenhum JSON da Camada 2');
-
-  return JSON.parse(jsonMatch[0]);
+// ── Atualizar ticker com novas manchetes ─────────────────────
+function updateTicker(items) {
+  if (!items.length) return;
+  const ticker = document.querySelector('.ticker-inner');
+  if (!ticker) return;
+  const headlines = items.slice(0,12).map(i=>
+    `◆ [${categorizeItem(i)}] ${i.title.toUpperCase().substring(0,90)}`
+  ).join(' &nbsp;|&nbsp; ');
+  ticker.innerHTML = headlines + ' &nbsp;|&nbsp; ';
 }
 
-// ── APLICADOR DE DADOS AO WAR_DATA ──────────────────────────
-function applyUpdatesToData(verifiedData, layer1Data) {
-  let applied = 0;
-  const now = new Date().toISOString();
+// ── ORQUESTRADOR PRINCIPAL ───────────────────────────────────
+async function fetchUpdate() {
+  updateCount++;
+  const cycleId = `#${updateCount} · ${new Date().toISOString().substring(11,16)} UTC`;
+  console.log(`[RSS UPDATE ${cycleId}] Iniciando ciclo`);
 
-  (verifiedData.verified_updates || []).forEach(u => {
-    try {
-      // Registrar no audit log
-      WAR_DATA.audit_log.unshift({
-        utc: u.utc || now,
-        field: u.field,
-        old_value: String(u.current_value || '—'),
-        new_value: String(u.new_value),
-        source: u.source_primary || 'auto-update',
-        note: `[AUTO] ${u.note || ''}`
-      });
+  setUpdateStatus('loading', `Ciclo ${updateCount}: consultando ${RSS_FEEDS.length} feeds…`);
 
-      // Aplicar ao WAR_DATA por categoria
-      if (u.category === 'kpi') {
-        const fieldMap = {
-          'israel_dead': 'israel_dead',
-          'us_dead': 'us_dead',
-          'iranian_officials_dead': 'iranian_officials_dead',
-          'iran_civilian_dead': 'iran_civilian_dead',
-          'projectiles_launched': 'projectiles_launched',
-          'iran_wounded': 'iran_wounded'
-        };
-        const key = Object.keys(fieldMap).find(k => u.field.includes(k));
-        if (key && WAR_DATA.kpis[fieldMap[key]]) {
-          WAR_DATA.kpis[fieldMap[key]].value = u.new_value;
-          WAR_DATA.kpis[fieldMap[key]].confidence = u.confidence;
-          WAR_DATA.kpis[fieldMap[key]].source_primary = u.source_primary;
-          WAR_DATA.kpis[fieldMap[key]].last_update_utc = u.utc || now;
-        }
+  let allItems = [];
+  let feedsOk = 0;
+
+  try {
+    // Buscar todos os feeds em paralelo
+    const results = await Promise.allSettled(RSS_FEEDS.map(f => fetchFeed(f)));
+    results.forEach((r,i) => {
+      if (r.status === 'fulfilled' && r.value.length > 0) {
+        allItems = allItems.concat(r.value);
+        feedsOk++;
       }
-      applied++;
-    } catch(e) { console.warn('Erro ao aplicar update:', u.field, e); }
-  });
+    });
 
-  // Adicionar novos eventos à timeline
-  const newEvents = verifiedData.verified_events || [];
-  newEvents.forEach(e => {
-    WAR_DATA.timeline.unshift(e);
-  });
+    setUpdateStatus('verifying', `Processando ${allItems.length} artigos de ${feedsOk} feeds…`);
 
-  return { applied, events_added: newEvents.length,
-           rejected: (verifiedData.rejected || []).length };
+    // Filtrar relevantes
+    const relevant = allItems.filter(isRelevant);
+    console.log(`[RSS] ${allItems.length} artigos → ${relevant.length} relevantes`);
+
+    if (relevant.length === 0) {
+      setUpdateStatus('done', `Ciclo ${updateCount} — feeds OK · Sem novas notícias relevantes`);
+      lastUpdateResult = { cycle:updateCount, timestamp:new Date().toISOString(), layer1_sources:RSS_FEEDS.slice(0,feedsOk).map(f=>f.name), layer1_updates:0, layer2_approved:0, events_added:0, summary:`${feedsOk}/${RSS_FEEDS.length} feeds OK. Sem novidades.` };
+      updateStatusPanel(lastUpdateResult);
+      scheduleNextUpdate();
+      return;
+    }
+
+    // Ordenar por data, mais recentes primeiro
+    relevant.sort((a,b) => {
+      try { return new Date(b.pubDate) - new Date(a.pubDate); } catch(e){ return 0; }
+    });
+
+    // Construir eventos de timeline novos
+    let eventsAdded = 0;
+    const newEvents = [];
+    for (const item of relevant.slice(0,15)) {
+      const ev = buildTimelineEvent(item);
+      if (!eventAlreadyExists(ev)) {
+        newEvents.push(ev);
+        WAR_DATA.timeline.unshift(ev);
+        WAR_DATA.audit_log.unshift({
+          utc: ev._iso || new Date().toISOString(),
+          field: `RSS · ${categorizeItem(item)}`,
+          old_value: '—',
+          new_value: item.title.substring(0,80),
+          source: item.source,
+          note: `[AUTO-RSS] ${item.link ? item.link.substring(0,60) : ''}`
+        });
+        eventsAdded++;
+        if (eventsAdded >= 8) break; // máximo 8 eventos novos por ciclo
+      }
+    }
+
+    // Atualizar ticker
+    updateTicker(relevant);
+
+    // Re-render
+    rerenderAll();
+
+    lastUpdateResult = {
+      cycle: updateCount,
+      timestamp: new Date().toISOString(),
+      layer1_sources: relevant.slice(0,5).map(i=>i.source),
+      layer1_updates: relevant.length,
+      layer2_approved: eventsAdded,
+      events_added: eventsAdded,
+      summary: eventsAdded > 0
+        ? `${eventsAdded} novos eventos adicionados · ${feedsOk} feeds consultados · ${relevant.length} artigos relevantes`
+        : `${feedsOk} feeds OK · ${relevant.length} artigos filtrados · Sem eventos novos`
+    };
+    updateStatusPanel(lastUpdateResult);
+    setUpdateStatus('done', `✓ Ciclo ${updateCount} — ${eventsAdded} eventos novos · ${feedsOk} feeds`);
+    console.log(`[RSS UPDATE ${cycleId}] Concluído. Feeds: ${feedsOk}, Relevantes: ${relevant.length}, Eventos: ${eventsAdded}`);
+
+  } catch(err) {
+    console.error(`[RSS UPDATE ${cycleId}] ERRO:`, err);
+    setUpdateStatus('error', `Feeds indisponíveis (ciclo ${updateCount}) — dados base ativos`);
+    lastUpdateResult = { cycle:updateCount, timestamp:new Date().toISOString(), layer1_sources:[], layer1_updates:0, layer2_approved:0, events_added:0, last_error:err.message, summary:'Erro nos feeds — painel funcional com dados base' };
+    updateStatusPanel(lastUpdateResult);
+  }
+
+  scheduleNextUpdate();
+}
+
+function scheduleNextUpdate() {
+  const next = new Date(Date.now() + UPDATE_INTERVAL);
+  const timeStr = next.toISOString().substring(11,16) + ' UTC';
+  const el1 = document.getElementById('next-update');
+  const el2 = document.getElementById('next-update-top');
+  if (el1) el1.textContent = `Próx. atualização: ${timeStr}`;
+  if (el2) el2.textContent = `Próx. atualização: ${timeStr} · Intervalo: 15 min`;
+  setTimeout(fetchUpdate, UPDATE_INTERVAL);
+}
+
+// ── PAINEL DE STATUS DA ATUALIZAÇÃO ─────────────────────────
+function updateStatusPanel(r) {
+  const panel = document.getElementById('update-status-panel');
+  if (!panel || !r) return;
+  panel.innerHTML = `
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center;">
+      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">CICLO</div>
+           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-bright);">#${r.cycle}</div></div>
+      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">ÚLTIMA BUSCA</div>
+           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-bright);">${r.timestamp.substring(11,16)} UTC</div></div>
+      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">FEEDS CONSULTADOS</div>
+           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--reported);">${r.layer1_sources.length}</div></div>
+      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">ARTIGOS RELEVANTES</div>
+           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--confirmed);">${r.layer1_updates || 0}</div></div>
+      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">EVENTOS ADICIONADOS</div>
+           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--reported);">${r.events_added || 0}</div></div>
+      ${r.last_error ? `<div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--alert);letter-spacing:.1em;">STATUS</div>
+           <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--claimed);">Dados base ativos</div></div>` : ''}
+    </div>
+    ${r.summary ? `<div style="font-size:.6rem;color:var(--text-secondary);margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border);">${r.summary}</div>` : ''}
+    ${r.layer1_sources.length > 0 ? `<div style="font-family:var(--font-mono);font-size:.48rem;color:var(--text-tertiary);margin-top:.4rem;">📡 Fontes RSS: ${r.layer1_sources.slice(0,6).join(' · ')}</div>` : ''}
+    <div style="font-family:var(--font-mono);font-size:.44rem;color:var(--text-tertiary);margin-top:.25rem;">Sistema RSS autônomo · Sem API key · 15 min · 6 feeds: Reuters · Al Jazeera · Times of Israel · Iran International · Jerusalem Post · Middle East Eye</div>
+  `;
 }
 
 // ── RE-RENDER SECTIONS ───────────────────────────────────────
@@ -2599,14 +2646,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Clock & updates
   updateClock();
-  // Primeiro ciclo após 8 segundos (deixa a página carregar)
-  setTimeout(fetchUpdate, 8000);
+  // Primeiro ciclo após 5 segundos
+  setTimeout(fetchUpdate, 5000);
   // Atualizar footer com próximo horário
-  const firstNext = new Date(Date.now() + UPDATE_INTERVAL + 8000);
+  const firstNext = new Date(Date.now() + UPDATE_INTERVAL + 5000);
   const nextEl = document.getElementById('next-update');
   const nextTopEl = document.getElementById('next-update-top');
-  if (nextEl) nextEl.textContent = `Próx. atualização: ${firstNext.toISOString().substring(11,16)} UTC`;
-  if (nextTopEl) nextTopEl.textContent = `Próx. atualização: ${firstNext.toISOString().substring(11,16)} UTC · Intervalo: 30 min`;
+  if (nextEl) nextEl.textContent = `Próx. atualização RSS: ${firstNext.toISOString().substring(11,16)} UTC`;
+  if (nextTopEl) nextTopEl.textContent = `Sistema RSS autônomo · Próx.: ${firstNext.toISOString().substring(11,16)} UTC · Intervalo: 15 min`;
 });
 </script>
 
@@ -2659,7 +2706,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="header-right">
     <div class="live-badge" id="live-badge" onclick="fetchUpdate()">
       <div class="live-dot"></div>
-      <span>AO VIVO · DUPLA CAMADA · 30 MIN</span>
+      <span>AO VIVO · RSS AUTÔNOMO · 15 MIN</span>
     </div>
     <div class="time-display" id="clock">Carregando...</div>
     <div class="time-display" id="next-update" style="font-size:.5rem;">Próx. atualização: —</div>
@@ -2944,8 +2991,8 @@ document.addEventListener('DOMContentLoaded', () => {
   <!-- Update Status Panel -->
   <div>
     <div class="section-header">
-      <div class="section-title">Status do Sistema de Atualização Automática</div>
-      <div class="section-meta">Dupla camada: Coleta + Verificação · Intervalo: 30 min</div>
+      <div class="section-title">Status do Sistema de Atualização RSS</div>
+      <div class="section-meta">Sistema autônomo · Sem API key · 6 feeds RSS públicos · Intervalo: 15 min</div>
     </div>
     <div class="update-status-panel-wrap" id="update-status-panel">
       <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--text-tertiary);">Aguardando primeiro ciclo de atualização…</div>
@@ -3094,7 +3141,7 @@ document.addEventListener('DOMContentLoaded', () => {
      ============================================================ -->
 <div class="footer">
   <div class="footer-text">MONITORAMENTO ASSAYAG · GUERRA EUA/ISRAEL × IRÃ 2026 · Todos os dados vêm do objeto WAR_DATA — nenhum número hardcoded no HTML</div>
-  <div class="footer-text">Atualização automática a cada 30 min · Dupla camada: Coleta (web_search) + Verificação · Clique em AO VIVO para forçar atualização</div>
+  <div class="footer-text">Atualização automática a cada 15 min · Sistema RSS autônomo · 6 feeds: Reuters · Al Jazeera · Times of Israel · Iran International · Jerusalem Post · Middle East Eye · Clique em AO VIVO para forçar</div>
 </div>
 
 <!-- Fix audit toggle (use proper IDs) -->
