@@ -373,12 +373,14 @@ body {
   background: #fff;
   border:1px solid rgba(0,0,0,.08);
   box-shadow:0 1px 4px rgba(0,0,0,.05);
-  padding: 1.1rem 1.25rem;
+  padding: 1.1rem 1.25rem 2.4rem 1.25rem;
   display: flex;
   flex-direction: column;
   gap: .4rem;
   position: relative;
   transition: background .2s;
+  overflow: hidden;
+  min-height: 0;
 }
 .kpi-card:hover { background: var(--bg3); }
 .kpi-label {
@@ -412,7 +414,7 @@ body {
 }
 .kpi-badge {
   position: absolute;
-  top: .75rem;
+  bottom: .5rem;
   right: .75rem;
 }
 
@@ -471,11 +473,14 @@ body {
 }
 .country-card {
   background: #fff;
-  padding: 1rem 1.1rem;
+  padding: 1rem 1.1rem 1.8rem 1.1rem;
   display: flex;
   flex-direction: column;
   gap: .6rem;
   transition: background .2s;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
 }
 .country-card:hover { background: #f0f3f7; }
 .country-header {
@@ -741,6 +746,11 @@ body {
   font-family: var(--font-mono);
   font-size: .48rem;
   color: var(--text-tertiary);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 65%;
+  display: inline-block;
 }
 
 /* ============================================================
@@ -1059,6 +1069,37 @@ body {
   .israel-cities { grid-template-columns: 1fr; }
   .infra-grid { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   LAYOUT FIXES — prevent text overflow / overlap
+   ============================================================ */
+.kpi-card { min-height:0; overflow:hidden; }
+.kpi-sub  { overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+.country-note { overflow:hidden; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; }
+.leader-card { overflow:hidden; min-height:0; padding-bottom:1.6rem; }
+.leader-role { overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+.bench-name { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; max-width:70%; }
+.infra-note { overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; }
+.tl-text { overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; }
+.city-notes { overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; }
+.kpi-card { padding-bottom:1.6rem; }
+
+/* ============================================================
+   i18n — LANGUAGE SWITCHER
+   ============================================================ */
+.lang-switcher {
+  display:flex; align-items:center; gap:.3rem;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r-md); padding:2px 3px;
+}
+.lang-btn {
+  font-family:var(--font-mono); font-size:.55rem; font-weight:600;
+  letter-spacing:.1em; padding:3px 10px; border-radius:3px;
+  border:none; cursor:pointer; transition:all .15s;
+  background:transparent; color:var(--text-tertiary);
+}
+.lang-btn.active { background:var(--reported); color:#fff; }
+
 /* ============================================================
    LEADERSHIP — REDESIGN v3
    3 categorias bem separadas: RELIGIOSO / MILITAR / POLÍTICO
@@ -1185,8 +1226,9 @@ body {
   gap:1px; background:var(--border); border-radius:var(--r-lg); overflow:hidden;
 }
 .hzb-kpi {
-  background:#fff; padding:1rem 1.1rem;
+  background:#fff; padding:1rem 1.1rem 2.2rem 1.1rem;
   display:flex; flex-direction:column; gap:.35rem; position:relative;
+  overflow:hidden; min-height:0;
 }
 .hzb-kpi:hover { background:var(--bg3); }
 .hzb-kpi-label { font-family:var(--font-mono); font-size:.5rem; letter-spacing:.1em; color:var(--text-tertiary); text-transform:uppercase; }
@@ -1231,9 +1273,10 @@ body {
   gap:1px; background:rgba(0,0,0,.07);
 }
 .hzb-leader {
-  background:#fff; padding:.8rem 1rem;
+  background:#fff; padding:.8rem 1rem 1.8rem 1rem;
   display:flex; flex-direction:column; gap:.25rem;
   position:relative; transition:background .15s;
+  overflow:hidden; min-height:0;
 }
 .hzb-leader:hover { background:#f0f4ff; }
 
@@ -1273,9 +1316,9 @@ const WAR_DATA = {
 
   meta: {
     operation_us: "EPIC FURY", operation_il: "ROARING LION", operation_iran: "PROMESSA SINCERA 4",
-    start_utc: "2026-02-28T08:00:00Z", last_manual_update: "2026-03-03T06:00:00Z", day_of_conflict: 4,
-    escalation_index: { value: 93, confidence: "REPORTADO",
-      note: "DIA 4: Hezbollah abriu nova frente, 3 F-15 derrubados por fogo amigo no Kuwait, embaixada EUA atingida, base britânica em Chipre atingida (Europa). 11+ países envolvidos." }
+    start_utc: "2026-02-28T08:00:00Z", last_manual_update: "2026-03-04T12:00:00Z", day_of_conflict: 5,
+    escalation_index: { value: 96, confidence: "REPORTADO",
+      note: "DIA 5: Mortos no Irã chegam a 1.045. Submarino EUA afunda IRIS Dena (1ª vez desde WW2). Turquia intercepta míssil iraniano — NATO ativada. US Consulate Dubai atingido. Hegseth: 'just getting started'. 13+ países envolvidos." }
   },
 
   kpis: {
@@ -1283,43 +1326,43 @@ const WAR_DATA = {
       value: 48, unit: "líderes", qualifier: "+",
       source_primary: "Trump (Truth Social) · IDF Defrin",
       source_secondary: "Reuters · CBS News",
-      last_update_utc: "2026-03-02T20:00:00Z", confidence: "REIVINDICADO",
-      notes: "Trump: 48 líderes iraninos eliminados. Inclui Khamenei (confirmado), esposa de Khamenei (02/Mar), cúpula IRGC e inteligência."
+      last_update_utc: "2026-03-04T12:00:00Z", confidence: "REIVINDICADO",
+      notes: "Trump: 48 líderes iraninos eliminados. Inclui Khamenei (confirmado), esposa de Khamenei, cúpula IRGC e inteligência. Funeral de Khamenei adiado."
     },
     iran_civilian_dead: {
-      value: 787, unit: "civis", qualifier: "+",
-      source_primary: "Cruz Vermelha Iraniana / Red Crescent — 03 Mar (Al Jazeera LIVE)",
-      source_secondary: "Cruz Vermelha Iraniana: 555+ confirmados · Al Jazeera",
-      last_update_utc: "2026-03-03T03:00:00Z", confidence: "REPORTADO",
-      notes: "Red Crescent (03/Mar — Al Jazeera live): 787 mortos confirmados. HRANA: 742 (estimativa anterior). Inclui ~168 crianças em escola de Minab — NYT/WaPo verificaram imagens parcialmente."
+      value: 1045, unit: "mortos no Irã", qualifier: "+",
+      source_primary: "Tasnim News Agency · Al Jazeera — 04 Mar 2026",
+      source_secondary: "AP · CBS News · Wikipedia 2026",
+      last_update_utc: "2026-03-04T10:00:00Z", confidence: "REPORTADO",
+      notes: "Dia 5: Tasnim (semioficial): 1.045 mortos. Inclui 148 crianças em escola de Minab (CONTESTADO). IRGC: 10ª onda de ataques em Teerã, Karaj, Isfahan, Qom. Trump: 'just about everything knocked out'."
     },
     iran_wounded: {
-      value: 2100, unit: "feridos", qualifier: "+",
-      source_primary: "Cruz Vermelha Iraniana · HRANA",
-      source_secondary: "Al Jazeera · Wikipedia 2026",
-      last_update_utc: "2026-03-03T03:00:00Z", confidence: "REPORTADO",
-      notes: "Estimativa acumulada Dias 1–4. Red Crescent: 1.200+ no Dia 2. Escalonamento esperado com 4 dias de ataques."
+      value: 3200, unit: "feridos", qualifier: "+",
+      source_primary: "Meia Lua Vermelha Iraniana · Tasnim",
+      source_secondary: "Al Jazeera · Reuters · AP",
+      last_update_utc: "2026-03-04T10:00:00Z", confidence: "REPORTADO",
+      notes: "Estimativa acumulada Dias 1–5. Hospitais de Teerã, Isfahan e Shiraz reportam capacidade esgotada."
     },
     projectiles_launched: {
-      value: 1200, unit: "munições EUA/IL", qualifier: "+",
-      source_primary: "IDF Porta-voz oficial",
-      source_secondary: "CENTCOM: 1.000+ alvos iranianos atingidos",
-      last_update_utc: "2026-03-02T18:00:00Z", confidence: "REPORTADO",
-      notes: "IDF: 1.200+ munições em 24 das 31 províncias iranianas. CENTCOM: 1.000+ alvos atingidos desde 28/Fev. Iran: 1.000+ alvos no Irã em 2 dias."
+      value: 1500, unit: "munições EUA/IL", qualifier: "+",
+      source_primary: "IDF Porta-voz oficial · CENTCOM",
+      source_secondary: "AP · Times of Israel",
+      last_update_utc: "2026-03-04T08:00:00Z", confidence: "REPORTADO",
+      notes: "IDF: 1.200+ munições em 24 províncias + novas ondas no Dia 5 (parlamento, Assembly of Experts, segurança interna). CENTCOM: 17 navios iranianos destruídos + IRIS Dena afundada."
     },
     israel_dead: {
-      value: 10, unit: "mortos", qualifier: "+",
+      value: 11, unit: "mortos", qualifier: "+",
       source_primary: "Magen David Adom (MDA)",
-      source_secondary: "CNN · PBS · OPB — 03 Mar 2026",
-      last_update_utc: "2026-03-02T22:00:00Z", confidence: "CONFIRMADO",
-      notes: "CNN 03/Mar: 10+ mortos, 200+ feridos em Israel. MDA: 9 em Beit Shemesh + 1 em Tel Aviv. Hezbollah rockets (02/Mar) em áreas abertas — sem novos mortos."
+      source_secondary: "AP · IDF · Times of Israel · Al Jazeera",
+      last_update_utc: "2026-03-04T10:00:00Z", confidence: "CONFIRMADO",
+      notes: "MDA (04/Mar): 11+ mortos, 335+ feridos. 62 ondas de ataques em 24h (Dia 4→5). Sirenes em Jerusalém, Tel Aviv durante Dia 5. Defesas interceptaram maioria."
     },
     us_dead: {
       value: 6, unit: "soldados EUA",
-      source_primary: "CENTCOM — comunicado oficial 02 Mar",
-      source_secondary: "NPR · CNN · Washington Post · OPB",
-      last_update_utc: "2026-03-02T20:00:00Z", confidence: "CONFIRMADO",
-      notes: "CENTCOM 02/Mar: 6 KIA — todos soldados do Exército, mesma unidade logística no Kuwait. 18 feridos graves. Gen. Caine: 'Esperamos baixas adicionais'. Trump: prometeu vingança."
+      source_primary: "CENTCOM — Hegseth nomeou 4: Capt. Cody Cork, Sgt. Noah Tejans...",
+      source_secondary: "CBS News · NPR · Fox News · Newsweek",
+      last_update_utc: "2026-03-04T11:00:00Z", confidence: "CONFIRMADO",
+      notes: "Hegseth (04/Mar) nomeou os 4 soldados mortos no Kuwait. 6 KIA total confirmados. Hegseth: 'America is winning, decisively, devastatingly and without mercy'."
     }
   },
 
@@ -1359,13 +1402,13 @@ const WAR_DATA = {
   },
 
   countries: [
-    { name: "Israel", flag: "🇮🇱", intercept_pct: 92, risk: "critical",
-      launched: 150, qualifier_l: "+", impacted: 12, qualifier_i: "~", intercepted: 138, qualifier_int: "~",
-      dead: 10, wounded: 200, confidence: "CONFIRMADO",
-      source_primary: "Magen David Adom", source_secondary: "CNN · Times of Israel",
-      last_update_utc: "2026-03-02T22:00:00Z",
-      note: "10+ mortos (CNN/MDA). 200+ feridos. Hezbollah nova frente (02/Mar) — rockets em áreas abertas. IDF: ordens evacuação 50 comunidades norte. Beit Shemesh: pior incidente (9 mortos em abrigo).",
-      weapons: ["Shahab-3","Sejjil","Fattah mod.","Shahed-136","Rockets Hezbollah"] },
+    { name: "Israel", flag: "🇮🇱", intercept_pct: 93, risk: "critical",
+      launched: 200, qualifier_l: "+", impacted: 14, qualifier_i: "~", intercepted: 186, qualifier_int: "~",
+      dead: 11, wounded: 335, confidence: "CONFIRMADO",
+      source_primary: "Magen David Adom · IDF", source_secondary: "AP · Times of Israel",
+      last_update_utc: "2026-03-04T10:00:00Z",
+      note: "DIA 5: 11+ mortos, 335+ feridos (MDA). 62 ondas de ataque em 24h (Dia 4→5). Sirenes em Jerusalém e Tel Aviv. Ben Gurion fechado. IDF invade sul do Líbano. Beit Shemesh: pior incidente (9 mortos).",
+      weapons: ["Shahab-3","Sejjil","Fattah mod.","Shahed-136","Foguetes Hezbollah"] },
     { name: "Kuwait", flag: "🇰🇼", intercept_pct: 45, risk: "critical",
       launched: 30, qualifier_l: "~", impacted: 10, qualifier_i: "~", intercepted: 20, qualifier_int: "~",
       dead: 6, wounded: 40, confidence: "CONFIRMADO",
@@ -1374,12 +1417,12 @@ const WAR_DATA = {
       note: "6 soldados EUA mortos (todos no Kuwait, mesma unidade logística). Embaixada EUA atingida — FECHADA indefinidamente. FOGO AMIGO: Kuwait derrubou 3 F-15E americanos por engano durante ataque iraniano. Ali al-Salem AB: 15 cruzeiros iranianos.",
       weapons: ["MRBM","Shahed","Cruzeiro"] },
     { name: "Líbano (Hezbollah)", flag: "🇱🇧", intercept_pct: 50, risk: "critical",
-      launched: 20, qualifier_l: "~", impacted: 5, qualifier_i: "~", intercepted: 15, qualifier_int: "~",
-      dead: 52, wounded: 154, confidence: "CONFIRMADO",
-      source_primary: "Min. Saúde do Líbano", source_secondary: "Al Jazeera · Reuters · OPB",
-      last_update_utc: "2026-03-03T00:00:00Z",
-      note: "NOVA FRENTE (02/Mar): Hezbollah lançou mísseis e drones contra Israel. Israel retaliu: 52 mortos, 154 feridos no Líbano, 28.500 deslocados. IDF lancou INVASAO TERRESTRE no sul do Libano (03/Mar). Netanyahu+Katz autorizaram ocupar posicoes estrategicas. 59 aldeias com ordem de evacuacao. 70+ alvos aereos. Beirute: strikes simultaneos em Teerao e Beirute (03/Mar).",
-      weapons: ["Foguetes Hezbollah","Drones Hezbollah"] },
+      launched: 25, qualifier_l: "~", impacted: 6, qualifier_i: "~", intercepted: 19, qualifier_int: "~",
+      dead: 50, wounded: 335, confidence: "CONFIRMADO",
+      source_primary: "Min. Saúde do Líbano · AP", source_secondary: "Al Jazeera · Reuters",
+      last_update_utc: "2026-03-04T10:00:00Z",
+      note: "DIA 5: 50+ mortos, 335+ feridos no Líbano (AP/Min. Saúde). Hezbollah atinge tanque israelense em Houla (2 feridos IDF). IDF invade sul Líbano: 59 aldeias evacuadas, operação além do Litani. Beirute sob strikes. 28.500 deslocados.",
+      weapons: ["Foguetes Hezbollah","Drones Hezbollah","Mísseis AT"] },
     { name: "Bahrein", flag: "🇧🇭", intercept_pct: 55, risk: "high",
       launched: 30, qualifier_l: "~", impacted: 8, qualifier_i: "~", intercepted: 22, qualifier_int: "~",
       dead: 1, wounded: 45, confidence: "CONFIRMADO",
@@ -1523,7 +1566,10 @@ const WAR_DATA = {
     ],
 
   infrastructure: [
-    { id:"01", name:"Complexo / Bunker de Khamenei", loc:"Distrito Pasteur, Teerã", note:"Destruído Dia 1. Confirmado IDF + satélite.", cat:"LIDERANÇA", confidence:"CONFIRMADO", source:"IDF · NCRI · Satélite" },
+    { id:"01", name:"IRIS Dena — Fragata Iraniana", loc:"Oceano Índico — 40mn. sul de Galle, Sri Lanka", cat:"NAVAL", confidence:"CONFIRMADO",
+      source:"Hegseth (Pentágono) · CBS News · Reuters · AP · Sri Lanka Navy",
+      note:"AFUNDADA 04/Mar por torpedo de submarino EUA (USS ?) — 1ª vez desde WW2. 180 a bordo: 79 resgatados, 80+ mortos, 101 desaparecidos. Hegseth: 'They thought they were safe in international waters'." },
+    { id:"02", name:"Complexo / Bunker de Khamenei", loc:"Distrito Pasteur, Teerã", note:"Destruído Dia 1. Confirmado IDF + satélite.", cat:"LIDERANÇA", confidence:"CONFIRMADO", source:"IDF · NCRI · Satélite" },
     { id:"02", name:"Sede IRIB (TV + Rádio estatal iraniana)", loc:"Evin, Teerã", note:"Israel confirmou destruição total em 02/Mar. Última voz de propaganda do regime.", cat:"MÍDIA/COMANDO", confidence:"CONFIRMADO", source:"Israel (confirmado 02/Mar) · Wikipedia 2026" },
     { id:"03", name:"Sede Min. Inteligência VAJA + 10 filiais", loc:"Teerã — múltiplos locais", note:"IDF: 10 sedes ministeriais + QG Força Quds destruídos na noite 01→02/Mar.", cat:"INTELIGÊNCIA", confidence:"REPORTADO", source:"IDF Defrin (02/Mar) · CNN" },
     { id:"04", name:"QG IRGC — Edifício Malek-Ashtar", loc:"Teerã", note:"Iran International: vídeo mostra edifício completamente destruído (02/Mar).", cat:"IRGC", confidence:"CONFIRMADO", source:"Iran International · IDF" },
@@ -1541,6 +1587,12 @@ const WAR_DATA = {
   ],
 
   timeline: [
+    { time:"04 MAR · 12h UTC", tags:["tag-confirm","tag-us"], text:"Hegseth no Pentágono: 'America is winning, decisively, devastatingly'. Gen. Caine: capacidade naval iraniana 'efetivamente neutralizada'. EUA afundou 17 navios + IRIS Dena. 'Ondas maiores estão chegando'.", confidence:"CONFIRMADO" },
+    { time:"04 MAR · 10h UTC", tags:["tag-confirm","tag-attack"], text:"HISTÓRICO: Submarino EUA afunda IRIS Dena no Oceano Índico (costa Sri Lanka) com torpedo — 1ª vez desde WW2. 180 a bordo: 80+ mortos, 101 desaparecidos. Hegseth confirmou no Pentágono.", confidence:"CONFIRMADO" },
+    { time:"04 MAR · 09h UTC", tags:["tag-warning","tag-attack"], text:"Mortos no Irã chegam a 1.045 (Tasnim). IRGC: '10ª onda de ataques em Teerã, Karaj, Isfahan, Qom'. Consulado EUA em Dubai atingido por drone. EUA pede evacuação de americanos em 14 países do Oriente Médio.", confidence:"REPORTADO" },
+    { time:"04 MAR · 07h UTC", tags:["tag-warning"], text:"TURQUIA + NATO: Defesas NATO interceptam míssil balístico iraniano no espaço aéreo turco (Dörtyol, Hatay). Turquia reserva direito de defesa. Hegseth: 'sem sinais de Artigo 5'.", confidence:"CONFIRMADO" },
+    { time:"04 MAR · 06h UTC", tags:["tag-attack"], text:"Israel bombardeia Assembleia de Especialistas durante reunião para eleger novo Líder Supremo. Parlamento iraniano também atingido. Trump: 'tudo foi destruído — sem marinha, força aérea, radar'.", confidence:"CONFIRMADO" },
+    { time:"04 MAR · 05h UTC", tags:["tag-diplo"], text:"França: Macron ordena porta-aviões Charles de Gaulle ao Mediterrâneo. Rafales e defesas aéreas já na região. EUA pede evacuação de não-essenciais do Chipre.", confidence:"CONFIRMADO" },
     { time:"03 MAR · 09h UTC", tags:["tag-confirm","tag-warning"], text:"Red Crescent confirma 787 mortos no Irã — maior contagem oficial. Frete supertankers para China subiu 94% num dia (LSEG). Hormuz travou 1/5 comercio global. Trump: abastecimento de munição 'virtualmente ilimitado'.", confidence:"CONFIRMADO" },
     { time:"03 MAR · ~06h UTC", tags:["tag-attack"], text:"ISRAEL INVADE SUL DO LÍBANO — IDF avança para posições estratégicas. Netanyahu e Katz autorizaram operação. 59 aldeias com evacuação urgente. Strikes simultâneos em Teerã e Beirute.", confidence:"CONFIRMADO" },
     { time:"03 MAR · ~04h UTC", tags:["tag-attack","tag-warning"], text:"EMBAIXADA EUA EM RIAD atingida por 2 drones iranianos + 4 drones no Bairro Diplomático. Incêndio limitado, sem feridos (Min. Defesa Saudita). Trump: 'vocês vão descobrir em breve' a retaliação.", confidence:"CONFIRMADO" },
@@ -1565,6 +1617,13 @@ const WAR_DATA = {
   ],
 
   audit_log: [
+    { utc:"2026-03-04T12:00:00Z", field:"DIA 5 — Hegseth Pentágono", old_value:"—", new_value:"'America is winning decisively' · IRIS Dena afundada · 17 navios destruídos", source:"CENTCOM · CBS News · Newsweek", note:"[DIA 5] Hegseth: 'More larger waves are coming'" },
+    { utc:"2026-03-04T10:00:00Z", field:"IRIS Dena — afundada submarino EUA", old_value:"em trânsito Oceano Índico", new_value:"AFUNDADA — 80+ mortos, 101 desaparecidos", source:"CBS · Reuters · AP · Hegseth", note:"[DIA 5] 1ª vez submarino EUA afunda navio inimigo desde WW2" },
+    { utc:"2026-03-04T09:30:00Z", field:"kpis.iran_dead", old_value:"787", new_value:"1045+", source:"Tasnim News Agency · AP · Al Jazeera (04/Mar)", note:"[DIA 5] Mortos no Irã ultrapassam 1.000" },
+    { utc:"2026-03-04T08:00:00Z", field:"NATO — Turquia intercepta míssil", old_value:"—", new_value:"NATO abate míssil iraniano em Dörtyol, Hatay, Turquia", source:"Turkish Defense Ministry · Hegseth", note:"[DIA 5] Hegseth: sem sinais de Artigo 5" },
+    { utc:"2026-03-04T06:00:00Z", field:"Assembly of Experts — bombardeada", old_value:"—", new_value:"Assembleia de Especialistas atingida durante reunião de sucessão de Khamenei", source:"Reuters · Times of Israel", note:"[DIA 5] Funeral de Khamenei adiado. Mojtaba favorito." },
+    { utc:"2026-03-04T05:00:00Z", field:"Consulado EUA Dubai — atingido", old_value:"—", new_value:"Drone iraniano atinge parking do consulado EUA em Dubai", source:"AP · Fox News", note:"[DIA 5] Expansão regional" },
+    { utc:"2026-03-04T04:00:00Z", field:"França — Charles de Gaulle", old_value:"Báltico", new_value:"Macron envia Charles de Gaulle ao Mediterrâneo", source:"Macron · AP · Reuters", note:"[DIA 5] França não participa dos ataques mas em postura defensiva" },
     { utc:"2026-03-03T09:00:00Z", field:"kpis.iran_civilian_dead — 787 Red Crescent", old_value:"742 HRANA", new_value:"787 Red Crescent — Al Jazeera LIVE", source:"Al Jazeera liveblog 03/Mar · CBS News", note:"Maior contagem confirmada desde o início do conflito." },
     { utc:"2026-03-03T06:00:00Z", field:"countries.Lebanon — IDF invasão terrestre + Riyadh", old_value:"apenas ataques aéreos / sem ataque Riyadh", new_value:"IDF invade sul Líbano + Embaixada EUA Riad atingida", source:"IDF · Netanyahu · Min. Defesa Saudita · Al Jazeera (03/Mar)", note:"Dois novos desenvolvimentos críticos Dia 4: invasão Líbano e embaixada Riad." },
     { utc:"2026-03-03T06:00:00Z", field:"ATUALIZAÇÃO GERAL — DIA 4 DO CONFLITO", old_value:"Dados de 01 Mar (Dia 2)", new_value:"Dados de 03 Mar (Dia 4)", source:"Al Jazeera · NPR · CNN · Reuters · WaPo · OPB · Wikipedia 2026 Iran conflict", note:"Redesign completo com dados de D3–D4. Sistema de auto-update corrigido." },
@@ -1589,14 +1648,14 @@ const WAR_DATA = {
   // ── HEZBOLLAH / LÍBANO DATA ──────────────────────────────────
   hezbollah: {
     kpis: {
-      lb_dead:      { value: 52, qualifier:"+", unit:"mortos Líbano", confidence:"CONFIRMADO",
-        source_primary:"Min. Saúde do Líbano", source_secondary:"Al Jazeera · Reuters · OPB",
-        last_update_utc:"2026-03-03T06:00:00Z",
-        notes:"52 mortos confirmados pelo Min. Saúde do Líbano após retaliação IDF em 02/Mar." },
-      lb_wounded:   { value: 154, qualifier:"+", unit:"feridos Líbano", confidence:"CONFIRMADO",
-        source_primary:"Min. Saúde do Líbano", source_secondary:"Reuters",
-        last_update_utc:"2026-03-03T06:00:00Z",
-        notes:"154 feridos após strikes IDF em resposta ao ataque Hezbollah de 02/Mar." },
+      lb_dead:      { value: 50, qualifier:"+", unit:"mortos Líbano", confidence:"CONFIRMADO",
+        source_primary:"Min. Saúde do Líbano · AP", source_secondary:"Al Jazeera · Reuters",
+        last_update_utc:"2026-03-04T10:00:00Z",
+        notes:"AP/Min. Saúde (04/Mar): 50+ mortos, 335+ feridos no Líbano. IDF avança além do Litani. Hezbollah atinge tanque em Houla (2 soldados IDF feridos)." },
+      lb_wounded:   { value: 335, qualifier:"+", unit:"feridos Líbano", confidence:"CONFIRMADO",
+        source_primary:"Min. Saúde do Líbano · AP", source_secondary:"Al Jazeera",
+        last_update_utc:"2026-03-04T10:00:00Z",
+        notes:"335+ feridos (04/Mar). Hospitais de Tiro e Sidon em colapso. OCHA: acesso bloqueado." },
       lb_displaced: { value: 28500, qualifier:"+", unit:"deslocados", confidence:"REPORTADO",
         source_primary:"OCHA · Al Jazeera", source_secondary:"OPB",
         last_update_utc:"2026-03-03T06:00:00Z",
@@ -2582,17 +2641,17 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="ticker-label">AO VIVO</div>
   <div class="ticker-scroll">
      <div class="ticker-inner">
-       ◆ DIA 4 · 03 MAR 2026 · IRÃ: 787 MORTOS (RED CRESCENT) · ÍNDICE ESCALADA 93/100 CRÍTICO &nbsp;|&nbsp;
-       ◆ EMBAIXADA EUA RIAD ATINGIDA — 2 DRONES IRANIANOS · SEM FERIDOS · TRUMP PROMETE RETALIAÇÃO &nbsp;|&nbsp;
-       ◆ ISRAEL INVADE SUL DO LÍBANO — IDF AVANÇA · 59 ALDEIAS EVACUADAS &nbsp;|&nbsp;
-       ◆ CENTCOM: 6 SOLDADOS EUA MORTOS (KUWAIT) · 18 FERIDOS GRAVES &nbsp;|&nbsp;
-       ◆ FOGO AMIGO: KUWAIT DERRUBOU 3 F-15E AMERICANOS — TODOS PILOTOS RECUPERADOS &nbsp;|&nbsp;
-       ◆ HISTÓRICO: DRONE IRANIANO ATINGE BASE RAF AKROTIRI (CHIPRE) — 1º ATAQUE EM SOLO EUROPEU &nbsp;|&nbsp;
-       ◆ HEZBOLLAH NOVA FRENTE (02/MAR): 52 MORTOS NO LÍBANO — ISRAEL: 70+ ALVOS RETALIADOS &nbsp;|&nbsp;
-       ◆ HORMUZ FECHADO · FRETE SUPERTANKERS CHINA +94% EM 1 DIA · PETRÓLEO RUMO A $100/BARRIL &nbsp;|&nbsp;
-       ◆ QATAR: ABATEU 2 Su-24 IRANIANOS — 1ª AERONAVE IRANIANA DERRUBADA NO CONFLITO &nbsp;|&nbsp;
-       ◆ KHAMENEI + ESPOSA MORTOS CONFIRMADOS · 48 LÍDERES IRANIANOS ELIMINADOS (TRUMP) &nbsp;|&nbsp;
-       ◆ TRUMP: "GRANDE ONDA" DE ATAQUES AINDA POR VIR · EUA COM "ABASTECIMENTO VIRTUALMENTE ILIMITADO"
+       ◆ DIA 5 · 04 MAR 2026 · IRÃ: 1.045 MORTOS (TASNIM) · ÍNDICE ESCALADA 96/100 CRÍTICO &nbsp;|&nbsp;
+       ◆ HISTÓRICO: SUBMARINO EUA AFUNDA IRIS DENA NO OCEANO ÍNDICO — 1ª VEZ DESDE WW2 · 80+ MORTOS &nbsp;|&nbsp;
+       ◆ TURQUIA + NATO: MÍSSIL IRANIANO INTERCEPTADO NO ESPAÇO AÉREO TURCO (DÖRTYOL, HATAY) &nbsp;|&nbsp;
+       ◆ HEGSETH: "AMERICA IS WINNING, DECISIVELY, DEVASTATINGLY AND WITHOUT MERCY" · "MORE WAVES COMING" &nbsp;|&nbsp;
+       ◆ ISRAEL BOMBARDEIA ASSEMBLEIA DE ESPECIALISTAS DURANTE REUNIÃO PARA ELEGER NOVO LÍDER SUPREMO &nbsp;|&nbsp;
+       ◆ CONSULADO EUA EM DUBAI ATINGIDO POR DRONE IRANIANO · MACRON ENVIA PORTA-AVIÕES AO MEDITERRÂNEO &nbsp;|&nbsp;
+       ◆ IRGC: "PREPARADOS PARA DESTRUIÇÃO COMPLETA DA INFRAESTRUTURA MILITAR E ECONÔMICA DA REGIÃO" &nbsp;|&nbsp;
+       ◆ ISRAEL INVADE SUL DO LÍBANO · 50+ MORTOS NO LÍBANO · 335+ FERIDOS · IDF: 59 ALDEIAS EVACUAR &nbsp;|&nbsp;
+       ◆ CENTCOM: 17 NAVIOS IRANIANOS DESTRUÍDOS · 6 SOLDADOS EUA MORTOS (KUWAIT) — 4 IDENTIFICADOS &nbsp;|&nbsp;
+       ◆ FUNERAL DE KHAMENEI ADIADO · FILHO MOJTABA FAVORITO PARA SUCEDER &nbsp;|&nbsp;
+       ◆ BRENT CRUDE: $84/BARRIL (+15% DESDE INÍCIO CONFLITO) · QATAR AIRWAYS GROUNDED · FORCE MAJEURE
      </div>
   </div>
 </div>
@@ -2604,16 +2663,22 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="header-brand">
     <div class="header-title">MONITORAMENTO ASSAYAG — PAINEL DE INTELIGÊNCIA OPERACIONAL</div>
     <div class="header-ops">
-      <span class="op-badge op-us">EUA · EPIC FURY</span>
-      <span class="op-badge op-il">ISRAEL · LION'S ROAR</span>
-      <span class="op-badge op-ir">IRÃ · PROMESSA SINCERA 4</span>
+      <span class="op-badge op-us" class="op-label">EUA · EPIC FURY</span>
+      <span class="op-badge op-il" class="op-label">ISRAEL · LION'S ROAR</span>
+      <span class="op-badge op-ir" class="op-label">IRÃ · PROMESSA SINCERA 4</span>
       <span style="font-family:var(--font-mono);font-size:.52rem;color:var(--text-tertiary);">28 FEV – 01 MAR 2026</span>
     </div>
   </div>
   <div class="header-right">
-    <div class="live-badge" id="live-badge" onclick="fetchUpdate()">
-      <div class="live-dot"></div>
-      <span>AO VIVO · RSS AUTÔNOMO · 15 MIN</span>
+    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;justify-content:flex-end;">
+      <div class="lang-switcher">
+        <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">PT</button>
+        <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+      </div>
+      <div class="live-badge" id="live-badge" onclick="fetchUpdate()">
+        <div class="live-dot"></div>
+        <span class="i18n" data-pt="AO VIVO · RSS · 15 MIN" data-en="LIVE · RSS · 15 MIN">AO VIVO · RSS · 15 MIN</span>
+      </div>
     </div>
     <div class="time-display" id="clock">Carregando...</div>
     <div class="time-display" id="next-update" style="font-size:.5rem;">Próx. atualização: —</div>
@@ -2631,10 +2696,10 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
   <span class="esc-value" id="esc-value">—</span>
   <div class="esc-markers">
-    <span>BAIXO 0–25</span>
-    <span>MÉDIO 26–50</span>
-    <span>ALTO 51–75</span>
-    <span style="color:var(--alert);">CRÍTICO 76–100</span>
+    <span id="esc-baixo">BAIXO 0–25</span>
+    <span id="esc-medio">MÉDIO 26–50</span>
+    <span id="esc-alto">ALTO 51–75</span>
+    <span style="color:var(--alert);" id="esc-critico">CRÍTICO 76–100</span>
   </div>
   <span class="badge badge-reported" data-tooltip="Índice sintético 0–100. Baseado em: alcance geográfico (9 países atingidos), tipo de alvos (liderança suprema, QG militares, instalações nucleares), baixas confirmadas, escalada marítima e fechamento de Hormuz.">◎ METODOLOGIA</span>
 </div>
@@ -2665,7 +2730,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <!-- KPIs -->
   <div>
     <div class="section-header">
-      <div class="section-title">KPIs — Panorama Geral DIA 4 · 28 FEV – 01 MAR 2026</div>
+      <div class="section-title" id="kpi-section-title" data-i18n-prefix="kpi-section-title">KPIs — Panorama Geral DIA 5 · 04 MAR 2026</div>
       <div class="section-meta">Todos os dados vêm do objeto WAR_DATA · Passe o cursor sobre os badges para ver fonte e timestamp</div>
     </div>
     <div class="kpi-grid" id="kpi-grid"></div>
@@ -3051,19 +3116,251 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="footer-text">Atualização automática a cada 15 min · Sistema RSS autônomo · 6 feeds: Reuters · Al Jazeera · Times of Israel · Iran International · Jerusalem Post · Middle East Eye · Clique em AO VIVO para forçar</div>
 </div>
 
-<!-- Fix audit toggle (use proper IDs) -->
+
+
+
+<!-- i18n Language Engine -->
 <script>
-function toggleAudit() {
-  const wrapper = document.getElementById('audit-body-wrapper');
-  const arrow = document.getElementById('audit-arrow');
-  if (wrapper.style.display === 'none') {
-    wrapper.style.display = 'block';
-    arrow.classList.add('open');
-  } else {
-    wrapper.style.display = 'none';
-    arrow.classList.remove('open');
+// ============================================================
+// TRANSLATIONS — All UI strings in PT and EN
+// ============================================================
+const TRANSLATIONS = {
+  pt: {
+    // Header / top bar
+    "brand-sub": "PAINEL DE INTELIGÊNCIA OPERACIONAL",
+    "op-us-label": "EUA · EPIC FURY",
+    "op-il-label": "ISRAEL · LION'S ROAR",
+    "op-ir-label": "IRÃ · PROMESSA SINCERA 4",
+    "live-label": "AO VIVO · RSS · 15 MIN",
+    // Escalation
+    "esc-title": "ÍNDICE DE ESCALADA",
+    "esc-baixo": "BAIXO 0–25",
+    "esc-medio": "MÉDIO 26–50",
+    "esc-alto": "ALTO 51–75",
+    "esc-critico": "CRÍTICO 76–100",
+    "esc-btn": "METODOLOGIA",
+    // Tabs
+    "tab-l1": "NÍVEL 1 · BRIEF EXECUTIVO",
+    "tab-l2": "NÍVEL 2 · TEATRO DE OPERAÇÕES",
+    "tab-l3": "NÍVEL 3 · INTELIGÊNCIA PROFUNDA",
+    "tab-hzb": "🇱🇧 ISRAEL × HEZBOLLAH",
+    // KPI section
+    "kpi-section-title": "<span id="kpi-section-title">KPIS – PANORAMA GERAL DIA</span> ",
+    "kpi-section-meta": "Todos os dados vêm do objeto WAR_DATA · Passe o cursor sobre os badges para ver fonte e timestamp",
+    // KPI card labels
+    "kpi-officials": "OFICIAIS IRANIANOS MORTOS",
+    "kpi-civilians": "MORTOS NO IRÃ",
+    "kpi-projectiles": "PROJÉTEIS LANÇADOS",
+    "kpi-il-dead": "MORTOS EM ISRAEL ✡",
+    "kpi-us-dead": "SOLDADOS EUA MORTOS",
+    "kpi-wounded": "FERIDOS NO IRÃ",
+    // Leaders
+    "leaders-title": "<span data-i18n="leaders-title">LÍDERES IRANIANOS MORTOS – DECAPITAÇÃO DA LIDERANÇA</span>",
+    "leaders-meta": "Badges indicam nível de confiança · Verde=confirmado · Azul=reportado · Laranja=conflitante",
+    "cat-rel": "LIDERANÇA RELIGIOSA",
+    "cat-mil": "LIDERANÇA MILITAR",
+    "cat-pol": "LIDERANÇA POLÍTICA",
+    "confirmed-lbl": "Confirmados",
+    "reported-lbl": "Reportados",
+    "contested-lbl": "Conflitantes",
+    // Theater
+    "theater-title": "<span data-i18n="theater-title">TEATRO DE OPERAÇÕES – PAÍSES ENVOLVIDOS</span>",
+    "theater-meta": "Todos os lançamentos incluem mísseis balísticos, cruzeiro, drones e foguetes. Interceptações: sistemas de defesa relatados.",
+    // Timeline
+    "timeline-title": "<span data-i18n="timeline-title">LINHA DO TEMPO OPERACIONAL</span>",
+    "timeline-meta": "Eventos em ordem cronológica reversa · Timestamps em UTC",
+    // Audit
+    "audit-title": "REGISTRO DE AUDITORIA",
+    // Footer
+    "footer-method": "METODOLOGIA: Dados coletados de fontes abertas verificadas.",
+    "footer-disclaimer": "Este painel é informativo. Dados em conflito são marcados como CONFLITANTE.",
+    // Badges
+    "badge-confirmado": "✓ CONFIRMADO",
+    "badge-reportado": "● REPORTADO",
+    "badge-reivindicado": "◆ REIVINDICADO",
+    "badge-conflitante": "⚠ CONFLITANTE",
+    "badge-desmentido": "✕ DESMENTIDO",
+    // Status
+    "status-init": "Inicializando sistema RSS…",
+    "next-update-prefix": "Próx. atualização RSS:",
+    // Hezbollah tab
+    "hzb-tab-title": "ISRAEL × HEZBOLLAH — FRENTE NORTE LÍBANO",
+    "hzb-context": "Contexto — Reabertura da Frente Norte",
+    "hzb-targets-title": "Áreas israelenses sob fogo do Hezbollah",
+    "hzb-strikes-title": "Strikes IDF no Líbano",
+    "hzb-leaders-title": "Eliminações Hezbollah / PIJ confirmadas",
+    "hzb-ground-title": "Operação terrestre IDF — objetivos",
+    "hzb-displace-title": "Deslocamento e impacto humanitário",
+    "hzb-hum-title": "Situação humanitária comparativa",
+  },
+  en: {
+    "brand-sub": "OPERATIONAL INTELLIGENCE DASHBOARD",
+    "op-us-label": "USA · EPIC FURY",
+    "op-il-label": "ISRAEL · LION'S ROAR",
+    "op-ir-label": "IRAN · TRUE PROMISE IV",
+    "live-label": "LIVE · RSS · 15 MIN",
+    "esc-title": "ESCALATION INDEX",
+    "esc-baixo": "LOW 0–25",
+    "esc-medio": "MEDIUM 26–50",
+    "esc-alto": "HIGH 51–75",
+    "esc-critico": "CRITICAL 76–100",
+    "esc-btn": "METHODOLOGY",
+    "tab-l1": "LEVEL 1 · EXECUTIVE BRIEF",
+    "tab-l2": "LEVEL 2 · THEATER OF OPERATIONS",
+    "tab-l3": "LEVEL 3 · DEEP INTELLIGENCE",
+    "tab-hzb": "🇱🇧 ISRAEL × HEZBOLLAH",
+    "kpi-section-title": "KPIs – OVERALL PICTURE DAY ",
+    "kpi-section-meta": "All data from WAR_DATA object · Hover badges for source and timestamp",
+    "kpi-officials": "IRANIAN OFFICIALS KILLED",
+    "kpi-civilians": "KILLED IN IRAN",
+    "kpi-projectiles": "PROJECTILES LAUNCHED",
+    "kpi-il-dead": "KILLED IN ISRAEL ✡",
+    "kpi-us-dead": "U.S. SOLDIERS KILLED",
+    "kpi-wounded": "WOUNDED IN IRAN",
+    "leaders-title": "IRANIAN LEADERS KILLED – LEADERSHIP DECAPITATION",
+    "leaders-meta": "Badges show confidence level · Green=confirmed · Blue=reported · Orange=contested",
+    "cat-rel": "RELIGIOUS LEADERSHIP",
+    "cat-mil": "MILITARY LEADERSHIP",
+    "cat-pol": "POLITICAL LEADERSHIP",
+    "confirmed-lbl": "Confirmed",
+    "reported-lbl": "Reported",
+    "contested-lbl": "Contested",
+    "theater-title": "THEATER OF OPERATIONS – COUNTRIES INVOLVED",
+    "theater-meta": "All launches include ballistic missiles, cruise missiles, drones and rockets. Intercepts: reported defense systems.",
+    "timeline-title": "OPERATIONAL TIMELINE",
+    "timeline-meta": "Events in reverse chronological order · Timestamps in UTC",
+    "audit-title": "AUDIT LOG",
+    "footer-method": "METHODOLOGY: Data collected from verified open sources.",
+    "footer-disclaimer": "This dashboard is informational. Conflicting data is marked CONTESTED.",
+    "badge-confirmado": "✓ CONFIRMED",
+    "badge-reportado": "● REPORTED",
+    "badge-reivindicado": "◆ CLAIMED",
+    "badge-conflitante": "⚠ CONTESTED",
+    "badge-desmentido": "✕ DENIED",
+    "status-init": "Initializing RSS system…",
+    "next-update-prefix": "Next RSS update:",
+    "hzb-tab-title": "ISRAEL × HEZBOLLAH — NORTHERN FRONT LEBANON",
+    "hzb-context": "Context — Reopening of the Northern Front",
+    "hzb-targets-title": "Israeli areas under Hezbollah fire",
+    "hzb-strikes-title": "IDF strikes in Lebanon",
+    "hzb-leaders-title": "Confirmed Hezbollah / PIJ eliminations",
+    "hzb-ground-title": "IDF ground operation — objectives",
+    "hzb-displace-title": "Displacement and humanitarian impact",
+    "hzb-hum-title": "Comparative humanitarian situation",
   }
+};
+
+let currentLang = 'pt';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  const T = TRANSLATIONS[lang];
+
+  // Helper: set text if element exists
+  function setText(id, key) {
+    const el = document.getElementById(id);
+    if (el && T[key]) el.textContent = T[key];
+  }
+  function setHTML(id, key) {
+    const el = document.getElementById(id);
+    if (el && T[key]) el.innerHTML = T[key];
+  }
+  function setAll(cls, key) {
+    document.querySelectorAll('.' + cls).forEach(el => { if (T[key]) el.textContent = T[key]; });
+  }
+
+  // Top bar
+  setText('brand-sub-text', 'brand-sub');
+  setText('live-label-span', 'live-label');
+
+  // Op labels
+  const opLabels = document.querySelectorAll('.op-label');
+  if (opLabels[0]) opLabels[0].textContent = T['op-us-label'];
+  if (opLabels[1]) opLabels[1].textContent = T['op-il-label'];
+  if (opLabels[2]) opLabels[2].textContent = T['op-ir-label'];
+
+  // Escalation bar
+  setText('esc-title-text', 'esc-title');
+  setText('esc-baixo', 'esc-baixo');
+  setText('esc-medio', 'esc-medio');
+  setText('esc-alto', 'esc-alto');
+  setText('esc-critico', 'esc-critico');
+  setText('esc-btn-text', 'esc-btn');
+
+  // Tabs
+  const tabs = document.querySelectorAll('.view-btn');
+  const tabKeys = ['tab-l1','tab-l2','tab-l3','tab-hzb'];
+  tabs.forEach((t, i) => { if (T[tabKeys[i]]) t.textContent = T[tabKeys[i]]; });
+
+  // KPI section
+  const kpiTitle = document.getElementById('kpi-section-title');
+  if (kpiTitle) kpiTitle.innerHTML = T['kpi-section-title'] + WAR_DATA.meta.day_of_conflict;
+  setText('kpi-section-meta', 'kpi-section-meta');
+
+  // KPI card labels — re-render with translated labels
+  const kpiCards = document.querySelectorAll('.kpi-label');
+  const kpiKeys = ['kpi-officials','kpi-civilians','kpi-projectiles','kpi-il-dead','kpi-us-dead','kpi-wounded'];
+  const kpiIcons = ['☠','⚰','🚀','🇮🇱','🇺🇸','🏥'];
+  kpiCards.forEach((el, i) => { if (T[kpiKeys[i]]) el.innerHTML = kpiIcons[i] + ' ' + T[kpiKeys[i]]; });
+
+  // Section titles via data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (T[key]) el.textContent = T[key];
+  });
+
+  // Confidence badges — update all badge text
+  const badgeMap = {
+    'badge-confirmed': T['badge-confirmado'],
+    'badge-reported': T['badge-reportado'],
+    'badge-claimed': T['badge-reivindicado'],
+    'badge-contested': T['badge-conflitante'],
+    'badge-denied': T['badge-desmentido'],
+  };
+  document.querySelectorAll('.badge').forEach(el => {
+    if (el.classList.contains('conf-confirmado')) el.textContent = T['badge-confirmado'];
+    else if (el.classList.contains('conf-reportado')) el.textContent = T['badge-reportado'];
+    else if (el.classList.contains('conf-reivindicado')) el.textContent = T['badge-reivindicado'];
+    else if (el.classList.contains('conf-conflitante')) el.textContent = T['badge-conflitante'];
+    else if (el.classList.contains('conf-desmentido')) el.textContent = T['badge-desmentido'];
+  });
+
+  // Leaders category titles
+  const catTitles = document.querySelectorAll('.cat-title');
+  const catKeys = ['cat-rel','cat-mil','cat-pol'];
+  catTitles.forEach((el, i) => { if (T[catKeys[i]]) el.textContent = T[catKeys[i]]; });
+
+  // Leader footer stats labels
+  document.querySelectorAll('.cf-lbl').forEach(el => {
+    const t = el.textContent.trim();
+    if (t === 'Confirmados' || t === 'Confirmed') el.textContent = T['confirmed-lbl'];
+    else if (t === 'Reportados' || t === 'Reported') el.textContent = T['reported-lbl'];
+    else if (t === 'Conflitantes' || t === 'Contested') el.textContent = T['contested-lbl'];
+  });
+
+  // Update status bar init text
+  const statusEl = document.getElementById('update-status');
+  if (statusEl && (statusEl.textContent.includes('Inicializ') || statusEl.textContent.includes('Initializ'))) {
+    statusEl.textContent = T['status-init'];
+  }
+
+  // Update ticker language note (top bar info)
+  const liveSpan = document.querySelector('.live-badge span');
+  if (liveSpan) liveSpan.textContent = T['live-label'];
+
+  // Store lang
+  try { localStorage.setItem('painel-lang', lang); } catch(e) {}
 }
+
+// Load saved lang preference on startup
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const saved = localStorage.getItem('painel-lang');
+    if (saved === 'en') setTimeout(() => setLang('en'), 200);
+  } catch(e) {}
+});
 </script>
 
 </body>
