@@ -1794,19 +1794,47 @@ function riskClass(r) {
 // RENDER — KPI GRID
 // ============================================================
 
+// ============================================================
+// RENDER HELPERS — bilingual shorthand
+// ============================================================
+function T(pt, en) { return (typeof currentLang !== 'undefined' && currentLang === 'en') ? en : pt; }
+function confBadgeLabel(conf) {
+  const M = {
+    CONFIRMADO:   T('✓ CONFIRMADO','✓ CONFIRMED'),
+    REPORTADO:    T('● REPORTADO','● REPORTED'),
+    REIVINDICADO: T('◆ REIVINDICADO','◆ CLAIMED'),
+    CONFLITANTE:  T('⚠ CONFLITANTE','⚠ CONTESTED'),
+    DESMENTIDO:   T('✕ DESMENTIDO','✕ DENIED'),
+  };
+  return M[conf] || conf;
+}
+// Override confBadge to use translated label
+const _origConfBadge = confBadge;
+function confBadge(level, source, last_update_utc) {
+  const CONF_MAP = {
+    CONFIRMADO:   { cls:'conf-confirmado' },
+    REPORTADO:    { cls:'conf-reportado' },
+    REIVINDICADO: { cls:'conf-reivindicado' },
+    CONFLITANTE:  { cls:'conf-conflitante' },
+    DESMENTIDO:   { cls:'conf-desmentido' },
+  };
+  const m = CONF_MAP[level] || CONF_MAP['REPORTADO'];
+  const label = confBadgeLabel(level || 'REPORTADO');
+  const tooltip = `${T('Fonte','Source')}: ${source || 'N/A'}\n${T('Atualizado','Updated')}: ${last_update_utc ? last_update_utc.replace('T',' ').replace('Z',' UTC') : 'N/A'}`;
+  return `<span class="badge ${m.cls}" data-tooltip="${tooltip}">${label}</span>`;
+}
+
+// ============================================================
+// RENDER — LEADERS (bilingual)
+// ============================================================
 function renderLeaders(){
   const cas = WAR_DATA.casualties;
-
-  // Separate into 3 categories
   const rel = cas.filter(x=>x.cat==='RELIGIOSO');
   const mil = cas.filter(x=>x.cat==='MILITAR');
   const pol = cas.filter(x=>x.cat==='POLITICO');
-
   const confirmed = cas.filter(x=>x.confidence==='CONFIRMADO').length;
   const reported  = cas.filter(x=>x.confidence==='REPORTADO').length;
   const contested = cas.filter(x=>x.confidence==='CONFLITANTE').length;
-
-  // Calculate impact scores
   const relImpact = rel.reduce((s,x)=>s+(x.impact||0),0);
   const milImpact = mil.reduce((s,x)=>s+(x.impact||0),0);
   const polImpact = pol.reduce((s,x)=>s+(x.impact||0),0);
@@ -1815,7 +1843,7 @@ function renderLeaders(){
   function renderCard(p, catCls, tagCls, barCls) {
     const pct = ((p.impact||0)/maxImpact*100).toFixed(0);
     return `<div class="leader-card">
-      <div class="leader-rank">#${p.id} · IMPACTO ${p.impact||'?'}/10</div>
+      <div class="leader-rank">#${p.id} · ${T('IMPACTO','IMPACT')} ${p.impact||'?'}/10</div>
       <span class="leader-title-tag ${tagCls}">${p.title||p.cat}</span>
       <div class="leader-name">${p.name}</div>
       <div class="leader-role">${p.role}</div>
@@ -1825,11 +1853,13 @@ function renderLeaders(){
     </div>`;
   }
 
-  function renderCategory(title, subtitle, icon, catCls, tagCls, barCls, lscCls, persons, impactSum, impactDesc) {
+  function renderCategory(titlePt, titleEn, subtitlePt, subtitleEn, icon, catCls, tagCls, barCls, lscCls, persons, impactSum, impactDesc) {
     const conf = persons.filter(x=>x.confidence==='CONFIRMADO').length;
     const rep  = persons.filter(x=>x.confidence==='REPORTADO').length;
     const con  = persons.filter(x=>x.confidence==='CONFLITANTE').length;
     const cards = persons.map(p=>renderCard(p,catCls,tagCls,barCls)).join('');
+    const title = T(titlePt, titleEn);
+    const subtitle = T(subtitlePt, subtitleEn);
     return `
     <div class="leaders-category ${catCls}">
       <div class="cat-header">
@@ -1840,13 +1870,13 @@ function renderLeaders(){
             <div class="cat-subtitle">${subtitle}</div>
           </div>
         </div>
-        <span class="cat-impact-pill">IMPACTO ESTRATÉGICO: ${impactSum}/${persons.length*maxImpact}</span>
+        <span class="cat-impact-pill">${T('IMPACTO ESTRATÉGICO','STRATEGIC IMPACT')}: ${impactSum}/${persons.length*maxImpact}</span>
       </div>
       <div class="cat-grid">${cards}</div>
       <div class="cat-footer">
-        <div class="cf-stat"><span class="cf-val" style="color:#15803d">${conf}</span><span class="cf-lbl">Confirmados</span></div>
-        <div class="cf-stat"><span class="cf-val" style="color:#1d4ed8">${rep}</span><span class="cf-lbl">Reportados</span></div>
-        ${con ? `<div class="cf-stat"><span class="cf-val" style="color:#c2410c">${con}</span><span class="cf-lbl">Conflitantes</span></div>` : ''}
+        <div class="cf-stat"><span class="cf-val" style="color:#15803d">${conf}</span><span class="cf-lbl">${T('Confirmados','Confirmed')}</span></div>
+        <div class="cf-stat"><span class="cf-val" style="color:#1d4ed8">${rep}</span><span class="cf-lbl">${T('Reportados','Reported')}</span></div>
+        ${con ? `<div class="cf-stat"><span class="cf-val" style="color:#c2410c">${con}</span><span class="cf-lbl">${T('Conflitantes','Contested')}</span></div>` : ''}
         <div class="cf-src">${impactDesc}</div>
       </div>
     </div>`;
@@ -1857,68 +1887,76 @@ function renderLeaders(){
     <div class="leaders-summary-cell lsc-rel">
       <div class="lsc-icon">☪</div>
       <div class="lsc-count">${rel.length}</div>
-      <div class="lsc-label">Lideranças Religiosas</div>
-      <div class="lsc-impact">Impacto acumulado: ${relImpact} pts · Khamenei morto — maior vácuo de poder desde 1979</div>
+      <div class="lsc-label">${T('Lideranças Religiosas','Religious Leadership')}</div>
+      <div class="lsc-impact">${T('Impacto acumulado','Cumulative impact')}: ${relImpact} pts · ${T('Khamenei morto — maior vácuo de poder desde 1979','Khamenei killed — biggest power vacuum since 1979')}</div>
     </div>
     <div class="leaders-summary-cell lsc-mil">
       <div class="lsc-icon">⚔</div>
       <div class="lsc-count">${mil.length}</div>
-      <div class="lsc-label">Lideranças Militares</div>
-      <div class="lsc-impact">Impacto acumulado: ${milImpact} pts · IRGC, Estado-Maior e intel externa decapitados</div>
+      <div class="lsc-label">${T('Lideranças Militares','Military Leadership')}</div>
+      <div class="lsc-impact">${T('Impacto acumulado','Cumulative impact')}: ${milImpact} pts · ${T('IRGC, Estado-Maior e intel externa decapitados','IRGC, Joint Chiefs and foreign intel decapitated')}</div>
     </div>
     <div class="leaders-summary-cell lsc-pol">
       <div class="lsc-icon">🏛</div>
       <div class="lsc-count">${pol.length}</div>
-      <div class="lsc-label">Lideranças Políticas</div>
-      <div class="lsc-impact">Impacto acumulado: ${polImpact} pts · CSNS eliminado, Ahmadinejad: informação conflitante</div>
+      <div class="lsc-label">${T('Lideranças Políticas','Political Leadership')}</div>
+      <div class="lsc-impact">${T('Impacto acumulado','Cumulative impact')}: ${polImpact} pts · ${T('CSNS eliminado, Ahmadinejad: informação conflitante','SNSC eliminated, Ahmadinejad: contested info')}</div>
     </div>
   </div>`;
 
   const relHtml = renderCategory(
-    'LIDERANÇA RELIGIOSA', 'Wali al-Faqih · Marja · Família Khamenei',
-    '☪', 'cat-religioso', 'lt-rel', 'lib-rel', 'lsc-rel',
-    rel, relImpact, 'Fontes: Mídia estatal iraniana · Reuters · @EylonALevy · @IranRevReport'
+    'LIDERANÇA RELIGIOSA','RELIGIOUS LEADERSHIP',
+    'Wali al-Faqih · Marja · Família Khamenei','Wali al-Faqih · Marja · Khamenei Family',
+    '☪','cat-religioso','lt-rel','lib-rel','lsc-rel',
+    rel, relImpact, T('Fontes: Mídia estatal iraniana · Reuters · @EylonALevy · @IranRevReport','Sources: Iranian state media · Reuters · @EylonALevy · @IranRevReport')
   );
   const milHtml = renderCategory(
-    'LIDERANÇA MILITAR', 'IRGC · Estado-Maior · Força Quds · Inteligência · Proxy',
-    '⚔', 'cat-militar', 'lt-mil', 'lib-mil', 'lsc-mil',
-    mil, milImpact, 'Fontes: IDF Defrin · CENTCOM · Reuters · @UKikaski · @Defence_Journl'
+    'LIDERANÇA MILITAR','MILITARY LEADERSHIP',
+    'IRGC · Estado-Maior · Força Quds · Inteligência · Proxy','IRGC · Joint Chiefs · Quds Force · Intelligence · Proxy',
+    '⚔','cat-militar','lt-mil','lib-mil','lsc-mil',
+    mil, milImpact, T('Fontes: IDF Defrin · CENTCOM · Reuters · @UKikaski · @Defence_Journl','Sources: IDF Defrin · CENTCOM · Reuters · @UKikaski · @Defence_Journl')
   );
   const polHtml = renderCategory(
-    'LIDERANÇA POLÍTICA', 'CSNS · Governo · Ex-presidentes',
-    '🏛', 'cat-politico', 'lt-pol', 'lib-pol', 'lsc-pol',
-    pol, polImpact, 'Fontes: IDF Defrin · Al Jazeera · Times of Israel · @EylonALevy'
+    'LIDERANÇA POLÍTICA','POLITICAL LEADERSHIP',
+    'CSNS · Governo · Ex-presidentes','SNSC · Government · Former presidents',
+    '🏛','cat-politico','lt-pol','lib-pol','lsc-pol',
+    pol, polImpact, T('Fontes: IDF Defrin · Al Jazeera · Times of Israel · @EylonALevy','Sources: IDF Defrin · Al Jazeera · Times of Israel · @EylonALevy')
   );
 
   const footerHtml = `
   <div class="leaders-footer">
-    <div class="lf-stat"><span class="lf-val">${cas.length}</span><span class="lf-lbl">Total registros</span></div>
-    <div class="lf-stat"><span class="lf-val" style="color:#15803d">${confirmed}</span><span class="lf-lbl">Confirmados</span></div>
-    <div class="lf-stat"><span class="lf-val" style="color:#1d4ed8">${reported}</span><span class="lf-lbl">Reportados</span></div>
-    <div class="lf-stat"><span class="lf-val" style="color:#c2410c">${contested}</span><span class="lf-lbl">Conflitantes</span></div>
+    <div class="lf-stat"><span class="lf-val">${cas.length}</span><span class="lf-lbl">${T('Total registros','Total records')}</span></div>
+    <div class="lf-stat"><span class="lf-val" style="color:#15803d">${confirmed}</span><span class="lf-lbl">${T('Confirmados','Confirmed')}</span></div>
+    <div class="lf-stat"><span class="lf-val" style="color:#1d4ed8">${reported}</span><span class="lf-lbl">${T('Reportados','Reported')}</span></div>
+    <div class="lf-stat"><span class="lf-val" style="color:#c2410c">${contested}</span><span class="lf-lbl">${T('Conflitantes','Contested')}</span></div>
     <div style="margin-left:auto;font-family:var(--font-mono);font-size:.46rem;color:#8896aa;">
-      OP. EPIC FURY + ROARING LION · 28 FEV – 03 MAR 2026 · Impacto 1–10: capacidade operacional perdida pelo regime
+      OP. EPIC FURY + ROARING LION · 28 FEB – 04 MAR 2026 · ${T('Impacto 1–10: capacidade operacional perdida pelo regime','Impact 1–10: regime operational capacity lost')}
     </div>
   </div>`;
 
   return `<div class="leaders-wrapper">${summaryHtml}${relHtml}${milHtml}${polHtml}${footerHtml}</div>`;
 }
+
+// ============================================================
+// RENDER — KPI GRID (bilingual)
+// ============================================================
 function renderKPIs() {
   const K = WAR_DATA.kpis;
   const cards = [
-    { key:'iranian_officials_dead', label:'OFICIAIS IRANIANOS MORTOS', icon:'☠' },
-    { key:'iran_civilian_dead',     label:'CIVIS MORTOS NO IRÃ',       icon:'⚰' },
-    { key:'projectiles_launched',   label:'PROJÉTEIS LANÇADOS',        icon:'🚀' },
-    { key:'israel_dead',            label:'MORTOS EM ISRAEL ✡',          icon:'🇮🇱' },
-    { key:'us_dead',                label:'SOLDADOS EUA MORTOS',       icon:'🇺🇸' },
-    { key:'iran_wounded',           label:'FERIDOS NO IRÃ',            icon:'🏥' }
+    { key:'iranian_officials_dead', labelPt:'OFICIAIS IRANIANOS MORTOS', labelEn:'IRANIAN OFFICIALS KILLED',   icon:'☠' },
+    { key:'iran_civilian_dead',     labelPt:'MORTOS NO IRÃ',              labelEn:'KILLED IN IRAN',            icon:'⚰' },
+    { key:'projectiles_launched',   labelPt:'PROJÉTEIS LANÇADOS',         labelEn:'PROJECTILES LAUNCHED',      icon:'🚀' },
+    { key:'israel_dead',            labelPt:'MORTOS EM ISRAEL ✡',         labelEn:'KILLED IN ISRAEL ✡',        icon:'🇮🇱' },
+    { key:'us_dead',                labelPt:'SOLDADOS EUA MORTOS',        labelEn:'U.S. SOLDIERS KILLED',      icon:'🇺🇸' },
+    { key:'iran_wounded',           labelPt:'FERIDOS NO IRÃ',             labelEn:'WOUNDED IN IRAN',           icon:'🏥' }
   ];
   return cards.map(c => {
     const d = K[c.key];
     const q = d.qualifier || '';
+    const label = T(c.labelPt, c.labelEn);
     return `
     <div class="kpi-card">
-      <div class="kpi-label">${c.icon} ${c.label}</div>
+      <div class="kpi-label">${c.icon} ${label}</div>
       <div class="kpi-value-row">
         <span class="kpi-value">${d.value}${q}</span>
         <span class="kpi-unit">${d.unit}</span>
@@ -1930,7 +1968,7 @@ function renderKPIs() {
 }
 
 // ============================================================
-// RENDER — THEATER GRID
+// RENDER — THEATER GRID (bilingual)
 // ============================================================
 function renderTheater() {
   return WAR_DATA.countries.map(c => {
@@ -1948,12 +1986,12 @@ function renderTheater() {
       </div>
       <div class="intercept-gauge">
         <div class="gauge-track"><div class="gauge-fill" style="width:${pct}%"></div></div>
-        <span class="gauge-pct">${pct}% interc.</span>
+        <span class="gauge-pct">${pct}% ${T('interc.','interc.')}</span>
       </div>
       <div class="country-stats">
-        <div class="cstat"><span class="cstat-val">${c.launched}${c.qualifier_l||''}</span><span class="cstat-lbl">Lançados</span></div>
-        <div class="cstat"><span class="cstat-val" style="color:var(--alert)">${c.impacted}${c.qualifier_i||''}</span><span class="cstat-lbl">Impactos</span></div>
-        <div class="cstat"><span class="cstat-val">${deadDisplay === 0 && woundedDisplay === 0 ? '—' : deadDisplay+' ✡'}</span><span class="cstat-lbl">Mortos</span></div>
+        <div class="cstat"><span class="cstat-val">${c.launched}${c.qualifier_l||''}</span><span class="cstat-lbl">${T('Lançados','Launched')}</span></div>
+        <div class="cstat"><span class="cstat-val" style="color:var(--alert)">${c.impacted}${c.qualifier_i||''}</span><span class="cstat-lbl">${T('Impactos','Impacts')}</span></div>
+        <div class="cstat"><span class="cstat-val">${deadDisplay === 0 && woundedDisplay === 0 ? '—' : deadDisplay+' ✡'}</span><span class="cstat-lbl">${T('Mortos','Killed')}</span></div>
       </div>
       <div class="country-note">${c.note}</div>
       <div class="risk-bar ${riskClass(c.risk)}"></div>
@@ -1962,7 +2000,7 @@ function renderTheater() {
 }
 
 // ============================================================
-// RENDER — ISRAEL CITIES
+// RENDER — ISRAEL CITIES (bilingual)
 // ============================================================
 function renderIsraelCities() {
   return WAR_DATA.israel_cities.map(c => {
@@ -1973,8 +2011,8 @@ function renderIsraelCities() {
         <div class="city-coords">${c.coords} · ${c.date}</div>
       </div>
       <div class="city-casualties">
-        <div class="cas-block"><span class="cas-n dead">${c.dead}</span><span class="cas-l">✡ Mortos</span></div>
-        <div class="cas-block"><span class="cas-n wounded">${c.wounded}</span><span class="cas-l">Feridos</span></div>
+        <div class="cas-block"><span class="cas-n dead">${c.dead}</span><span class="cas-l">✡ ${T('Mortos','Killed')}</span></div>
+        <div class="cas-block"><span class="cas-n wounded">${c.wounded}</span><span class="cas-l">${T('Feridos','Wounded')}</span></div>
       </div>
       ${c.special ? `<div style="font-family:var(--font-mono);font-size:.5rem;color:var(--claimed);letter-spacing:.1em;">${c.special}</div>` : ''}
       <div class="city-notes">${c.note}</div>
@@ -1984,7 +2022,7 @@ function renderIsraelCities() {
 }
 
 // ============================================================
-// RENDER — BENCHMARKS
+// RENDER — BENCHMARKS (bilingual)
 // ============================================================
 function renderBench(items) {
   return items.map(i => `
@@ -2002,7 +2040,7 @@ function renderBench(items) {
 }
 
 // ============================================================
-// RENDER — CASUALTIES TABLE
+// RENDER — CASUALTIES TABLE (bilingual)
 // ============================================================
 function renderCasualties() {
   return WAR_DATA.casualties.map(c => `
@@ -2017,7 +2055,7 @@ function renderCasualties() {
 }
 
 // ============================================================
-// RENDER — INFRASTRUCTURE
+// RENDER — INFRASTRUCTURE (bilingual)
 // ============================================================
 function renderInfra() {
   return WAR_DATA.infrastructure.map(i => `
@@ -2036,12 +2074,20 @@ function renderInfra() {
 }
 
 // ============================================================
-// RENDER — TIMELINE
+// RENDER — TIMELINE (bilingual)
 // ============================================================
 function renderTimeline() {
   return WAR_DATA.timeline.map(e => {
-    const tags = e.tags.map(t => `<span class="tl-tag ${t}">${t.replace('tag-','').toUpperCase()}</span>`).join('');
-    const confClass = e.confidence === 'CONFIRMADO' ? 'confirmed' : e.confidence === 'CONFLITANTE' ? 'contested' : e.confidence === 'DESMENTIDO' ? 'alert' : 'reported';
+    const TAG_MAP = {
+      'tag-confirm':   T('CONFIRMADO','CONFIRMED'),
+      'tag-attack':    T('ATAQUE','ATTACK'),
+      'tag-retaliate': T('RETALIAÇÃO','RETALIATION'),
+      'tag-diplo':     T('DIPLO','DIPLO'),
+      'tag-us':        T('EUA','USA'),
+      'tag-warning':   T('ALERTA','WARNING'),
+      'tag-disinfo':   T('DESINFORMAÇÃO','DISINFO'),
+    };
+    const tags = e.tags.map(t => `<span class="tl-tag ${t}">${TAG_MAP[t]||t.replace('tag-','').toUpperCase()}</span>`).join('');
     return `
     <div class="tl-item">
       <div class="tl-time">${e.time}</div>
@@ -2054,7 +2100,7 @@ function renderTimeline() {
 }
 
 // ============================================================
-// RENDER — AUDIT LOG
+// RENDER — AUDIT LOG (bilingual)
 // ============================================================
 function renderAudit() {
   return WAR_DATA.audit_log.map(e => `
@@ -2069,157 +2115,28 @@ function renderAudit() {
 }
 
 // ============================================================
-// RENDER — HEZBOLLAH / LÍBANO TAB
+// RENDER — HEZBOLLAH / LEBANON TAB (bilingual)
 // ============================================================
 function renderHzbKPIs() {
   const K = WAR_DATA.hezbollah.kpis;
   const items = [
-    { key:'lb_dead',      icon:'⚰', label:'MORTOS NO LÍBANO' },
-    { key:'lb_wounded',   icon:'🏥', label:'FERIDOS NO LÍBANO' },
-    { key:'lb_displaced', icon:'🏘', label:'DESLOCADOS' },
-    { key:'il_north_fire',icon:'🇮🇱', label:'COM. ISRAEL EVACUADAS' },
-    { key:'hzb_targets',  icon:'🎯', label:'ALVOS IDF NO LÍBANO' }
+    { key:'lb_dead',      icon:'⚰', labelPt:'MORTOS NO LÍBANO',      labelEn:'KILLED IN LEBANON' },
+    { key:'lb_wounded',   icon:'🏥', labelPt:'FERIDOS NO LÍBANO',     labelEn:'WOUNDED IN LEBANON' },
+    { key:'lb_displaced', icon:'🏘', labelPt:'DESLOCADOS',            labelEn:'DISPLACED' },
+    { key:'il_north_fire',icon:'🇮🇱', labelPt:'COM. ISRAEL EVACUADAS', labelEn:'ISRAEL COMMUNITIES EVACUATED' },
+    { key:'hzb_targets',  icon:'🎯', labelPt:'ALVOS IDF NO LÍBANO',   labelEn:'IDF TARGETS IN LEBANON' }
   ];
   return items.map(i => {
     const d = K[i.key];
     const q = d.qualifier||'';
+    const label = T(i.labelPt, i.labelEn);
     return `<div class="hzb-kpi">
-      <div class="hzb-kpi-label">${i.icon} ${i.label}</div>
+      <div class="hzb-kpi-label">${i.icon} ${label}</div>
       <div class="hzb-kpi-val">${d.value.toLocaleString('pt-BR')}${q}</div>
       <div class="hzb-kpi-sub">${d.notes.substring(0,70)}${d.notes.length>70?'…':''}</div>
       <div style="position:absolute;top:.65rem;right:.65rem;">${confBadge(d.confidence,d.source_primary,d.last_update_utc)}</div>
     </div>`;
   }).join('');
-}
-
-function renderHzbTimeline() {
-  return WAR_DATA.hezbollah.timeline.map(e => `
-  <div class="hzb-event">
-    <div class="hzb-dot ${e.tagcls==='tag-attack'?'hzb-dot-crit':e.tagcls==='tag-confirm'?'hzb-dot-rep':'hzb-dot-high'}"></div>
-    <div style="flex:1">
-      <div style="font-family:var(--font-mono);font-size:.48rem;color:var(--text-tertiary);">${e.time}</div>
-      <span class="tl-tag ${e.tagcls}" style="margin-bottom:.15rem;display:inline-block;">${e.tag}</span>
-      <div style="font-size:.6rem;color:var(--text-primary);line-height:1.5;">${e.text}</div>
-      <div style="font-family:var(--font-mono);font-size:.44rem;color:var(--text-tertiary);margin-top:.2rem;">${e.source}</div>
-    </div>
-  </div>`).join('');
-}
-
-function renderHzbTargets() {
-  return WAR_DATA.hezbollah.targets_israel.map(t => `
-  <div class="hzb-event">
-    <div class="hzb-dot ${t.dead>0?'hzb-dot-crit':t.wounded>0?'hzb-dot-high':'hzb-dot-rep'}"></div>
-    <div style="flex:1">
-      <div style="font-size:.62rem;font-weight:600;color:var(--text-bright);">${t.area}</div>
-      <div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);">${t.type}</div>
-      <div style="font-size:.58rem;color:var(--text-secondary);margin-top:.15rem;">${t.note}</div>
-      <div style="display:flex;gap:.5rem;margin-top:.2rem;font-family:var(--font-mono);font-size:.48rem;">
-        <span style="color:var(--alert);">✡ ${t.dead} mortos</span>
-        <span style="color:var(--claimed);">${t.wounded} feridos</span>
-        ${confBadge(t.confidence,'IDF · Israel Police',null)}
-      </div>
-    </div>
-  </div>`).join('');
-}
-
-function renderHzbStrikes() {
-  return WAR_DATA.hezbollah.strikes_lebanon.map(s => `
-  <div class="hzb-event">
-    <div class="hzb-dot ${s.result==='Destruído'?'hzb-dot-crit':'hzb-dot-high'}"></div>
-    <div style="flex:1">
-      <div style="font-size:.62rem;font-weight:600;color:var(--text-bright);">${s.target}</div>
-      <div style="display:flex;gap:.5rem;align-items:center;margin:.1rem 0;">
-        <span style="font-family:var(--font-mono);font-size:.48rem;color:var(--text-tertiary);">${s.type}</span>
-        <span style="font-family:var(--font-mono);font-size:.46rem;font-weight:600;color:${s.result==='Destruído'?'var(--alert)':'var(--claimed)'};">${s.result.toUpperCase()}</span>
-      </div>
-      <div style="font-size:.58rem;color:var(--text-secondary);">${s.note}</div>
-      <div style="margin-top:.2rem;">${confBadge(s.confidence,'IDF Defrin · @IDF',null)}</div>
-    </div>
-  </div>`).join('');
-}
-
-function renderHzbLeaders() {
-  return WAR_DATA.hezbollah.leaders.map(l => `
-  <div class="hzb-leader">
-    <div style="font-family:var(--font-mono);font-size:.48rem;color:var(--text-tertiary);">${l.date} · ${l.location}</div>
-    <div style="font-size:.7rem;font-weight:700;color:#0d1520;margin:.15rem 0;">${l.name}</div>
-    <div style="font-size:.58rem;color:#4a5568;">${l.role}</div>
-    <div style="font-family:var(--font-mono);font-size:.46rem;color:#8896aa;">${l.org}</div>
-    <div style="display:flex;align-items:center;gap:.4rem;margin-top:.35rem;">
-      <span style="font-family:var(--font-mono);font-size:.44rem;color:var(--text-tertiary);">IMPACTO ${l.impact}/10</span>
-      <div style="flex:1;height:2px;background:var(--bg4);border-radius:1px;"><div style="width:${l.impact*10}%;height:100%;background:#1d4ed8;border-radius:1px;"></div></div>
-    </div>
-    <div style="position:absolute;top:.6rem;right:.6rem;">${confBadge(l.confidence,l.source,null)}</div>
-  </div>`).join('');
-}
-
-function renderHzbGroundObj() {
-  return WAR_DATA.hezbollah.ground_objectives.map((o,i) => `
-  <div class="hzb-hum-row">
-    <span style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);min-width:1.2rem;">${i+1}.</span>
-    <span style="font-size:.6rem;color:var(--text-primary);">${o}</span>
-  </div>`).join('');
-}
-
-function renderHzbDisplace() {
-  return WAR_DATA.hezbollah.displace.map(d => `
-  <div class="hzb-hum-row">
-    <div style="font-size:.6rem;color:var(--text-secondary);">${d.label}</div>
-    <div style="display:flex;align-items:center;gap:.4rem;">
-      <span class="hzb-hum-num" style="color:var(--text-bright);font-size:.75rem;">${d.value}</span>
-      ${confBadge(d.confidence,d.source,null)}
-    </div>
-  </div>`).join('');
-}
-
-function renderHzbHumanitarian() {
-  return `
-  <div class="hzb-hum-card">
-    <div class="hzb-hum-title">📊 Baixas e impacto humano — Líbano</div>
-    <div class="hzb-hum-row">
-      <span style="font-size:.6rem;">Mortos confirmados</span>
-      <span class="hzb-hum-num" style="color:var(--alert);">52+</span>
-    </div>
-    <div class="hzb-hum-row">
-      <span style="font-size:.6rem;">Feridos</span>
-      <span class="hzb-hum-num" style="color:var(--claimed);">154+</span>
-    </div>
-    <div class="hzb-hum-row">
-      <span style="font-size:.6rem;">Deslocados</span>
-      <span class="hzb-hum-num" style="color:var(--reported);">28.500+</span>
-    </div>
-    <div class="hzb-hum-row">
-      <span style="font-size:.6rem;">Hospitais em colapso (sul Líbano)</span>
-      <span class="hzb-hum-num" style="color:var(--alert);">3</span>
-    </div>
-    <div class="hzb-hum-row">
-      <span style="font-size:.6rem;">Acesso ONU bloqueado</span>
-      <span class="hzb-hum-num" style="color:var(--alert);">SIM</span>
-    </div>
-  </div>
-  <div class="hzb-hum-card">
-    <div class="hzb-hum-title">⚠️ Situação nordeste Israel — Impacto Hezbollah</div>
-    <div class="hzb-hum-row">
-      <span style="font-size:.6rem;">Mortos em Israel por Hezbollah</span>
-      <span class="hzb-hum-num" style="color:var(--alert);">0</span>
-    </div>
-    <div class="hzb-hum-row">
-      <span style="font-size:.6rem;">Feridos em Israel</span>
-      <span class="hzb-hum-num" style="color:var(--claimed);">8+</span>
-    </div>
-    <div class="hzb-hum-row">
-      <span style="font-size:.6rem;">Comunidades evacuadas</span>
-      <span class="hzb-hum-num" style="color:var(--claimed);">50+</span>
-    </div>
-    <div class="hzb-hum-row">
-      <span style="font-size:.6rem;">Ben Gurion Airport</span>
-      <span class="hzb-hum-num" style="color:var(--alert);">FECHADO</span>
-    </div>
-    <div class="hzb-hum-row">
-      <span style="font-size:.6rem;">Status Acordos de Cessar-Fogo 2024</span>
-      <span class="hzb-hum-num" style="color:var(--alert);">NULO</span>
-    </div>
-  </div>`;
 }
 
 // ============================================================
@@ -3180,14 +3097,12 @@ function setLang(lang) {
 
   // Persist
   try { localStorage.setItem('painel-lang', lang); } catch(e) {}
+
+  // Re-render all dynamic content with new language
+  rerenderAll();
 }
 
-// Re-apply lang after every re-render (called by rerenderAll)
-const _origRerenderAll = typeof rerenderAll === 'function' ? rerenderAll : null;
-function rerenderAllWithLang() {
-  if (_origRerenderAll) _origRerenderAll();
-  if (currentLang === 'en') setTimeout(() => setLang('en'), 50);
-}
+// rerenderAllWithLang removed — rerenderAll is now called inside setLang directly
 
 // Load saved preference after DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
