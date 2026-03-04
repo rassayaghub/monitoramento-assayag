@@ -1771,21 +1771,6 @@ function validateArsenal(data) {
 // ============================================================
 // CONFIDENCE COLOR MAP
 // ============================================================
-const CONF_MAP = {
-  "CONFIRMADO":  { cls: "badge-confirmed", label: "✓ CONFIRMADO" },
-  "REPORTADO":   { cls: "badge-reported",  label: "◎ REPORTADO" },
-  "REIVINDICADO":{ cls: "badge-claimed",   label: "◈ REIVINDICADO" },
-  "CONFLITANTE": { cls: "badge-contested", label: "⚠ CONFLITANTE" },
-  "APURAÇÃO":    { cls: "badge-claimed",   label: "? APURAÇÃO" },
-  "DESMENTIDO":  { cls: "badge-alert",     label: "✗ DESMENTIDO" }
-};
-
-function confBadge(level, source, last_update_utc) {
-  const m = CONF_MAP[level] || CONF_MAP["REPORTADO"];
-  const tooltip = `Fonte: ${source || 'N/A'}\nAtualizado: ${last_update_utc ? last_update_utc.replace('T',' ').replace('Z',' UTC') : 'N/A'}`;
-  return `<span class="badge ${m.cls}" data-tooltip="${tooltip}">${m.label}</span>`;
-}
-
 function riskClass(r) {
   return { critical:'risk-critical', high:'risk-high', medium:'risk-medium', low:'risk-low' }[r] || 'risk-low';
 }
@@ -1797,7 +1782,190 @@ function riskClass(r) {
 // ============================================================
 // RENDER HELPERS — bilingual shorthand
 // ============================================================
+
 function T(pt, en) { return (typeof currentLang !== 'undefined' && currentLang === 'en') ? en : pt; }
+
+// ============================================================
+// DATA TRANSLATION DICTIONARY — covers all WAR_DATA PT strings
+// tD(str) returns English version if lang=en, else original
+// ============================================================
+const DATA_DICT = {
+  // === CASUALTIES — titles ===
+  "Lider Supremo": "Supreme Leader",
+  "Familia Khamenei": "Khamenei Family",
+  "Cmdt-Geral IRGC": "IRGC Commander-in-Chief",
+  "Chefe Estado-Maior": "Chief of Joint Staff",
+  "Ministro da Defesa": "Minister of Defense",
+  "Dir. Intel. Exterior": "Foreign Intel Director",
+  "Intel Hezbollah": "Hezbollah Intelligence",
+  "Cmdt PIJ Libano": "PIJ Commander Lebanon",
+  "Sec. Conselho Seg. Nacional": "Nat'l Security Council Sec.",
+  "Ex-Presidente": "Former President",
+
+  // === CASUALTIES — roles ===
+  "Lider Supremo (1989-2026)": "Supreme Leader (1989–2026)",
+  "Familiar do Lider Supremo, morta em 02/Mar": "Supreme Leader's family member, killed 02/Mar",
+  "4 membros da familia mortos": "4 family members killed",
+  "Comandante-Geral Forcas Terrestres IRGC": "IRGC Ground Forces Commander-in-Chief",
+  "Chefe do Estado-Maior das Forcas Armadas": "Chief of the Armed Forces Joint Staff",
+  "Ministro da Defesa e Logistica das FA": "Minister of Defense and Armed Forces Logistics",
+  "Chefe de Inteligencia Estrangeira (VAJA)": "Foreign Intelligence Chief (VAJA)",
+  "Chefe de Inteligencia do Hezbollah, eliminado em Beirute (02/Mar)": "Hezbollah Intelligence Chief, eliminated in Beirut (02/Mar)",
+  "Comandante Jihad Islamica Palestina no Libano, eliminado em Beirute (02/Mar)": "Palestinian Islamic Jihad Commander in Lebanon, eliminated in Beirut (02/Mar)",
+  "Secretario CSNS - arquiteto das politicas de seguranca nacional": "SNSC Secretary — architect of national security policy",
+  "Ex-Presidente Ira (2005-2013) - civil em Narmak, Teera. CONTESTADO.": "Former Iranian President (2005–2013) — civilian in Narmak, Tehran. CONTESTED.",
+
+  // === CASUALTIES — orgs ===
+  "Wilayat al-Faqih": "Wilayat al-Faqih",
+  "Familia Khamenei": "Khamenei Family",
+  "Estado-Maior FA": "Armed Forces Joint Staff",
+  "Ministerio da Defesa": "Ministry of Defense",
+  "Hezbollah - Libano": "Hezbollah — Lebanon",
+  "Jihad Islamica Palestina": "Palestinian Islamic Jihad",
+  "CSNS": "SNSC",
+
+  // === COUNTRIES — notes ===
+  "DIA 5: 11+ mortos, 335+ feridos (MDA). 62 ondas de ataque em 24h (Dia 4→5). Sirenes em Jerusalém e Tel Aviv. Ben Gurion fechado. IDF invade sul do Líbano. Beit Shemesh: pior incidente (9 mortos).":
+    "DAY 5: 11+ dead, 335+ wounded (MDA). 62 attack waves in 24h (Day 4→5). Sirens in Jerusalem and Tel Aviv. Ben Gurion closed. IDF invades S. Lebanon. Beit Shemesh: worst incident (9 dead).",
+  "6 soldados EUA mortos (todos no Kuwait, mesma unidade logística). Embaixada EUA atingida — FECHADA indefinidamente. FOGO AMIGO: Kuwait derrubou 3 F-15E americanos por engano durante ataque iraniano. Ali al-Salem AB: 15 cruzeiros iranianos.":
+    "6 US soldiers killed (all in Kuwait, same logistics unit). US Embassy hit — CLOSED indefinitely. FRIENDLY FIRE: Kuwait shot down 3 US F-15Es by mistake during Iranian attack. Ali al-Salem AB: 15 Iranian cruise missiles.",
+  "DIA 5: 50+ mortos, 335+ feridos no Líbano (AP/Min. Saúde). Hezbollah atinge tanque israelense em Houla (2 feridos IDF). IDF invade sul Líbano: 59 aldeias evacuadas, operação além do Litani. Beirute sob strikes. 28.500 deslocados.":
+    "DAY 5: 50+ dead, 335+ wounded in Lebanon (AP/MoH). Hezbollah hits Israeli tank in Houla (2 IDF wounded). IDF invades S. Lebanon: 59 villages evacuated, operation beyond the Litani. Beirut under strikes. 28,500 displaced.",
+  "QG 5ª Frota atingido. Torre residencial atingida. Aeroporto: danos materiais sem vítimas (Min. Interior). Residências em Manama atingidas noite de 28/Fev.":
+    "US 5th Fleet HQ hit. Residential tower hit. Airport: material damage, no casualties (Min. Interior). Residences in Manama hit night of 28/Feb.",
+  "3 mortos, 60 feridos (Min. Defesa). Burj Al Arab: danos por estilhaços. Dubai Palm: hotel Fairmont incendiado. CNN: explosões ouvidas em Dubai, Abu Dhabi e Doha.":
+    "3 dead, 60 wounded (MoD). Burj Al Arab: shrapnel damage. Dubai Palm: Fairmont hotel set on fire. CNN: explosions heard in Dubai, Abu Dhabi and Doha.",
+  "Qatar ABATEU 2 Su-24 iranianos — 1ª aeronave iraniana derrubada no conflito. Produção LNG suspensa. HQ CENTCOM (Al-Udeid) sob ataque. Blasts em Doha às 01h40 local.":
+    "Qatar DOWNED 2 Iranian Su-24s — 1st Iranian aircraft shot down in the conflict. LNG production suspended. CENTCOM HQ (Al-Udeid) under attack. Blasts in Doha at 01:40 local.",
+  "EMBAIXADA EUA RIAD ATINGIDA (03/Mar): 2 drones + 4 drones no Bairro Diplomatico. Incendio limitado, sem feridos (Min. Defesa Saudita). Saudita interceptou 8 drones Riad/Al-Kharj. Trump prometeu retaliar. Embaixada fechada. Ras Tanura: controlado.":
+    "US EMBASSY RIYADH HIT (03/Mar): 2 drones + 4 drones in Diplomatic Quarter. Limited fire, no casualties (Saudi MoD). Saudi Arabia intercepted 8 drones Riyadh/Al-Kharj. Trump vowed retaliation. Embassy closed. Ras Tanura: controlled.",
+  "100% interceptados — 49/49. FA Jordânia auxilia defesa aérea israelense. EUA solicitaram acesso aéreo irrestrito à Jordânia.":
+    "100% intercepted — 49/49. Jordanian Armed Forces assist Israeli air defense. US requested unrestricted airspace access in Jordan.",
+  "2 combatentes PMF mortos em Jurf al-Sakher. Milícias: drone contra Baghdad Airport e base Erbil. AP: explosões em Erbil manhã de 02/Mar. EUA + Israel atacaram Jurf al-Nasr (base PMF).":
+    "2 PMF fighters killed in Jurf al-Sakher. Militias: drone against Baghdad Airport and Erbil base. AP: explosions in Erbil morning of 02/Mar. US + Israel struck Jurf al-Nasr (PMF base).",
+  "HISTÓRICO: Drone atingiu base RAF Akrotiri durante madrugada (02→03/Mar). Sirenes em Akrotiri e Dhekelia. 1º ATAQUE IRANIANO EM SOLO EUROPEU. Danos limitados, sem vítimas. RAF em alerta máximo.":
+    "HISTORIC: Drone hit RAF Akrotiri base during early hours (02→03/Mar). Sirens at Akrotiri and Dhekelia. 1ST IRANIAN ATTACK ON EUROPEAN SOIL. Limited damage, no casualties. RAF on maximum alert.",
+
+  // === ISRAEL CITIES — notes ===
+  "Míssil balístico atingiu diretamente abrigo antiaéreo público. 9 mortos, 27+ feridos, 3 críticos. Criança de 10 anos em estado grave. IDF investiga falha de interceptação.":
+    "Ballistic missile directly hit a public bomb shelter. 9 dead, 27+ wounded, 3 critical. 10-year-old child in serious condition. IDF investigates interception failure.",
+  "1 mulher morta. 80+ feridos acumulados. Ben Gurion Airport fechado desde 28/Fev. Hospital realocado para bunker subterrâneo. Hezbollah rockets (02/Mar) caíram em áreas abertas — sem novos mortos.":
+    "1 woman killed. 80+ cumulative wounded. Ben Gurion Airport closed since 28/Feb. Hospital relocated to underground bunker. Hezbollah rockets (02/Mar) fell in open areas — no new deaths.",
+  "Ogiva caiu a metros da Cidade Velha — Sultan's Pool, ~700m do Muro das Lamentações. Cmte. Dvir Tamir: 'Se tivesse desviado centenas de metros, catástrofe'. Nenhuma vítima.":
+    "Warhead fell meters from the Old City — Sultan's Pool, ~700m from the Western Wall. Cmdr. Dvir Tamir: 'If it had deviated hundreds of meters, catastrophe'. No casualties.",
+  "Hezbollah rockets (02/Mar): 1ª vez desde cessarf-fogo 2024. IDF emitiu ordens de evacuação em 50 comunidades no norte de Israel. IDF retaliu com 70+ alvos no Líbano.":
+    "Hezbollah rockets (02/Mar): 1st time since 2024 ceasefire. IDF issued evacuation orders for 50 communities in northern Israel. IDF retaliated with 70+ targets in Lebanon.",
+
+  // === INFRASTRUCTURE — notes ===
+  "AFUNDADA 04/Mar por torpedo de submarino EUA (USS ?) — 1ª vez desde WW2. 180 a bordo: 79 resgatados, 80+ mortos, 101 desaparecidos. Hegseth: 'They thought they were safe in international waters'.":
+    "SUNK 04/Mar by US submarine torpedo — 1st time since WW2. 180 aboard: 79 rescued, 80+ dead, 101 missing. Hegseth: 'They thought they were safe in international waters'.",
+  "Destruído Dia 1. Confirmado IDF + satélite.": "Destroyed Day 1. Confirmed by IDF + satellite.",
+  "Israel confirmou destruição total em 02/Mar. Última voz de propaganda do regime.":
+    "Israel confirmed total destruction on 02/Mar. The regime's last propaganda voice.",
+  "IDF: 10 sedes ministeriais + QG Força Quds destruídos na noite 01→02/Mar.":
+    "IDF: 10 ministry HQs + Quds Force HQ destroyed night of 01→02/Mar.",
+  "Iran International: vídeo mostra edifício completamente destruído (02/Mar).":
+    "Iran International: video shows building completely destroyed (02/Mar).",
+  "Sede destruída. Trump: objetivo nuclear cumprido.": "HQ destroyed. Trump: nuclear objective achieved.",
+  "Status do reator nuclear incerto. Iran International: atingida.":
+    "Nuclear reactor status uncertain. Iran International: hit.",
+  "SA-65 avançado destruído. Reaper voa livremente sobre Shiraz.":
+    "Advanced SA-65 destroyed. Reaper flies freely over Shiraz.",
+  "CENTCOM confirmou Jamaran afundando. Trump: 10 navios iranianos afundados. IRGC reivindica 3 petroleiros EUA/UK.":
+    "CENTCOM confirmed Jamaran sinking. Trump: 10 Iranian ships sunk. IRGC claims 3 US/UK oil tankers hit.",
+  "CTP-ISW: todas 25 bases atingidas. Reatingidas em 28/Fev.":
+    "CTP-ISW: all 25 bases hit. Re-struck on 28/Feb.",
+  "1º ATAQUE IRANIANO EM SOLO EUROPEU. Drone atingiu base na madrugada 02→03/Mar. Danos limitados. RAF em alerta máximo.":
+    "1ST IRANIAN ATTACK ON EUROPEAN SOIL. Drone hit base early hours 02→03/Mar. Limited damage. RAF on maximum alert.",
+  "Drone causou incêndio limitado — controlado. Sauditas derrubaram 2 drones sobre o local.":
+    "Drone caused limited fire — controlled. Saudis shot down 2 drones over the site.",
+  "Qatar suspendeu produção de LNG após ataques. Impacto global nos mercados de energia.":
+    "Qatar suspended LNG production after attacks. Global impact on energy markets.",
+  "Irã: ~168 crianças mortas. NYT e WaPo verificaram imagens parcialmente. Sem conf. independente do número. Crise humanitária e de imagem.":
+    "Iran: ~168 children dead. NYT and WaPo partially verified footage. No independent confirmation of numbers. Humanitarian and PR crisis.",
+  "03/Mar: 2 drones iranianos atingiram embaixada. Incendio limitado, sem feridos. +4 drones no bairro. Min. Defesa Saudita confirmou. Trump prometeu retaliacao. Embaixada fechada.":
+    "03/Mar: 2 Iranian drones hit embassy. Limited fire, no casualties. +4 drones in the district. Saudi MoD confirmed. Trump vowed retaliation. Embassy closed.",
+  "Embaixada EUA atingida por drones iranianos (02/Mar). Fechada indefinidamente. Fumaça visível de ruas próximas (Reuters).":
+    "US Embassy hit by Iranian drones (02/Mar). Closed indefinitely. Smoke visible from nearby streets (Reuters).",
+
+  // === INFRASTRUCTURE — cats ===
+  "NAVAL": "NAVAL",
+  "LIDERANÇA": "LEADERSHIP",
+  "MÍDIA/COMANDO": "MEDIA/C2",
+  "INTELIGÊNCIA": "INTELLIGENCE",
+  "IRGC": "IRGC",
+  "NUCLEAR": "NUCLEAR",
+  "NUCLEAR/NAVAL": "NUCLEAR/NAVAL",
+  "DEF. AÉREA": "AIR DEFENSE",
+  "MÍSSEIS": "MISSILES",
+  "BASE EUROPEIA": "EUROPEAN BASE",
+  "ENERGIA": "ENERGY",
+  "CIVIL — CONTESTADO": "CIVIL — CONTESTED",
+  "DIPLOMATICO": "DIPLOMATIC",
+  "DIPLOMÁTICO": "DIPLOMATIC",
+
+  // === BENCHMARKS — names ===
+  "Fordow (enriquecimento subterrâneo)": "Fordow (underground enrichment)",
+  "Natanz (instalação principal)": "Natanz (main facility)",
+  "Isfahan (hub centrífugas)": "Isfahan (centrifuge hub)",
+  "AEOI Sede + Porto Bushehr": "AEOI HQ + Bushehr Port",
+  "Lançadores móveis destruídos": "Mobile launchers destroyed",
+  "Estoque consumido/destruído (4 dias)": "Stockpile consumed/destroyed (4 days)",
+  "Todas 25 bases MRBM atingidas": "All 25 MRBM bases hit",
+  "Marinha iraniana (Trump: 10 navios afundados)": "Iranian Navy (Trump: 10 ships sunk)",
+  "Líder Supremo Khamenei": "Supreme Leader Khamenei",
+  "Esposa de Khamenei": "Khamenei's Wife",
+  "Cdte. IRGC (Pakpour) + Min. Defesa + Chefe Estado-Maior": "IRGC Cmdr (Pakpour) + Def. Min. + Joint Chief",
+  "Cúpula inteligência VAJA (4 de 5 chefes)": "VAJA intelligence leadership (4 of 5 chiefs)",
+  "Chefes Hezbollah + PIJ no Líbano (02/Mar)": "Hezbollah + PIJ chiefs in Lebanon (02/Mar)",
+  "IRIB — TV/Rádio estatal iraniana destruída": "IRIB — Iranian state TV/Radio destroyed",
+  "Israel (Iron Dome + Arrow + THAAD)": "Israel (Iron Dome + Arrow + THAAD)",
+  "Jordânia (100% — 49/49)": "Jordan (100% — 49/49)",
+  "Qatar (Patriot PAC-3 + abateu 2 Su-24)": "Qatar (Patriot PAC-3 + downed 2 Su-24s)",
+  "Arábia Saudita (Patriot — derrubou 2 drones)": "Saudi Arabia (Patriot — downed 2 drones)",
+  "EAU — 3 mortos confirmados": "UAE — 3 confirmed dead",
+  "Bahrein (5ª Frota EUA atingida)": "Bahrain (US 5th Fleet hit)",
+  "Kuwait ⚠ FOGO AMIGO: derrubou 3 F-15E EUA": "Kuwait ⚠ FRIENDLY FIRE: downed 3 US F-15Es",
+
+  // === SURVIVORS ===
+  "Masoud Pezeshkian — Presidente (lidera conselho de transição com Ghalibaf + Ejei)":
+    "Masoud Pezeshkian — President (leads transition council with Ghalibaf + Ejei)",
+  "Mohammad Baqer Qalibaf — Presidente do Parlamento (membro do conselho)":
+    "Mohammad Baqer Qalibaf — Parliament Speaker (council member)",
+  "Gholam-Hossein Mohseni-Ejei — Judiciário (membro do conselho)":
+    "Gholam-Hossein Mohseni-Ejei — Judiciary (council member)",
+  "Ali Larijani — Ex-assessor de Khamenei ('Não negociaremos com os EUA')":
+    "Ali Larijani — Former Khamenei adviser ('We will not negotiate with the US')",
+  "Abbas Araghchi — Ministro das Relações Exteriores (publicou foto de valas para 160 crianças)":
+    "Abbas Araghchi — Foreign Minister (posted photo of mass graves for 160 children)",
+  "Amir Hatami — Comandante do Exército Regular": "Amir Hatami — Regular Army Commander",
+
+  // === HEZBOLLAH DATA ===
+  "Após cessar-fogo de novembro 2024 · Hezbollah voltou a atacar em 02/Mar/2026":
+    "After November 2024 ceasefire · Hezbollah resumed attacks on 02/Mar/2026",
+
+  // === GENERIC UI STRINGS in rendered output ===
+  "Soto israelense confirmado": "Confirmed Israeli soil",
+  "Magen David Adom": "Magen David Adom",
+  "Interceptação (%)": "Interception (%)",
+  "interc.": "interc.",
+  "Fontes": "Sources",
+  "Fonte": "Source",
+  "Atualizado": "Updated",
+  "Mortos": "Killed",
+  "Feridos": "Wounded",
+  "Lançados": "Launched",
+  "Impactos": "Impacts",
+  "Confirmados": "Confirmed",
+  "Reportados": "Reported",
+  "Conflitantes": "Contested",
+  "Total registros": "Total records",
+};
+
+function tD(str) {
+  if (typeof currentLang === 'undefined' || currentLang === 'pt' || !str) return str;
+  return DATA_DICT[str] || str;
+}
 function confBadgeLabel(conf) {
   const M = {
     CONFIRMADO:   T('✓ CONFIRMADO','✓ CONFIRMED'),
@@ -1808,8 +1976,7 @@ function confBadgeLabel(conf) {
   };
   return M[conf] || conf;
 }
-// Override confBadge to use translated label
-const _origConfBadge = confBadge;
+// THE confBadge — bilingual
 function confBadge(level, source, last_update_utc) {
   const CONF_MAP = {
     CONFIRMADO:   { cls:'conf-confirmado' },
@@ -1844,10 +2011,10 @@ function renderLeaders(){
     const pct = ((p.impact||0)/maxImpact*100).toFixed(0);
     return `<div class="leader-card">
       <div class="leader-rank">#${p.id} · ${T('IMPACTO','IMPACT')} ${p.impact||'?'}/10</div>
-      <span class="leader-title-tag ${tagCls}">${p.title||p.cat}</span>
+      <span class="leader-title-tag ${tagCls}">${tD(p.title||p.cat)}</span>
       <div class="leader-name">${p.name}</div>
-      <div class="leader-role">${p.role}</div>
-      <div class="leader-org">${p.org}</div>
+      <div class="leader-role">${tD(p.role)}</div>
+      <div class="leader-org">${tD(p.org)}</div>
       <div class="leader-impact-bar"><div class="lib-fill ${barCls}" style="width:${pct}%"></div></div>
       <div class="leader-badge">${confBadge(p.confidence,p.source,null)}</div>
     </div>`;
@@ -1961,7 +2128,7 @@ function renderKPIs() {
         <span class="kpi-value">${d.value}${q}</span>
         <span class="kpi-unit">${d.unit}</span>
       </div>
-      <div class="kpi-sub">${d.notes.substring(0,80)}${d.notes.length>80?'…':''}</div>
+      <div class="kpi-sub">${tD(d.notes).substring(0,90)}${d.notes.length>80?'…':''}</div>
       <div class="kpi-badge">${confBadge(d.confidence, d.source_primary, d.last_update_utc)}</div>
     </div>`;
   }).join('');
@@ -1993,7 +2160,7 @@ function renderTheater() {
         <div class="cstat"><span class="cstat-val" style="color:var(--alert)">${c.impacted}${c.qualifier_i||''}</span><span class="cstat-lbl">${T('Impactos','Impacts')}</span></div>
         <div class="cstat"><span class="cstat-val">${deadDisplay === 0 && woundedDisplay === 0 ? '—' : deadDisplay+' ✡'}</span><span class="cstat-lbl">${T('Mortos','Killed')}</span></div>
       </div>
-      <div class="country-note">${c.note}</div>
+      <div class="country-note">${tD(c.note)}</div>
       <div class="risk-bar ${riskClass(c.risk)}"></div>
     </div>`;
   }).join('');
@@ -2015,7 +2182,7 @@ function renderIsraelCities() {
         <div class="cas-block"><span class="cas-n wounded">${c.wounded}</span><span class="cas-l">${T('Feridos','Wounded')}</span></div>
       </div>
       ${c.special ? `<div style="font-family:var(--font-mono);font-size:.5rem;color:var(--claimed);letter-spacing:.1em;">${c.special}</div>` : ''}
-      <div class="city-notes">${c.note}</div>
+      <div class="city-notes">${tD(c.note)}</div>
       ${confBadge(c.confidence, c.source_primary, c.last_update_utc)}
     </div>`;
   }).join('');
@@ -2028,7 +2195,7 @@ function renderBench(items) {
   return items.map(i => `
   <div class="bench-row">
     <div class="bench-row-header">
-      <span class="bench-name">${i.name}</span>
+      <span class="bench-name">${tD(i.name)}</span>
       <span class="bench-pct">${i.pct}%</span>
     </div>
     <div class="bench-track"><div class="bench-fill" style="width:${i.pct}%;background:${i.color}"></div></div>
@@ -2047,8 +2214,8 @@ function renderCasualties() {
   <tr>
     <td class="cas-num-cell">${c.id}</td>
     <td class="cas-name-cell">${c.name}</td>
-    <td class="cas-role-cell">${c.role}</td>
-    <td class="cas-org-cell">${c.org}</td>
+    <td class="cas-role-cell">${tD(c.role)}</td>
+    <td class="cas-org-cell">${tD(c.org)}</td>
     <td>${confBadge(c.confidence, c.source, null)}</td>
     <td class="cas-src-cell">${c.source.substring(0,50)}${c.source.length>50?'…':''}</td>
   </tr>`).join('');
@@ -2064,10 +2231,10 @@ function renderInfra() {
     <div class="infra-content">
       <div class="infra-name">${i.name}</div>
       <div class="infra-loc">${i.loc}</div>
-      <div class="infra-note">${i.note}</div>
+      <div class="infra-note">${tD(i.note)}</div>
       <div style="display:flex;gap:.4rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
         ${confBadge(i.confidence, i.source, null)}
-        <span class="infra-cat">${i.cat}</span>
+        <span class="infra-cat">${tD(i.cat)}</span>
       </div>
     </div>
   </div>`).join('');
@@ -2133,7 +2300,7 @@ function renderHzbKPIs() {
     return `<div class="hzb-kpi">
       <div class="hzb-kpi-label">${i.icon} ${label}</div>
       <div class="hzb-kpi-val">${d.value.toLocaleString('pt-BR')}${q}</div>
-      <div class="hzb-kpi-sub">${d.notes.substring(0,70)}${d.notes.length>70?'…':''}</div>
+      <div class="hzb-kpi-sub">${tD(d.notes).substring(0,80)}${d.notes.length>70?'…':''}</div>
       <div style="position:absolute;top:.65rem;right:.65rem;">${confBadge(d.confidence,d.source_primary,d.last_update_utc)}</div>
     </div>`;
   }).join('');
@@ -2190,19 +2357,19 @@ function setUpdateStatus(state, msg) {
   const bar    = document.getElementById('update-progress');
   if (state === 'loading') {
     if (badge)  badge.style.opacity = '.5';
-    if (status) { status.textContent = msg || 'Buscando feeds…'; status.style.color = 'var(--claimed)'; }
+    if (status) { status.textContent = msg || T('Buscando feeds…','Fetching feeds…'); status.style.color = 'var(--claimed)'; }
     if (bar)    bar.style.width = '30%';
   } else if (state === 'verifying') {
-    if (status) { status.textContent = msg || 'Processando…'; status.style.color = 'var(--reported)'; }
+    if (status) { status.textContent = msg || T('Processando…','Processing…'); status.style.color = 'var(--reported)'; }
     if (bar)    bar.style.width = '70%';
   } else if (state === 'done') {
     if (badge)  badge.style.opacity = '1';
-    if (status) { status.textContent = msg || 'Atualizado'; status.style.color = 'var(--confirmed)'; }
+    if (status) { status.textContent = msg || T('Atualizado','Updated'); status.style.color = 'var(--confirmed)'; }
     if (bar)    bar.style.width = '100%';
     setTimeout(() => { if (bar) bar.style.width = '0%'; }, 2000);
   } else if (state === 'error') {
     if (badge)  badge.style.opacity = '1';
-    if (status) { status.textContent = msg || 'Feeds indisponíveis — dados estáticos ativos'; status.style.color = 'var(--claimed)'; }
+    if (status) { status.textContent = msg || T('Feeds indisponíveis — dados base ativos','Feeds unavailable — base data active'); status.style.color = 'var(--claimed)'; }
     if (bar)    bar.style.width = '0%';
   }
 }
@@ -2433,6 +2600,112 @@ function updateStatusPanel(r) {
 }
 
 // ── RE-RENDER SECTIONS ───────────────────────────────────────
+
+// ============================================================
+// RENDER — HEZBOLLAH SUB-PANELS (bilingual)
+// ============================================================
+function renderHzbTimeline() {
+  return (WAR_DATA.hezbollah.timeline || []).map(e => `
+  <div class="hzb-event" style="display:flex;gap:.7rem;padding:.6rem 0;border-bottom:1px solid var(--border);">
+    <div style="font-size:1rem;width:1.5rem;flex-shrink:0;">${e.icon}</div>
+    <div style="flex:1;min-width:0;">
+      <div style="display:flex;gap:.35rem;align-items:center;flex-wrap:wrap;margin-bottom:.2rem;">
+        <span style="font-family:var(--font-mono);font-size:.48rem;color:var(--text-tertiary);">${e.time}</span>
+        <span class="tl-tag ${e.tagcls}">${T(e.tag, e.tag)}</span>
+        ${confBadge(e.confidence, e.source, null)}
+      </div>
+      <div style="font-size:.62rem;color:var(--text-primary);line-height:1.5;">${tD(e.text)}</div>
+    </div>
+  </div>`).join('');
+}
+
+function renderHzbTargets() {
+  return (WAR_DATA.hezbollah.targets_israel || []).map(t => `
+  <div style="padding:.5rem;border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:.4rem;">
+    <div style="font-weight:600;font-size:.62rem;">${t.area}</div>
+    <div style="font-size:.55rem;color:var(--claimed);font-family:var(--font-mono);">${tD(t.type)}</div>
+    <div style="font-size:.55rem;color:var(--text-secondary);margin-top:.2rem;">${tD(t.note)}</div>
+    <div style="margin-top:.3rem;">${confBadge(t.confidence,'',null)}</div>
+  </div>`).join('');
+}
+
+function renderHzbStrikes() {
+  return (WAR_DATA.hezbollah.strikes_lebanon || []).map(s => `
+  <div style="padding:.5rem;border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:.4rem;">
+    <div style="font-weight:600;font-size:.62rem;">${tD(s.target)}</div>
+    <div style="font-size:.55rem;color:var(--font-mono);display:flex;gap:.5rem;margin-top:.15rem;">
+      <span style="color:var(--claimed)">${tD(s.type)}</span>
+      <span style="color:var(--confirmed)">→ ${tD(s.result)}</span>
+    </div>
+    <div style="font-size:.55rem;color:var(--text-secondary);margin-top:.2rem;">${tD(s.note)}</div>
+    <div style="margin-top:.3rem;">${confBadge(s.confidence,'',null)}</div>
+  </div>`).join('');
+}
+
+function renderHzbLeaders() {
+  return (WAR_DATA.hezbollah.leaders || []).map(l => `
+  <div class="hzb-leader">
+    <div style="font-size:.48rem;font-family:var(--font-mono);color:var(--text-tertiary);">${l.date} · ${T('IMPACTO','IMPACT')} ${l.impact}/10</div>
+    <div class="hzb-leader-name">${l.name}</div>
+    <div class="hzb-leader-role">${tD(l.role)}</div>
+    <div style="font-size:.52rem;color:var(--text-tertiary);">${tD(l.org)}</div>
+    <div style="font-size:.48rem;color:var(--text-tertiary);margin-top:.15rem;">📍 ${tD(l.location)}</div>
+    <div style="position:absolute;top:.5rem;right:.5rem;">${confBadge(l.confidence,l.source,null)}</div>
+  </div>`).join('');
+}
+
+function renderHzbGroundObj() {
+  const objs_en = [
+    "Establish buffer zone beyond the Litani River (2024 ceasefire line)",
+    "Destroy rocket infrastructure within 40 km of the border",
+    "Destroy cross-border tunnel network",
+    "Capture strategic observation positions on Jabal al-Sheikh (Mt. Hermon)",
+    "Prevent Hezbollah resupply via Syria (Bekaa–Damascus corridor)",
+    "Maintain pressure on two simultaneous theaters: Iran + Lebanon"
+  ];
+  return (WAR_DATA.hezbollah.ground_objectives || []).map((obj, i) => `
+  <div style="display:flex;gap:.5rem;align-items:flex-start;padding:.3rem 0;border-bottom:1px solid var(--border);font-size:.6rem;">
+    <span style="color:var(--confirmed);font-weight:700;flex-shrink:0;">▶</span>
+    <span>${T(obj, objs_en[i] || obj)}</span>
+  </div>`).join('');
+}
+
+function renderHzbDisplace() {
+  return (WAR_DATA.hezbollah.displace || []).map(d => {
+    const label_en = {
+      "Civis deslocados no Líbano": "Displaced civilians in Lebanon",
+      "Aldeias com evacuação urgente (Líbano)": "Villages with urgent evacuation orders (Lebanon)",
+      "Comunidades israelenses evacuadas (norte)": "Israeli communities evacuated (north)",
+      "Ben Gurion Airport fechado": "Ben Gurion Airport closed",
+      "Hospitais sul Líbano sobrecarregados": "S. Lebanon hospitals overwhelmed",
+      "Corredor humanitário aberto": "Humanitarian corridor open",
+    }[d.label] || d.label;
+    return `
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--border);">
+    <span style="font-size:.6rem;color:var(--text-secondary);">${T(d.label, label_en)}</span>
+    <div style="display:flex;gap:.4rem;align-items:center;">
+      <span style="font-family:var(--font-mono);font-size:.65rem;font-weight:700;color:var(--alert);">${d.value}</span>
+      ${confBadge(d.confidence, d.source, null)}
+    </div>
+  </div>`;
+  }).join('');
+}
+
+function renderHzbHumanitarian() {
+  const H = WAR_DATA.hezbollah.kpis;
+  const rows = [
+    { labelPt:'Mortos no Líbano', labelEn:'Killed in Lebanon', val: H.lb_dead.value+'+', cls:'alert' },
+    { labelPt:'Feridos no Líbano', labelEn:'Wounded in Lebanon', val: H.lb_wounded.value+'+', cls:'claimed' },
+    { labelPt:'Deslocados', labelEn:'Displaced', val: H.lb_displaced.value.toLocaleString()+'+', cls:'reported' },
+    { labelPt:'Comunidades Israel evacuadas', labelEn:'Israeli communities evacuated', val: H.il_north_fire.value+'+', cls:'confirmed' },
+  ];
+  return rows.map(r => `
+  <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border);">
+    <span style="font-size:.6rem;color:var(--text-secondary);">${T(r.labelPt, r.labelEn)}</span>
+    <span style="font-family:var(--font-mono);font-size:.7rem;font-weight:700;color:var(--${r.cls});">${r.val}</span>
+  </div>`).join('');
+}
+
 function rerenderAll() {
   document.getElementById('kpi-grid').innerHTML = renderKPIs();
   document.getElementById('timeline-body').innerHTML = renderTimeline();
@@ -2510,11 +2783,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (thumb) { thumb.style.left = WAR_DATA.meta.escalation_index.value + '%'; }
 
   // Audit count
-  document.getElementById('audit-count').textContent = `${WAR_DATA.audit_log.length} entradas`;
+  document.getElementById('audit-count').textContent = `${WAR_DATA.audit_log.length} ${T('entradas','entries')}`;
 
   // Survivors
   document.getElementById('survivors-list').innerHTML = WAR_DATA.survivors.map(s =>
-    `<div style="font-size:.62rem;color:var(--confirmed);padding:.25rem 0;border-bottom:1px solid var(--border);">✓ ${s}</div>`
+    `<div style="font-size:.62rem;color:var(--confirmed);padding:.25rem 0;border-bottom:1px solid var(--border);">✓ ${tD(s)}</div>`
   ).join('');
 
   // Hezbollah tab
@@ -2535,8 +2808,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const firstNext = new Date(Date.now() + UPDATE_INTERVAL + 5000);
   const nextEl = document.getElementById('next-update');
   const nextTopEl = document.getElementById('next-update-top');
-  if (nextEl) nextEl.textContent = `Próx. atualização RSS: ${firstNext.toISOString().substring(11,16)} UTC`;
-  if (nextTopEl) nextTopEl.textContent = `Sistema RSS autônomo · Próx.: ${firstNext.toISOString().substring(11,16)} UTC · Intervalo: 15 min`;
+  if (nextEl) nextEl.textContent = T(`Próx. atualização RSS: ${firstNext.toISOString().substring(11,16)} UTC`, `Next RSS update: ${firstNext.toISOString().substring(11,16)} UTC`);
+  if (nextTopEl) nextTopEl.textContent = T(`Sistema RSS autônomo · Próx.: ${firstNext.toISOString().substring(11,16)} UTC · Intervalo: 15 min`, `Autonomous RSS system · Next: ${firstNext.toISOString().substring(11,16)} UTC · Interval: 15 min`);
 });
 </script>
 
@@ -2618,7 +2891,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <span id="esc-alto" data-pt="ALTO 51–75" data-en="HIGH 51–75">ALTO 51–75</span>
     <span style="color:var(--alert);" id="esc-critico" data-pt="CRÍTICO 76–100" data-en="CRITICAL 76–100">CRÍTICO 76–100</span>
   </div>
-  <span class="badge badge-reported" data-tooltip="Índice sintético 0–100. Baseado em: alcance geográfico (9 países atingidos), tipo de alvos (liderança suprema, QG militares, instalações nucleares), baixas confirmadas, escalada marítima e fechamento de Hormuz." data-pt="◎ METODOLOGIA" data-en="◎ METHODOLOGY">◎ METODOLOGIA</span>
+  <span class="badge badge-reported" data-tooltip="Índice sintético 0–100. Baseado em: alcance geográfico (9 países atingidos), tipo de alvos (liderança suprema, QG militares, instalações nucleares), baixas confirmadas, escalada marítima e fechamento de Hormuz." data-pt="◎ METODOLOGIA" data-en="◎ METHODOLOGY" data-pt="◎ METODOLOGIA" data-en="◎ METHODOLOGY">◎ METODOLOGIA</span>
 </div>
 
 <!-- ============================================================
@@ -2665,26 +2938,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     <div class="section-header">
       <div class="section-title" data-pt="Israel — Cidades atingidas por mísseis iranianos" data-en="Israel — Cities Hit by Iranian Missiles">Israel — Cidades atingidas por mísseis iranianos</div>
-      <div class="section-meta">Solo israelense confirmado · Magen David Adom</div>
+      <div class="section-meta" data-pt="Solo israelense confirmado · Magen David Adom" data-en="Confirmed Israeli soil · Magen David Adom">Solo israelense confirmado · Magen David Adom</div>
     </div>
     <div class="israel-section">
       <div class="israel-header">
         <div class="israel-title">🇮🇱 BAIXAS CONFIRMADAS — RETALIAÇÃO IRANIANA EM TERRITÓRIO ISRAELENSE</div>
-        <span class="badge badge-confirmed">✓ FONTES OFICIAIS</span>
+        <span class="badge badge-confirmed" data-pt="✓ FONTES OFICIAIS" data-en="✓ OFFICIAL SOURCES">✓ FONTES OFICIAIS</span>
       </div>
       <div class="israel-cities" id="israel-cities"></div>
       <div class="israel-totals">
         <div class="total-item">
           <div class="total-val" id="il-total-dead" style="color:var(--alert)">—</div>
-          <div class="total-lbl">✡ Mortos confirmados</div>
+          <div class="total-lbl" data-pt="✡ Mortos confirmados" data-en="✡ Confirmed killed">✡ Mortos confirmados</div>
         </div>
         <div class="total-item">
           <div class="total-val" id="il-total-wounded" style="color:var(--claimed)">—</div>
-          <div class="total-lbl">✡ Feridos totais</div>
+          <div class="total-lbl" data-pt="✡ Feridos totais" data-en="✡ Total wounded">✡ Feridos totais</div>
         </div>
         <div class="total-item">
           <div class="total-val" id="il-total-cities" style="color:var(--reported)">—</div>
-          <div class="total-lbl">Cidades atingidas</div>
+          <div class="total-lbl" data-pt="Cidades atingidas" data-en="Cities hit">Cidades atingidas</div>
         </div>
         <div style="margin-left:auto;">
           <span class="badge badge-confirmed" data-tooltip="Fonte primária: Magen David Adom (serviço de emergência oficial do Estado de Israel)\nFonte secundária: Times of Israel, United Hatzalah\nAtualizado: 2026-03-01 16:00 UTC">✓ CONFIRMADO — MDA</span>
@@ -2940,7 +3213,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <div>
     <div class="section-header">
       <div class="section-title" data-pt="Contexto — Reabertura da Frente Norte" data-en="Context — Reopening of the Northern Front">Contexto — Reabertura da Frente Norte</div>
-      <div class="section-meta">Após cessar-fogo de novembro 2024 · Hezbollah voltou a atacar em 02/Mar/2026</div>
+      <div class="section-meta" data-pt="Após cessar-fogo de novembro 2024 · Hezbollah voltou a atacar em 02/Mar/2026" data-en="After November 2024 ceasefire · Hezbollah resumed attacks on 02/Mar/2026">Após cessar-fogo de novembro 2024 · Hezbollah voltou a atacar em 02/Mar/2026</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
       <div class="panel">
