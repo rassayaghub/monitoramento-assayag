@@ -1514,47 +1514,102 @@ const WAR_DATA = {
 
   benchmarks: {
     nuclear: [
-      { name: "Fordow (enriquecimento subterrâneo)", name_en: "Fordow (underground enrichment)", pct: 85, color: "#ef4444",
-        source: "Op. Midnight Hammer (jun/2025) + satélite jan/2026", confidence: "REPORTADO" },
-      { name: "Natanz (main facility / Natanz)", name_en: "Natanz (main facility)", pct: 75, color: "#f97316",
-        source: "2x MOP + 30 Tomahawks (2025). Reconstrução parcial detectada (NYT jan/2026)", confidence: "REPORTADO" },
-      { name: "Isfahan (hub centrífugas)", pct: 65, color: "#f59e0b",
-        source: "Reatingida fev/2026. Teto falso para ocultar reconstrução (NYT)", confidence: "REPORTADO" },
-      { name: "AEOI Sede + Porto Bushehr", pct: 100, color: "#ef4444",
-        source: "AEOI destruída 28/Fev. Bushehr atingida — status reator incerto (Iran International)", confidence: "REPORTADO" }
+      { name: "Fordow — dano infraestrutura superficial", name_en: "Fordow — surface infrastructure damage",
+        pct: 70, color: "#f97316",
+        source: "ISIS (jun/2025 + nov/2025): 12 MOPs. Entradas seladas c/ solo antes do ataque — Irã evacuou materiais. Núcleo subterrâneo possivelmente intacto. Dano severo nas ventilações. Atividade mínima nov/2025.",
+        note: "⚠ CAVEAT: IAEA verificou estoque 60% U-235 (~440 kg) não confirmado destruído. Possível remoção prévia. Reconstrução bloqueada mas fissil pode ter escapado.",
+        note_en: "⚠ CAVEAT: IAEA verified ~440kg 60% U-235 stockpile not confirmed destroyed. Possible pre-attack removal. Reconstruction blocked but fissile material may have escaped.",
+        confidence: "REPORTADO" },
+      { name: "Natanz — acessos destruídos, núcleo incerto", name_en: "Natanz — access points destroyed, core uncertain",
+        pct: 65, color: "#f59e0b",
+        source: "Vantor/AFP satélite (01-02/Mar/2026): 3 estruturas de acesso destruídas — entradas de pessoal + rampa de veículos. ISIS/IAEA (03/Mar/2026): 'dano significativo — entradas inacessíveis'. Núcleo subterrâneo NÃO destruído.",
+        note: "⚠ PROBLEMA CRÍTICO: Caminhões sellaram entradas ANTES do ataque (jun/2025 + fev/2026) — Irã moveu material. DIA (vazado): ataques Jun/2025 recuaram programa apenas <6 meses. WH negou mas não refutou.",
+        note_en: "⚠ CRITICAL: Iran sealed tunnel entrances BEFORE both attacks — material likely moved. Leaked DIA assessment (Jun 2025): program set back less than 6 months. White House denied but did not refute.",
+        confidence: "REPORTADO" },
+      { name: "Isfahan NTC — destruído + reconstrução bloqueada", name_en: "Isfahan NTC — destroyed + reconstruction blocked",
+        pct: 80, color: "#ef4444",
+        source: "WaPo/Maxar (jun/2025): 'aniquilado' — instalação de conversão 'gravemente danificada'. 30 Tomahawks de submarino. Complexo montanha: acesso parcialmente restaurado nov/2025 (ISIS). Reatingida fev/2026.",
+        note: "⚠ ESTOQUE: Isfahan era principal depósito de U enriquecido. Caminhões sellaram túneis antes do ataque. ISIS nov/2025: 1 portal reaberto — barreira anti-míssil instalada.",
+        note_en: "⚠ STOCKPILE: Isfahan was main enriched uranium storage. Trucks sealed tunnels pre-attack. ISIS Nov 2025: 1 portal reopened — anti-missile barrier installed.",
+        confidence: "REPORTADO" },
+      { name: "Programa centrifugadoras — destruição efetiva", name_en: "Centrifuge program — effective destruction",
+        pct: 90, color: "#ef4444",
+        source: "ISIS (jun/2025): 'maioria das centrifugadoras em Natanz destruída'. TABA/TESA Karaj (manufatura): destruída. Parchin/Taleghan 2 (detonação nuclear): atingido. Reconstrução: anos/décadas.",
+        note: "ISIS: 'programa de enriquecimento por centrifugadoras efetivamente destruído' — leva muito tempo para reconstruir. RISCO RESIDUAL: ~440 kg U-235 60% + centrifugadoras não instaladas em depósitos desconhecidos.",
+        note_en: "ISIS: 'centrifuge enrichment program effectively destroyed' — will take years to rebuild. RESIDUAL RISK: ~440kg U-235 60% + uninstalled centrifuges possibly in unknown locations.",
+        confidence: "REPORTADO" }
     ],
     missiles: [
-      { name: "Lançadores móveis destruídos", name_en: "Mobile launchers destroyed", pct: 79, color: "#ef4444",
-        source: "CTP-ISW (03/Mar): ~300 destruídos · Alma Institute jan/2026: 480→~100", confidence: "REPORTADO" },
-      { name: "Estoque consumido/destruído (6 dias)", name_en: "Stockpile consumed/destroyed (6 days)", pct: 75, color: "#f97316",
-        source: "CTP-ISW: 798 mísseis + 1.628 drones lançados até D5. CENTCOM: 2.000+ alvos (D6).", confidence: "REPORTADO" },
-      { name: "Todas 25 bases MRBM atingidas", name_en: "All 25 MRBM bases hit", pct: 100, color: "#ef4444",
-        source: "CTP-ISW Evening D3: 300 lançadores destruídos. Mísseis -86%, drones -73% vs D1.", confidence: "REPORTADO" },
-      { name: "Marinha iraniana (Trump: 10 navios afundados)", pct: 80, color: "#ef4444",
-        source: "Trump (Truth Social). CENTCOM confirmou Corveta Jamaran. IRGC: 3 petroleiros atingidos.", confidence: "REIVINDICADO" }
+      { name: "Lançadores móveis SRBM/MRBM destruídos", name_en: "Mobile SRBM/MRBM launchers destroyed",
+        pct: 63, color: "#f97316",
+        source: "IDF (03/Mar): ~300 lançadores destruídos de ~480 estimados (Alma Institute jan/2026). Adm. Cooper (CENTCOM, 04/Mar): 'caçando os últimos lançadores'. CENTCOM: lançamentos -86% vs Dia 1.",
+        note: "CTP-ISW D3: degradação de lançadores é a causa principal da queda de lançamentos. FDD/LWJ (04/Mar): Irã moveu lançadores para fora dos bunkers ANTES da guerra — parte pode ter escapado para locais desconhecidos.",
+        note_en: "CTP-ISW D3: launcher degradation is primary cause of declining launches. FDD/LWJ (04/Mar): Iran pre-dispersed launchers before war began — some may be in unknown locations.",
+        confidence: "REPORTADO" },
+      { name: "Arsenal consumido/lançado (Dias 1–6)", name_en: "Arsenal consumed/launched (Days 1–6)",
+        pct: 55, color: "#f97316",
+        source: "CENTCOM/Adm. Cooper (04/Mar): 500+ mísseis balísticos + 2.000+ drones lançados. CTP-ISW D4: 798 balísticos + 1.628 drones até D5. Irã: estoque SRBM 'thousands' permanece em bunkers (Analysts/NPR).",
+        note: "⚠ CRÍTICO: NPR/Sam Lair (James Martin CNS): 'significativa parte do estoque remanescente ainda em bunkers subterrâneos — localizações são amplamente conhecidas pelos EUA/Israel'. Drones continuam chegando.",
+        note_en: "⚠ CRITICAL: NPR/Sam Lair (James Martin CNS): 'significant portion of remaining stockpile still in underground bunkers — locations largely known to US/Israel'. Drones continue getting through.",
+        confidence: "REPORTADO" },
+      { name: "25 bases MRBM + infraestrutura de lançamento", name_en: "25 MRBM bases + launch infrastructure",
+        pct: 100, color: "#ef4444",
+        source: "CTP-ISW: todas 25 bases de MRBM atingidas. Reatingidas 28/Fev. IDF destruiu base em Tabriz (11 crateras na pista, aeronaves F-4/F-5 destruídas). Yazd + Khorgu + Najafabad (bunker busters).",
+        note: "Bases físicas destruídas ≠ arsenal destruído. Irã tinha pré-posicionado lançadores móveis fora dos bunkers antes da guerra (satélite/CENTCOM).",
+        note_en: "Physical bases destroyed ≠ arsenal destroyed. Iran had pre-positioned mobile launchers outside bunkers before war (satellite/CENTCOM).",
+        confidence: "REPORTADO" },
+      { name: "Marinha iraniana — capacidade neutralizada", name_en: "Iranian Navy — capability neutralized",
+        pct: 85, color: "#ef4444",
+        source: "CENTCOM/Adm. Cooper (04/Mar): capacidade naval 'efetivamente neutralizada'. IRIS Dena afundada (submarino EUA, 04/Mar). Corveta Jamaran (CENTCOM confirmado). Trump: 17+ navios. Wikipedia: Artesh IRIS Kurdistan afundada.",
+        note: "CENTCOM confirmou Jamaran + IRIS Dena. Trump '10 navios' era de Dia 4 — atualizou para 17+ em Dia 5. REIVINDICADO parcialmente: IRGC afirma 3 petroleiros EUA/UK, não confirmado.",
+        note_en: "CENTCOM confirmed Jamaran + IRIS Dena. Trump '10 ships' was Day 4 — updated to 17+ by Day 5. PARTIALLY CLAIMED: IRGC claims 3 US/UK tankers hit, unconfirmed.",
+        confidence: "CONFIRMADO" }
     ],
     leadership: [
-      { name: "Líder Supremo Khamenei", pct: 100, color: "#ef4444", confidence: "CONFIRMADO",
-        source: "Mídia estatal iraniana (01/Mar) · Reuters · NPR · Trump · IDF" },
-      { name: "Esposa de Khamenei", pct: 100, color: "#ef4444", confidence: "CONFIRMADO",
-        source: "Wikipedia 2026 Iran conflict · múltiplas fontes (02/Mar)" },
-      { name: "Cdte. IRGC (Pakpour) + Min. Defesa + Chefe Estado-Maior", pct: 100, color: "#ef4444", confidence: "REPORTADO",
-        source: "Reuters (3 fontes) · IDF Defrin · Al Arabiya · Times of Israel" },
-      { name: "Cúpula inteligência VAJA (4 de 5 chefes)", pct: 80, color: "#f97316", confidence: "REPORTADO",
-        source: "Iran International · Jerusalem Post · @JasonMBrodsky" },
-      { name: "Chefes Hezbollah + PIJ no Líbano (02/Mar)", pct: 100, color: "#ef4444", confidence: "CONFIRMADO",
-        source: "IDF Defrin (02/Mar): Hussein Makled (Hezbollah Intel) + Abu Hamza Rami (PIJ)" },
-      { name: "IRIB — TV/Rádio estatal iraniana destruída", pct: 100, color: "#60a5fa", confidence: "CONFIRMADO",
-        source: "Israel confirmou destruição sede IRIB em Evin, Teerã (02/Mar)" }
+      { name: "Líder Supremo Khamenei — morto", name_en: "Supreme Leader Khamenei — killed",
+        pct: 100, color: "#ef4444", confidence: "CONFIRMADO",
+        source: "Mídia estatal iraniana (01/Mar) · Reuters · NPR · Trump · IDF · Wikipedia" },
+      { name: "Família Khamenei (esposa + 4 membros)", name_en: "Khamenei's family (wife + 4 members)",
+        pct: 100, color: "#ef4444", confidence: "CONFIRMADO",
+        source: "Wikipedia 2026 Iran conflict: esposa confirmada 02/Mar. Fars News (IRGC): filha, genro, nora, neto." },
+      { name: "Cúpula militar: IRGC + Estado-Maior + Defesa", name_en: "Military leadership: IRGC + Joint Staff + Defense",
+        pct: 100, color: "#ef4444", confidence: "REPORTADO",
+        source: "Reuters (3 fontes) · IDF Defrin · Al Arabiya · Times of Israel. NÃO confirmado por mídia estatal iraniana." },
+      { name: "CSNS (Shamkhani) + aparato político", name_en: "SNSC (Shamkhani) + political apparatus",
+        pct: 80, color: "#f97316", confidence: "REPORTADO",
+        source: "IDF Defrin · Al Jazeera · Times of Israel · @EylonALevy. Sobreviventes: Pezeshkian (pres.), Ghalibaf (parl.), Ejei (judic.) formam conselho de transição." },
+      { name: "Intel: VAJA (4/5 chefes) + Força Quds HQ", name_en: "Intel: VAJA (4/5 chiefs) + Quds Force HQ",
+        pct: 80, color: "#f97316", confidence: "REPORTADO",
+        source: "Iran International · Jerusalem Post · @JasonMBrodsky. QG Quds Force: IDF Defrin 02/Mar." },
+      { name: "Hezbollah Intel (Makled) + PIJ Líbano (Rami)", name_en: "Hezbollah Intel (Makled) + PIJ Lebanon (Rami)",
+        pct: 100, color: "#ef4444", confidence: "CONFIRMADO",
+        source: "IDF Defrin (02/Mar) · @IDF · Wikipedia 2026 Iran conflict" },
+      { name: "IRIB — propaganda estatal destruída", name_en: "IRIB — state propaganda destroyed",
+        pct: 100, color: "#60a5fa", confidence: "CONFIRMADO",
+        source: "Israel confirmou destruição sede IRIB em Evin, Teerã (02/Mar). Única voz de propaganda do regime eliminada." }
     ],
     defense: [
-      { name: "Israel (Iron Dome + Arrow + THAAD)", pct: 92, color: "#22c55e", confidence: "REPORTADO", source: "IDF" },
-      { name: "Jordânia (100% — 49/49)", pct: 100, color: "#22c55e", confidence: "CONFIRMADO", source: "FA Jordânia" },
-      { name: "Qatar (Patriot PAC-3 + abateu 2 Su-24)", pct: 90, color: "#22c55e", confidence: "CONFIRMADO", source: "FA Qatar" },
-      { name: "Arábia Saudita (Patriot — derrubou 2 drones)", pct: 88, color: "#22c55e", confidence: "REPORTADO", source: "FA Arábia Saudita" },
-      { name: "EAU — 3 mortos confirmados", pct: 75, color: "#f59e0b", confidence: "CONFIRMADO", source: "Min. Defesa EAU" },
-      { name: "Bahrein (5ª Frota EUA atingida)", pct: 55, color: "#f97316", confidence: "REPORTADO", source: "US 5th Fleet" },
-      { name: "Kuwait ⚠ FOGO AMIGO: derrubou 3 F-15E EUA", pct: 40, color: "#ef4444", confidence: "CONFIRMADO", source: "CENTCOM — Kuwait derrubou aeronaves americanas por engano" }
+      { name: "Israel (Iron Dome + Arrow + THAAD + David's Sling)", name_en: "Israel (Iron Dome + Arrow + THAAD + David's Sling)",
+        pct: 93, color: "#22c55e", confidence: "REPORTADO",
+        source: "IDF: 93% interceptação geral. INSS (05/Mar): Irã lançou 1.600+ drones. Falha Beit Shemesh (1 míssil com munição cluster atravessou)." },
+      { name: "Jordânia — 100% (54 projéteis)", name_en: "Jordan — 100% (54 projectiles)",
+        pct: 100, color: "#22c55e", confidence: "CONFIRMADO",
+        source: "FA Jordânia: 49 drones + 5 balísticos. Wikipedia: 54 relatórios de detritos — danos materiais, sem vítimas." },
+      { name: "Qatar (PAC-3 + abateu 2 Su-24 iranianos)", name_en: "Qatar (PAC-3 + downed 2 Iranian Su-24s)",
+        pct: 75, color: "#f59e0b", confidence: "CONFIRMADO",
+        source: "CTP-ISW D3: 101 mísseis detectados, 98 interceptados. 39 drones detectados, 24 interceptados — 15 drones atingiram o Qatar. Al-Udeid atingido por 2 mísseis balísticos." },
+      { name: "Arábia Saudita (Patriot — 8 drones Riyadh)", name_en: "Saudi Arabia (Patriot — 8 drones Riyadh)",
+        pct: 88, color: "#22c55e", confidence: "REPORTADO",
+        source: "Min. Defesa Saudita: 8 drones interceptados Riyadh/Al-Kharj. Embaixada EUA atingida (2 drones passaram). Sem baixas. Ras Tanura: drone causou incêndio limitado." },
+      { name: "EAU — 78 feridos (3 mortos), 75% interceptação", name_en: "UAE — 78 wounded (3 dead), 75% interception",
+        pct: 75, color: "#f59e0b", confidence: "CONFIRMADO",
+        source: "CTP-ISW D1: EAU detectou 332 drones + 28 balísticos + 2 cruzeiros. 21 drones atingiram alvos civis (Dubai Airport, Zayed Port). 3 mortos (Paquistão, Nepal, Bangladesh)." },
+      { name: "Bahrein — 5ª Frota + aeroporto atingidos", name_en: "Bahrain — 5th Fleet + airport hit",
+        pct: 55, color: "#f97316", confidence: "REPORTADO",
+        source: "CTP-ISW: 73 mísseis + 91 drones interceptados em Bahrein. QG 5ª Frota (Juffair) atingido múltiplas vezes. Aeroporto: dano material. 1 trabalhador asiático morto (detritos)." },
+      { name: "Kuwait ⚠ FOGO AMIGO + 6 EUA mortos", name_en: "Kuwait ⚠ FRIENDLY FIRE + 6 US killed",
+        pct: 38, color: "#ef4444", confidence: "CONFIRMADO",
+        source: "CENTCOM: 6 soldados EUA mortos (mesmo porto/unidade logística). Kuwait derrubou 3 F-15E EUA por engano. CTP-ISW: 384 drones iranianos interceptados no Kuwait — mas múltiplos impactos confirmados." }
     ]
   },
 
@@ -2213,18 +2268,24 @@ function renderIsraelCities() {
 // RENDER — BENCHMARKS (bilingual)
 // ============================================================
 function renderBench(items) {
-  return items.map(i => `
+  return items.map(i => {
+    const noteText = i.note ? T(i.note, i.note_en||i.note) : null;
+    const hasWarning = noteText && (noteText.includes('⚠') || noteText.includes('CAVEAT') || noteText.includes('CRÍTICO') || noteText.includes('CRITICAL'));
+    const caveatColor = hasWarning ? 'var(--claimed)' : 'var(--text-tertiary)';
+    return `
   <div class="bench-row">
     <div class="bench-row-header">
       <span class="bench-name">${T(i.name, i.name_en||i.name)}</span>
-      <span class="bench-pct">${i.pct}%</span>
+      <span class="bench-pct" style="color:${i.color}">${i.pct}%</span>
     </div>
     <div class="bench-track"><div class="bench-fill" style="width:${i.pct}%;background:${i.color}"></div></div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.2rem;">
-      <span class="bench-source">${i.source.substring(0,60)}${i.source.length>60?'…':''}</span>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-top:.25rem;gap:.5rem;">
+      <span class="bench-source" title="${i.source}" style="cursor:help;flex:1;">${i.source.substring(0,70)}${i.source.length>70?'…':''}</span>
       ${confBadge(i.confidence, i.source, null)}
     </div>
-  </div>`).join('');
+    ${noteText ? `<div style="font-size:.52rem;color:${caveatColor};margin-top:.25rem;line-height:1.4;font-style:italic;border-left:2px solid ${caveatColor};padding-left:.4rem;">${noteText}</div>` : ''}
+  </div>`;
+  }).join('');
 }
 
 // ============================================================
@@ -3102,19 +3163,19 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <div class="bench-grid">
       <div class="bench-card">
-        <div class="bench-head"><span class="bench-icon">☢</span><span class="bench-title">Capacidade Nuclear Destruída (2025 + 2026)</span></div>
+        <div class="bench-head"><span class="bench-icon">☢</span><span class="bench-title" data-pt="Capacidade Nuclear Destruída (2025+2026) ⚠" data-en="Nuclear Capability Destroyed (2025+2026) ⚠">Capacidade Nuclear Destruída (2025+2026) ⚠</span></div>
         <div class="bench-body" id="bench-nuclear"></div>
       </div>
       <div class="bench-card">
-        <div class="bench-head"><span class="bench-icon">🚀</span><span class="bench-title">Degradação do Arsenal Balístico</span></div>
+        <div class="bench-head"><span class="bench-icon">🚀</span><span class="bench-title" data-pt="Degradação Arsenal Balístico (Dias 1–6)" data-en="Ballistic Arsenal Degradation (Days 1–6)">Degradação Arsenal Balístico (Dias 1–6)</span></div>
         <div class="bench-body" id="bench-missiles"></div>
       </div>
       <div class="bench-card">
-        <div class="bench-head"><span class="bench-icon">☠</span><span class="bench-title">Decapitação da Liderança</span></div>
+        <div class="bench-head"><span class="bench-icon">☠</span><span class="bench-title" data-pt="Decapitação da Liderança Iraniana" data-en="Iranian Leadership Decapitation">Decapitação da Liderança Iraniana</span></div>
         <div class="bench-body" id="bench-leadership"></div>
       </div>
       <div class="bench-card">
-        <div class="bench-head"><span class="bench-icon">🛡</span><span class="bench-title">Eficácia dos Sistemas de Defesa por País</span></div>
+        <div class="bench-head"><span class="bench-icon">🛡</span><span class="bench-title" data-pt="Eficácia Defesa Aérea por País" data-en="Air Defense Effectiveness by Country">Eficácia Defesa Aérea por País</span></div>
         <div class="bench-body" id="bench-defense"></div>
       </div>
     </div>
