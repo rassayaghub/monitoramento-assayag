@@ -1317,7 +1317,7 @@ const WAR_DATA = {
   meta: {
     operation_us: "EPIC FURY", operation_il: "ROARING LION", operation_iran: "PROMESSA SINCERA 4",
     start_utc: "2026-02-28T08:00:00Z", last_manual_update: "2026-03-04T12:00:00Z", day_of_conflict: 5,
-    escalation_index: { value: 96, confidence: "REPORTADO",
+    escalation_index: { value: 98, confidence: "REPORTADO",
       note: "DIA 5: Mortos no Irã chegam a 1.045. Submarino EUA afunda IRIS Dena (1ª vez desde WW2). Turquia intercepta míssil iraniano — NATO ativada. US Consulate Dubai atingido. Hegseth: 'just getting started'. 13+ países envolvidos." }
   },
 
@@ -1330,14 +1330,14 @@ const WAR_DATA = {
       notes: "Trump: 48 líderes iraninos eliminados. Inclui Khamenei (confirmado), esposa de Khamenei, cúpula IRGC e inteligência. Funeral de Khamenei adiado."
     },
     iran_civilian_dead: {
-      value: 1045, unit: "mortos no Irã", qualifier: "+",
+      value: 1045, unit: "mortos no Irã", unit_en: "killed in Iran", qualifier: "+",
       source_primary: "Tasnim News Agency · Al Jazeera — 04 Mar 2026",
       source_secondary: "AP · CBS News · Wikipedia 2026",
       last_update_utc: "2026-03-04T10:00:00Z", confidence: "REPORTADO",
       notes: "Dia 5: Tasnim (semioficial): 1.045 mortos. Inclui 148 crianças em escola de Minab (CONTESTADO). IRGC: 10ª onda de ataques em Teerã, Karaj, Isfahan, Qom. Trump: 'just about everything knocked out'."
     },
     iran_wounded: {
-      value: 3200, unit: "feridos", qualifier: "+",
+      value: 3200, unit: "feridos", unit_en: "wounded", qualifier: "+",
       source_primary: "Meia Lua Vermelha Iraniana · Tasnim",
       source_secondary: "Al Jazeera · Reuters · AP",
       last_update_utc: "2026-03-04T10:00:00Z", confidence: "REPORTADO",
@@ -1403,74 +1403,81 @@ const WAR_DATA = {
 
   countries: [
     { name: "Israel", flag: "🇮🇱", intercept_pct: 93, risk: "critical",
-      launched: 200, qualifier_l: "+", impacted: 14, qualifier_i: "~", intercepted: 186, qualifier_int: "~",
+      launched: 250, qualifier_l: "+", impacted: 16, qualifier_i: "~", intercepted: 234, qualifier_int: "~",
       dead: 11, wounded: 335, confidence: "CONFIRMADO",
-      source_primary: "Magen David Adom · IDF", source_secondary: "AP · Times of Israel",
-      last_update_utc: "2026-03-04T10:00:00Z",
-      note: "DIA 5: 11+ mortos, 335+ feridos (MDA). 62 ondas de ataque em 24h (Dia 4→5). Sirenes em Jerusalém e Tel Aviv. Ben Gurion fechado. IDF invade sul do Líbano. Beit Shemesh: pior incidente (9 mortos).",
+      source_primary: "Magen David Adom · IDF · INSS", source_secondary: "AP · Times of Israel · CTP-ISW",
+      last_update_utc: "2026-03-05T10:00:00Z",
+      note: "DIA 6: 11+ mortos, 335+ feridos. Dia 6: 3 ondas de mísseis iranianos de madrugada interceptadas. INSS: Irã lançou 1.600+ drones em Israel, Jordânia, Golfo e Chipre. Sirenes em Tel Aviv e Jerusalém continuam. Ben Gurion fechado.", note_en: "DAY 6: 11+ dead, 335+ wounded. Day 6: 3 waves of Iranian missiles intercepted overnight. INSS: Iran launched 1,600+ drones at Israel, Jordan, Gulf and Cyprus. Sirens continue in Tel Aviv and Jerusalem. Ben Gurion closed.",
       weapons: ["Shahab-3","Sejjil","Fattah mod.","Shahed-136","Foguetes Hezbollah"] },
+    { name: "Azerbaijão", flag: "🇦🇿", intercept_pct: 0, risk: "high",
+      launched: 2, qualifier_l: "", impacted: 2, qualifier_i: "", intercepted: 0, qualifier_int: "",
+      dead: 0, wounded: 4, confidence: "CONFIRMADO",
+      source_primary: "MFA Azerbaijão · Reuters", source_secondary: "NBC · CBC",
+      last_update_utc: "2026-03-05T16:00:00Z",
+      note: "DIA 6: 2 drones iranianos atingem Aeroporto de Nakhchivan + aldeia Shakarabad. 4 feridos (estáveis). Aliyev: 'atos de terror'. Azerbaijão sumona embaixador iraniano. Promete resposta. IRGC nega, atribui a Israel.", note_en: "DAY 6: 2 Iranian drones hit Nakhchivan Airport + Shakarabad village. 4 wounded (stable). Aliyev: 'acts of terror'. Azerbaijan summoned Iranian ambassador. Vows response. IRGC denies, blames Israel.",
+      weapons: ["Drone"] },
     { name: "Kuwait", flag: "🇰🇼", intercept_pct: 45, risk: "critical",
       launched: 30, qualifier_l: "~", impacted: 10, qualifier_i: "~", intercepted: 20, qualifier_int: "~",
       dead: 6, wounded: 40, confidence: "CONFIRMADO",
       source_primary: "CENTCOM · PBS · CNN · NPR", source_secondary: "OPB · Reuters",
       last_update_utc: "2026-03-02T20:00:00Z",
-      note: "6 soldados EUA mortos (todos no Kuwait, mesma unidade logística). Embaixada EUA atingida — FECHADA indefinidamente. FOGO AMIGO: Kuwait derrubou 3 F-15E americanos por engano durante ataque iraniano. Ali al-Salem AB: 15 cruzeiros iranianos.",
+      note: "6 soldados EUA mortos (todos no Kuwait, mesma unidade logística). Embaixada EUA atingida — FECHADA indefinidamente. FOGO AMIGO: Kuwait derrubou 3 F-15E americanos por engano durante ataque iraniano. Ali al-Salem AB: 15 cruzeiros iranianos.", note_en: "6 US soldiers killed (all in Kuwait, same logistics unit). US Embassy hit — CLOSED indefinitely. FRIENDLY FIRE: Kuwait downed 3 US F-15Es by mistake. Ali al-Salem AB: 15 Iranian cruise missiles.",
       weapons: ["MRBM","Shahed","Cruzeiro"] },
     { name: "Líbano (Hezbollah)", flag: "🇱🇧", intercept_pct: 50, risk: "critical",
-      launched: 25, qualifier_l: "~", impacted: 6, qualifier_i: "~", intercepted: 19, qualifier_int: "~",
-      dead: 50, wounded: 335, confidence: "CONFIRMADO",
+      launched: 30, qualifier_l: "~", impacted: 8, qualifier_i: "~", intercepted: 22, qualifier_int: "~",
+      dead: 77, wounded: 527, confidence: "CONFIRMADO",
       source_primary: "Min. Saúde do Líbano · AP", source_secondary: "Al Jazeera · Reuters",
       last_update_utc: "2026-03-04T10:00:00Z",
-      note: "DIA 5: 50+ mortos, 335+ feridos no Líbano (AP/Min. Saúde). Hezbollah atinge tanque israelense em Houla (2 feridos IDF). IDF invade sul Líbano: 59 aldeias evacuadas, operação além do Litani. Beirute sob strikes. 28.500 deslocados.",
+      note: "DIA 6: 77+ mortos, 527+ feridos (Min. Saúde). IDF emite ordem evacuação TOTAL dos subúrbios sul de Beirute (Dahieh). Israel atinge Tripoli pela 1ª vez — Hamas cmdt. Wasim Attallah Ali eliminado. 31 mortos nas últimas 24h incluindo 7 crianças.", note_en: "DAY 6: 77+ dead, 527+ wounded (MoH). IDF issues TOTAL evacuation order for S. Beirut suburbs (Dahieh). Israel strikes Tripoli for first time — Hamas cmdr. Wasim Attallah Ali eliminated. 31 dead in last 24h including 7 children.",
       weapons: ["Foguetes Hezbollah","Drones Hezbollah","Mísseis AT"] },
     { name: "Bahrein", flag: "🇧🇭", intercept_pct: 55, risk: "high",
       launched: 30, qualifier_l: "~", impacted: 8, qualifier_i: "~", intercepted: 22, qualifier_int: "~",
       dead: 1, wounded: 45, confidence: "CONFIRMADO",
       source_primary: "US 5th Fleet · Min. Interior Bahrein", source_secondary: "Reuters",
       last_update_utc: "2026-03-02T18:00:00Z",
-      note: "QG 5ª Frota atingido. Torre residencial atingida. Aeroporto: danos materiais sem vítimas (Min. Interior). Residências em Manama atingidas noite de 28/Fev.",
+      note: "QG 5ª Frota atingido. Torre residencial atingida. Aeroporto: danos materiais sem vítimas (Min. Interior). Residências em Manama atingidas noite de 28/Fev.", note_en: "US 5th Fleet HQ hit. Residential tower hit. Airport: material damage, no casualties. Residences in Manama hit night of 28/Feb.",
       weapons: ["Shahed-136","Cruzeiro"] },
     { name: "Emirados Árabes Unidos", flag: "🇦🇪", intercept_pct: 75, risk: "high",
       launched: 25, qualifier_l: "~", impacted: 6, qualifier_i: "~", intercepted: 19, qualifier_int: "~",
       dead: 3, wounded: 60, confidence: "CONFIRMADO",
       source_primary: "Min. Defesa dos EAU", source_secondary: "CNN · Reuters",
       last_update_utc: "2026-03-02T20:00:00Z",
-      note: "3 mortos, 60 feridos (Min. Defesa). Burj Al Arab: danos por estilhaços. Dubai Palm: hotel Fairmont incendiado. CNN: explosões ouvidas em Dubai, Abu Dhabi e Doha.",
+      note: "3 mortos, 60 feridos (Min. Defesa). Burj Al Arab: danos por estilhaços. Dubai Palm: hotel Fairmont incendiado. CNN: explosões ouvidas em Dubai, Abu Dhabi e Doha.", note_en: "3 dead, 60 wounded (MoD). Burj Al Arab: shrapnel damage. Dubai Palm: Fairmont hotel fire. Explosions in Dubai, Abu Dhabi and Doha.",
       weapons: ["Shahed","Balístico"] },
     { name: "Qatar", flag: "🇶🇦", intercept_pct: 90, risk: "high",
       launched: 30, qualifier_l: "~", impacted: 3, qualifier_i: "~", intercepted: 27, qualifier_int: "~",
       dead: 0, wounded: 20, confidence: "REPORTADO",
       source_primary: "Min. Defesa do Qatar", source_secondary: "Reuters · Al Jazeera",
       last_update_utc: "2026-03-03T00:00:00Z",
-      note: "Qatar ABATEU 2 Su-24 iranianos — 1ª aeronave iraniana derrubada no conflito. Produção LNG suspensa. HQ CENTCOM (Al-Udeid) sob ataque. Blasts em Doha às 01h40 local.",
+      note: "Qatar ABATEU 2 Su-24 iranianos — 1ª aeronave iraniana derrubada no conflito. Produção LNG suspensa. HQ CENTCOM (Al-Udeid) sob ataque. Blasts em Doha às 01h40 local.", note_en: "Qatar DOWNED 2 Iranian Su-24s — 1st Iranian aircraft shot down. LNG production suspended. CENTCOM HQ (Al-Udeid) under attack. Blasts in Doha at 01:40 local.",
       weapons: ["MRBM","Cruzeiro","Su-24 IRGC"] },
     { name: "Arábia Saudita", flag: "🇸🇦", intercept_pct: 88, risk: "high",
       launched: 20, qualifier_l: "~", impacted: 2, qualifier_i: "~", intercepted: 18, qualifier_int: "~",
       dead: 0, wounded: 5, confidence: "REPORTADO",
       source_primary: "FA Arábia Saudita · Reuters", source_secondary: "RTE · OPB",
       last_update_utc: "2026-03-02T18:00:00Z",
-      note: "EMBAIXADA EUA RIAD ATINGIDA (03/Mar): 2 drones + 4 drones no Bairro Diplomatico. Incendio limitado, sem feridos (Min. Defesa Saudita). Saudita interceptou 8 drones Riad/Al-Kharj. Trump prometeu retaliar. Embaixada fechada. Ras Tanura: controlado.",
+      note: "EMBAIXADA EUA RIAD ATINGIDA (03/Mar): 2 drones + 4 drones no Bairro Diplomatico. Incendio limitado, sem feridos (Min. Defesa Saudita). Saudita interceptou 8 drones Riad/Al-Kharj. Trump prometeu retaliar. Embaixada fechada. Ras Tanura: controlado.", note_en: "US EMBASSY RIYADH HIT (03/Mar): 2 drones + 4 in Diplomatic Quarter. Limited fire, no casualties (Saudi MoD). Saudi Arabia intercepted 8 drones. Trump vowed retaliation. Embassy closed. Ras Tanura: controlled.",
       weapons: ["Shahed","Drone"] },
     { name: "Jordânia", flag: "🇯🇴", intercept_pct: 100, risk: "low",
       launched: 49, qualifier_l: "", impacted: 0, qualifier_i: "", intercepted: 49, qualifier_int: "",
       dead: 0, wounded: 0, confidence: "CONFIRMADO",
       source_primary: "Forças Armadas da Jordânia", source_secondary: "Reuters",
       last_update_utc: "2026-03-01T10:00:00Z",
-      note: "100% interceptados — 49/49. FA Jordânia auxilia defesa aérea israelense. EUA solicitaram acesso aéreo irrestrito à Jordânia.",
+      note: "100% interceptados — 49/49. FA Jordânia auxilia defesa aérea israelense. EUA solicitaram acesso aéreo irrestrito à Jordânia.", note_en: "100% intercepted — 49/49. Jordanian Armed Forces assist Israeli air defense. US requested unrestricted airspace access.",
       weapons: ["Balístico","Drones"] },
     { name: "Iraque (bases EUA + milícias)", flag: "🇮🇶", intercept_pct: 68, risk: "medium",
       launched: 15, qualifier_l: "~", impacted: 5, qualifier_i: "~", intercepted: 10, qualifier_int: "~",
       dead: 2, wounded: 5, confidence: "REPORTADO",
       source_primary: "Kataib Hezbollah · Rudaw Media", source_secondary: "AP · Al Jazeera",
       last_update_utc: "2026-03-02T14:00:00Z",
-      note: "2 combatentes PMF mortos em Jurf al-Sakher. Milícias: drone contra Baghdad Airport e base Erbil. AP: explosões em Erbil manhã de 02/Mar. EUA + Israel atacaram Jurf al-Nasr (base PMF).",
+      note: "2 combatentes PMF mortos em Jurf al-Sakher. Milícias: drone contra Baghdad Airport e base Erbil. AP: explosões em Erbil manhã de 02/Mar. EUA + Israel atacaram Jurf al-Nasr (base PMF).", note_en: "2 PMF fighters killed in Jurf al-Sakher. Militias: drones against Baghdad Airport and Erbil base. US + Israel struck Jurf al-Nasr (PMF base).",
       weapons: ["Drones milícias","SRBM"] },
     { name: "Chipre (base britânica RAF)", flag: "🇨🇾", intercept_pct: 50, risk: "high",
       launched: 2, qualifier_l: "", impacted: 1, qualifier_i: "", intercepted: 1, qualifier_int: "",
       dead: 0, wounded: 0, confidence: "CONFIRMADO",
       source_primary: "FA britânicas · Governo Chipre", source_secondary: "Reuters · Star Advertiser",
       last_update_utc: "2026-03-03T00:00:00Z",
-      note: "HISTÓRICO: Drone atingiu base RAF Akrotiri durante madrugada (02→03/Mar). Sirenes em Akrotiri e Dhekelia. 1º ATAQUE IRANIANO EM SOLO EUROPEU. Danos limitados, sem vítimas. RAF em alerta máximo.",
+      note: "HISTÓRICO: Drone atingiu base RAF Akrotiri durante madrugada (02→03/Mar). Sirenes em Akrotiri e Dhekelia. 1º ATAQUE IRANIANO EM SOLO EUROPEU. Danos limitados, sem vítimas. RAF em alerta máximo.", note_en: "HISTORIC: Drone hit RAF Akrotiri during early hours (02→03/Mar). 1ST IRANIAN ATTACK ON EUROPEAN SOIL. Limited damage, no casualties. RAF on maximum alert.",
       weapons: ["Drone"] }
   ],
 
@@ -1480,36 +1487,36 @@ const WAR_DATA = {
       confidence: "CONFIRMADO", source_primary: "Magen David Adom",
       source_secondary: "Times of Israel · United Hatzalah · CNN",
       last_update_utc: "2026-03-01T17:00:00Z",
-      note: "Míssil balístico atingiu diretamente abrigo antiaéreo público. 9 mortos, 27+ feridos, 3 críticos. Criança de 10 anos em estado grave. IDF investiga falha de interceptação.",
+      note: "Míssil balístico atingiu diretamente abrigo antiaéreo público. 9 mortos, 27+ feridos, 3 críticos. Criança de 10 anos em estado grave. IDF investiga falha de interceptação.", note_en: "Ballistic missile directly hit a public bomb shelter. 9 dead, 27+ wounded, 3 critical. 10-year-old child in serious condition. IDF investigates interception failure.",
       risk: "critical" },
     { name: "TEL AVIV + REGIÃO", coords: "32.1°N 34.8°E — Costa central",
       date: "28 FEV – 02 MAR 2026", dead: 1, wounded: 80, critical: 2,
       confidence: "CONFIRMADO", source_primary: "Magen David Adom",
       source_secondary: "Reuters · Times of Israel · CNN",
       last_update_utc: "2026-03-02T20:00:00Z",
-      note: "1 mulher morta. 80+ feridos acumulados. Ben Gurion Airport fechado desde 28/Fev. Hospital realocado para bunker subterrâneo. Hezbollah rockets (02/Mar) caíram em áreas abertas — sem novos mortos.",
+      note: "1 mulher morta. 80+ feridos acumulados. Ben Gurion Airport fechado desde 28/Fev. Hospital realocado para bunker subterrâneo. Hezbollah rockets (02/Mar) caíram em áreas abertas — sem novos mortos.", note_en: "1 woman killed. 80+ cumulative wounded. Ben Gurion Airport closed since 28/Feb. Hospital relocated to underground bunker. Hezbollah rockets (02/Mar) fell in open areas — no new deaths.",
       risk: "high" },
     { name: "JERUSALÉM", coords: "31.8°N 35.2°E — Cidade Santa",
       date: "28 FEV 2026", dead: 0, wounded: 0, critical: 0,
       confidence: "CONFIRMADO", source_primary: "Polícia de Israel · IDF",
       source_secondary: "Times of Israel",
       last_update_utc: "2026-02-28T22:00:00Z",
-      note: "Ogiva caiu a metros da Cidade Velha — Sultan's Pool, ~700m do Muro das Lamentações. Cmte. Dvir Tamir: 'Se tivesse desviado centenas de metros, catástrofe'. Nenhuma vítima.",
+      note: "Ogiva caiu a metros da Cidade Velha — Sultan's Pool, ~700m do Muro das Lamentações. Cmte. Dvir Tamir: 'Se tivesse desviado centenas de metros, catástrofe'. Nenhuma vítima.", note_en: "Warhead fell meters from the Old City — Sultan's Pool, ~700m from the Western Wall. Cmdr. Dvir Tamir: 'Had it deviated hundreds of meters, catastrophe'. No casualties.",
       risk: "high", special: "QUASE-CATÁSTROFE" },
     { name: "NORTE (Galiléia + fronteira)", coords: "32.8°N–33.2°N — Fronteira Líbano",
       date: "02–03 MAR 2026", dead: 0, wounded: 8, critical: 0,
       confidence: "REPORTADO", source_primary: "IDF · Israel Police",
       source_secondary: "Al Jazeera · OPB",
       last_update_utc: "2026-03-03T00:00:00Z",
-      note: "Hezbollah rockets (02/Mar): 1ª vez desde cessarf-fogo 2024. IDF emitiu ordens de evacuação em 50 comunidades no norte de Israel. IDF retaliu com 70+ alvos no Líbano.",
+      note: "Hezbollah rockets (02/Mar): 1ª vez desde cessarf-fogo 2024. IDF emitiu ordens de evacuação em 50 comunidades no norte de Israel. IDF retaliu com 70+ alvos no Líbano.", note_en: "Hezbollah rockets (02/Mar): 1st time since 2024 ceasefire. IDF issued evacuation orders for 50 northern communities. IDF retaliated with 70+ targets in Lebanon.",
       risk: "high" }
   ],
 
   benchmarks: {
     nuclear: [
-      { name: "Fordow (enriquecimento subterrâneo)", pct: 85, color: "#ef4444",
+      { name: "Fordow (enriquecimento subterrâneo)", name_en: "Fordow (underground enrichment)", pct: 85, color: "#ef4444",
         source: "Op. Midnight Hammer (jun/2025) + satélite jan/2026", confidence: "REPORTADO" },
-      { name: "Natanz (instalação principal)", pct: 75, color: "#f97316",
+      { name: "Natanz (main facility / Natanz)", name_en: "Natanz (main facility)", pct: 75, color: "#f97316",
         source: "2x MOP + 30 Tomahawks (2025). Reconstrução parcial detectada (NYT jan/2026)", confidence: "REPORTADO" },
       { name: "Isfahan (hub centrífugas)", pct: 65, color: "#f59e0b",
         source: "Reatingida fev/2026. Teto falso para ocultar reconstrução (NYT)", confidence: "REPORTADO" },
@@ -1517,12 +1524,12 @@ const WAR_DATA = {
         source: "AEOI destruída 28/Fev. Bushehr atingida — status reator incerto (Iran International)", confidence: "REPORTADO" }
     ],
     missiles: [
-      { name: "Lançadores móveis destruídos", pct: 79, color: "#ef4444",
-        source: "Alma Institute jan/2026: 480 → ~100 restantes", confidence: "REPORTADO" },
-      { name: "Estoque consumido/destruído (4 dias)", pct: 65, color: "#f97316",
-        source: "2.500 original → ~875 estimados. CENTCOM: 1.000+ alvos atingidos", confidence: "REPORTADO" },
-      { name: "Todas 25 bases MRBM atingidas", pct: 100, color: "#ef4444",
-        source: "CTP-ISW. Todas atingidas. Reatingidas 28/Fev.", confidence: "REPORTADO" },
+      { name: "Lançadores móveis destruídos", name_en: "Mobile launchers destroyed", pct: 79, color: "#ef4444",
+        source: "CTP-ISW (03/Mar): ~300 destruídos · Alma Institute jan/2026: 480→~100", confidence: "REPORTADO" },
+      { name: "Estoque consumido/destruído (6 dias)", name_en: "Stockpile consumed/destroyed (6 days)", pct: 75, color: "#f97316",
+        source: "CTP-ISW: 798 mísseis + 1.628 drones lançados até D5. CENTCOM: 2.000+ alvos (D6).", confidence: "REPORTADO" },
+      { name: "Todas 25 bases MRBM atingidas", name_en: "All 25 MRBM bases hit", pct: 100, color: "#ef4444",
+        source: "CTP-ISW Evening D3: 300 lançadores destruídos. Mísseis -86%, drones -73% vs D1.", confidence: "REPORTADO" },
       { name: "Marinha iraniana (Trump: 10 navios afundados)", pct: 80, color: "#ef4444",
         source: "Trump (Truth Social). CENTCOM confirmou Corveta Jamaran. IRGC: 3 petroleiros atingidos.", confidence: "REIVINDICADO" }
     ],
@@ -1552,41 +1559,48 @@ const WAR_DATA = {
   },
 
   casualties: [
-    { id:1, cat:"RELIGIOSO", impact:10, title:"Lider Supremo", name:"Aiatolá Ali Khamenei", role:"Lider Supremo (1989-2026)", org:"Wilayat al-Faqih", confidence:"CONFIRMADO", source:"Mídia estatal iraniana (01/Mar) · Reuters · @IDF · @CENTCOM · Trump" },
-    { id:2, cat:"RELIGIOSO", impact:4, title:"Familia Khamenei", name:"Esposa de Khamenei", role:"Familiar do Lider Supremo, morta em 02/Mar", org:"Familia Khamenei", confidence:"CONFIRMADO", source:"Wikipedia 2026 · Times of Israel · @EylonALevy" },
-    { id:10, cat:"RELIGIOSO", impact:3, title:"Familia Khamenei", name:"Filha, Genro, Nora, Neto de Khamenei", role:"4 membros da familia mortos", org:"Familia Khamenei", confidence:"REPORTADO", source:"Fars News Agency · Times of Israel · @IranRevReport" },
-    { id:4, cat:"MILITAR", impact:9, title:"Cmdt-Geral IRGC", name:"Gen. Mohammad Pakpour", role:"Comandante-Geral Forcas Terrestres IRGC", org:"IRGC", confidence:"REPORTADO", source:"Reuters (3 fontes) · IDF · Al Arabiya · @Defence_Journl" },
-    { id:6, cat:"MILITAR", impact:8, title:"Chefe Estado-Maior", name:"Maj. Gen. Mohammad Bagheri", role:"Chefe do Estado-Maior das Forcas Armadas", org:"Estado-Maior FA", confidence:"REPORTADO", source:"IDF Defrin · Jerusalem Post · @UKikaski" },
-    { id:5, cat:"MILITAR", impact:7, title:"Ministro da Defesa", name:"Brig. Gen. Amir Nasirzadeh", role:"Ministro da Defesa e Logistica das FA", org:"Ministerio da Defesa", confidence:"REPORTADO", source:"Reuters · IDF · Times of Israel · @SamPancher" },
-    { id:9, cat:"MILITAR", impact:6, title:"Dir. Intel. Exterior", name:"Javad Pourhossein", role:"Chefe de Inteligencia Estrangeira (VAJA)", org:"VAJA", confidence:"REPORTADO", source:"Iran International · @JasonMBrodsky · @GhorbaniiNiyak" },
-    { id:7, cat:"MILITAR", impact:7, title:"Intel Hezbollah", name:"Hussein Makled", role:"Chefe de Inteligencia do Hezbollah, eliminado em Beirute (02/Mar)", org:"Hezbollah - Libano", confidence:"CONFIRMADO", source:"IDF Defrin (02/Mar) · Wikipedia 2026 · @IDF" },
-    { id:8, cat:"MILITAR", impact:5, title:"Cmdt PIJ Libano", name:"Abu Hamza Rami", role:"Comandante Jihad Islamica Palestina no Libano, eliminado em Beirute (02/Mar)", org:"Jihad Islamica Palestina", confidence:"CONFIRMADO", source:"IDF Defrin (02/Mar) · @FoxNews · @IDF" },
-    { id:3, cat:"POLITICO", impact:8, title:"Sec. Conselho Seg. Nacional", name:"Ali Shamkhani", role:"Secretario CSNS - arquiteto das politicas de seguranca nacional", org:"CSNS", confidence:"REPORTADO", source:"IDF Defrin · Al Jazeera · Times of Israel · @EylonALevy" },
-    { id:11, cat:"POLITICO", impact:2, title:"Ex-Presidente", name:"Mahmoud Ahmadinejad", role:"Ex-Presidente Ira (2005-2013) - civil em Narmak, Teera. CONTESTADO.", org:"Civil", confidence:"CONFLITANTE", source:"ILNA reportou · Escritorio desmentiu · Channel 12 nao confirmou · @IranRevReport" }
+    { id:1, cat:"RELIGIOSO", impact:10, title:"Lider Supremo", title_en:"Supreme Leader", name:"Aiatolá Ali Khamenei", role:"Lider Supremo (1989-2026)", role_en:"Supreme Leader (1989–2026)", org:"Wilayat al-Faqih", org_en:"Wilayat al-Faqih", confidence:"CONFIRMADO", source:"Mídia estatal iraniana (01/Mar) · Reuters · @IDF · @CENTCOM · Trump" },
+    { id:2, cat:"RELIGIOSO", impact:4, title:"Familia Khamenei", title_en:"Khamenei Family", name:"Esposa de Khamenei", role:"Familiar do Lider Supremo, morta em 02/Mar", role_en:"Supreme Leader's family, killed 02/Mar", org:"Familia Khamenei", org_en:"Khamenei Family", confidence:"CONFIRMADO", source:"Wikipedia 2026 · Times of Israel · @EylonALevy" },
+    { id:10, cat:"RELIGIOSO", impact:3, title:"Familia Khamenei", title_en:"Khamenei Family", name:"Filha, Genro, Nora, Neto de Khamenei", role:"4 membros da familia mortos", role_en:"4 family members killed", org:"Familia Khamenei", org_en:"Khamenei Family", confidence:"REPORTADO", source:"Fars News Agency · Times of Israel · @IranRevReport" },
+    { id:4, cat:"MILITAR", impact:9, title:"Cmdt-Geral IRGC", title_en:"IRGC C-in-C", name:"Gen. Mohammad Pakpour", role:"Comandante-Geral Forcas Terrestres IRGC", role_en:"IRGC Ground Forces Commander-in-Chief", org:"IRGC", org_en:"IRGC", confidence:"REPORTADO", source:"Reuters (3 fontes) · IDF · Al Arabiya · @Defence_Journl" },
+    { id:6, cat:"MILITAR", impact:8, title:"Chefe Estado-Maior", title_en:"Chief of Joint Staff", name:"Maj. Gen. Mohammad Bagheri", role:"Chefe do Estado-Maior das Forcas Armadas", role_en:"Chief of the Armed Forces Joint Staff", org:"Estado-Maior FA", org_en:"Armed Forces Joint Staff", confidence:"REPORTADO", source:"IDF Defrin · Jerusalem Post · @UKikaski" },
+    { id:5, cat:"MILITAR", impact:7, title:"Ministro da Defesa", title_en:"Minister of Defense", name:"Brig. Gen. Amir Nasirzadeh", role:"Ministro da Defesa e Logistica das FA", role_en:"Minister of Defense and Armed Forces Logistics", org:"Ministerio da Defesa", org_en:"Ministry of Defense", confidence:"REPORTADO", source:"Reuters · IDF · Times of Israel · @SamPancher" },
+    { id:9, cat:"MILITAR", impact:6, title:"Dir. Intel. Exterior", title_en:"Foreign Intel Director", name:"Javad Pourhossein", role:"Chefe de Inteligencia Estrangeira (VAJA)", role_en:"Foreign Intelligence Chief (VAJA)", org:"VAJA", org_en:"VAJA", confidence:"REPORTADO", source:"Iran International · @JasonMBrodsky · @GhorbaniiNiyak" },
+    { id:7, cat:"MILITAR", impact:7, title:"Intel Hezbollah", title_en:"Hezbollah Intel", name:"Hussein Makled", role:"Chefe de Inteligencia do Hezbollah, eliminado em Beirute (02/Mar)", role_en:"Hezbollah Intel Chief, eliminated in Beirut (02/Mar)", org:"Hezbollah - Libano", org_en:"Hezbollah — Lebanon", confidence:"CONFIRMADO", source:"IDF Defrin (02/Mar) · Wikipedia 2026 · @IDF" },
+    { id:8, cat:"MILITAR", impact:5, title:"Cmdt PIJ Libano", title_en:"PIJ Cmdr Lebanon", name:"Abu Hamza Rami", role:"Comandante Jihad Islamica Palestina no Libano, eliminado em Beirute (02/Mar)", role_en:"PIJ Commander in Lebanon, eliminated in Beirut (02/Mar)", org:"Jihad Islamica Palestina", org_en:"Palestinian Islamic Jihad", confidence:"CONFIRMADO", source:"IDF Defrin (02/Mar) · @FoxNews · @IDF" },
+    { id:3, cat:"POLITICO", impact:8, title:"Sec. Conselho Seg. Nacional", title_en:"Nat'l Security Council Sec.", name:"Ali Shamkhani", role:"Secretario CSNS - arquiteto das politicas de seguranca nacional", role_en:"SNSC Secretary — national security policy architect", org:"CSNS", org_en:"SNSC", confidence:"REPORTADO", source:"IDF Defrin · Al Jazeera · Times of Israel · @EylonALevy" },
+    { id:11, cat:"POLITICO", impact:2, title:"Ex-Presidente", title_en:"Former President", name:"Mahmoud Ahmadinejad", role:"Ex-Presidente Ira (2005-2013) - civil em Narmak, Teera. CONTESTADO.", role_en:"Former Iranian President (2005–2013) — civilian in Narmak, Tehran. CONTESTED.", org:"Civil", org_en:"Civilian", confidence:"CONFLITANTE", source:"ILNA reportou · Escritorio desmentiu · Channel 12 nao confirmou · @IranRevReport" }
     ],
 
   infrastructure: [
     { id:"01", name:"IRIS Dena — Fragata Iraniana", loc:"Oceano Índico — 40mn. sul de Galle, Sri Lanka", cat:"NAVAL", confidence:"CONFIRMADO",
       source:"Hegseth (Pentágono) · CBS News · Reuters · AP · Sri Lanka Navy",
-      note:"AFUNDADA 04/Mar por torpedo de submarino EUA (USS ?) — 1ª vez desde WW2. 180 a bordo: 79 resgatados, 80+ mortos, 101 desaparecidos. Hegseth: 'They thought they were safe in international waters'." },
-    { id:"02", name:"Complexo / Bunker de Khamenei", loc:"Distrito Pasteur, Teerã", note:"Destruído Dia 1. Confirmado IDF + satélite.", cat:"LIDERANÇA", confidence:"CONFIRMADO", source:"IDF · NCRI · Satélite" },
-    { id:"02", name:"Sede IRIB (TV + Rádio estatal iraniana)", loc:"Evin, Teerã", note:"Israel confirmou destruição total em 02/Mar. Última voz de propaganda do regime.", cat:"MÍDIA/COMANDO", confidence:"CONFIRMADO", source:"Israel (confirmado 02/Mar) · Wikipedia 2026" },
-    { id:"03", name:"Sede Min. Inteligência VAJA + 10 filiais", loc:"Teerã — múltiplos locais", note:"IDF: 10 sedes ministeriais + QG Força Quds destruídos na noite 01→02/Mar.", cat:"INTELIGÊNCIA", confidence:"REPORTADO", source:"IDF Defrin (02/Mar) · CNN" },
-    { id:"04", name:"QG IRGC — Edifício Malek-Ashtar", loc:"Teerã", note:"Iran International: vídeo mostra edifício completamente destruído (02/Mar).", cat:"IRGC", confidence:"CONFIRMADO", source:"Iran International · IDF" },
-    { id:"05", name:"Agência de Energia Atômica do Irã (AEOI)", loc:"Teerã", note:"Sede destruída. Trump: objetivo nuclear cumprido.", cat:"NUCLEAR", confidence:"REPORTADO", source:"NCRI · IDF" },
-    { id:"06", name:"Porto e instalações nucleares de Bushehr", loc:"Bushehr, costa sul", note:"Status do reator nuclear incerto. Iran International: atingida.", cat:"NUCLEAR/NAVAL", confidence:"REPORTADO", source:"Iran International" },
-    { id:"07", name:"11+ Sistemas de Defesa Aérea iranianos", loc:"Irã ocidental (inc. Kermanshah)", note:"SA-65 avançado destruído. Reaper voa livremente sobre Shiraz.", cat:"DEF. AÉREA", confidence:"REPORTADO", source:"IDF" },
-    { id:"08", name:"Corveta Jamaran + 10 navios iranianos", loc:"Golfo de Omã — Chah Bahar", note:"CENTCOM confirmou Jamaran afundando. Trump: 10 navios iranianos afundados. IRGC reivindica 3 petroleiros EUA/UK.", cat:"NAVAL", confidence:"CONFIRMADO", source:"CENTCOM (Jamaran) · Trump (10 navios) · Reuters" },
-    { id:"09", name:"Todas 25 bases de mísseis MRBM", loc:"Iran — múltiplas províncias", note:"CTP-ISW: todas 25 bases atingidas. Reatingidas em 28/Fev.", cat:"MÍSSEIS", confidence:"REPORTADO", source:"CTP-ISW · Satélite NYT" },
-    { id:"10", name:"Base RAF Akrotiri — Chipre (EUROPA)", loc:"Chipre — território britânico", note:"1º ATAQUE IRANIANO EM SOLO EUROPEU. Drone atingiu base na madrugada 02→03/Mar. Danos limitados. RAF em alerta máximo.", cat:"BASE EUROPEIA", confidence:"CONFIRMADO", source:"FA britânicas · Governo Chipre" },
-    { id:"11", name:"Refinaria Ras Tanura (Arábia Saudita)", loc:"Costa leste, Arábia Saudita", note:"Drone causou incêndio limitado — controlado. Sauditas derrubaram 2 drones sobre o local.", cat:"ENERGIA", confidence:"CONFIRMADO", source:"FA Arábia Saudita" },
-    { id:"12", name:"Produção LNG do Qatar interrompida", loc:"Qatar — costa norte", note:"Qatar suspendeu produção de LNG após ataques. Impacto global nos mercados de energia.", cat:"ENERGIA", confidence:"CONFIRMADO", source:"Reuters · Al Jazeera" },
-    { id:"13", name:"Escola elementar — Minab (CONTROVÉRSIA)", loc:"Minab, Hormozgan — sudeste do Irã", note:"Irã: ~168 crianças mortas. NYT e WaPo verificaram imagens parcialmente. Sem conf. independente do número. Crise humanitária e de imagem.", cat:"CIVIL — CONTESTADO", confidence:"CONFLITANTE", source:"Governo iraniano · NYT · WaPo (verificação parcial de imagens)" },
-    { id:"15", name:"Embaixada EUA Riad", loc:"Bairro Diplomatico, Riad", note:"03/Mar: 2 drones iranianos atingiram embaixada. Incendio limitado, sem feridos. +4 drones no bairro. Min. Defesa Saudita confirmou. Trump prometeu retaliacao. Embaixada fechada.", cat:"DIPLOMATICO", confidence:"CONFIRMADO", source:"Min. Defesa Saudita - Al Jazeera - ABC News - CBS News (03/Mar)" },
-    { id:"14", name:"Embaixada EUA Kuwait + arredores", loc:"Kuwait City", note:"Embaixada EUA atingida por drones iranianos (02/Mar). Fechada indefinidamente. Fumaça visível de ruas próximas (Reuters).", cat:"DIPLOMÁTICO", confidence:"CONFIRMADO", source:"PBS · Reuters · CNBC (02/Mar)" }
+      note:"AFUNDADA 04/Mar por torpedo de submarino EUA (USS ?) — 1ª vez desde WW2. 180 a bordo: 79 resgatados, 80+ mortos, 101 desaparecidos. Hegseth: 'They thought they were safe in international waters'.", note_en:"SUNK 04/Mar by US submarine torpedo — 1st time since WW2. 180 aboard: 79 rescued, 80+ dead, 101 missing. Hegseth: 'They thought they were safe in international waters'." },
+    { id:"02", name:"Complexo / Bunker de Khamenei", loc:"Distrito Pasteur, Teerã", note:"Destruído Dia 1. Confirmado IDF + satélite.", note_en:"Destroyed Day 1. Confirmed IDF + satellite.", cat:"LIDERANÇA", confidence:"CONFIRMADO", source:"IDF · NCRI · Satélite" },
+    { id:"02", name:"Sede IRIB (TV + Rádio estatal iraniana)", loc:"Evin, Teerã", note:"Israel confirmou destruição total em 02/Mar. Última voz de propaganda do regime.", note_en:"Israel confirmed total destruction 02/Mar. The regime's last propaganda voice.", cat:"MÍDIA/COMANDO", confidence:"CONFIRMADO", source:"Israel (confirmado 02/Mar) · Wikipedia 2026" },
+    { id:"03", name:"Sede Min. Inteligência VAJA + 10 filiais", loc:"Teerã — múltiplos locais", note:"IDF: 10 sedes ministeriais + QG Força Quds destruídos na noite 01→02/Mar.", note_en:"IDF: 10 ministry HQs + Quds Force HQ destroyed night of 01→02/Mar.", cat:"INTELIGÊNCIA", confidence:"REPORTADO", source:"IDF Defrin (02/Mar) · CNN" },
+    { id:"04", name:"QG IRGC — Edifício Malek-Ashtar", loc:"Teerã", note:"Iran International: vídeo mostra edifício completamente destruído (02/Mar).", note_en:"Iran International: video shows building completely destroyed (02/Mar).", cat:"IRGC", confidence:"CONFIRMADO", source:"Iran International · IDF" },
+    { id:"05", name:"Agência de Energia Atômica do Irã (AEOI)", loc:"Teerã", note:"Sede destruída. Trump: objetivo nuclear cumprido.", note_en:"HQ destroyed. Trump: nuclear objective achieved.", cat:"NUCLEAR", confidence:"REPORTADO", source:"NCRI · IDF" },
+    { id:"06", name:"Porto e instalações nucleares de Bushehr", loc:"Bushehr, costa sul", note:"Status do reator nuclear incerto. Iran International: atingida.", note_en:"Nuclear reactor status uncertain. Iran International: hit.", cat:"NUCLEAR/NAVAL", confidence:"REPORTADO", source:"Iran International" },
+    { id:"07", name:"11+ Sistemas de Defesa Aérea iranianos", loc:"Irã ocidental (inc. Kermanshah)", note:"SA-65 avançado destruído. Reaper voa livremente sobre Shiraz.", note_en:"Advanced SA-65 destroyed. Reaper flies freely over Shiraz.", cat:"DEF. AÉREA", confidence:"REPORTADO", source:"IDF" },
+    { id:"08", name:"Corveta Jamaran + 10 navios iranianos", loc:"Golfo de Omã — Chah Bahar", note:"CENTCOM confirmou Jamaran afundando. Trump: 10 navios iranianos afundados. IRGC reivindica 3 petroleiros EUA/UK.", note_en:"CENTCOM confirmed Jamaran sinking. Trump: 10 Iranian ships sunk. IRGC claims 3 US/UK tankers hit.", cat:"NAVAL", confidence:"CONFIRMADO", source:"CENTCOM (Jamaran) · Trump (10 navios) · Reuters" },
+    { id:"09", name:"Todas 25 bases de mísseis MRBM", loc:"Iran — múltiplas províncias", note:"CTP-ISW: todas 25 bases atingidas. Reatingidas em 28/Fev.", note_en:"CTP-ISW: all 25 bases hit. Re-struck on 28/Feb.", cat:"MÍSSEIS", confidence:"REPORTADO", source:"CTP-ISW · Satélite NYT" },
+    { id:"10", name:"Base RAF Akrotiri — Chipre (EUROPA)", loc:"Chipre — território britânico", note:"1º ATAQUE IRANIANO EM SOLO EUROPEU. Drone atingiu base na madrugada 02→03/Mar. Danos limitados. RAF em alerta máximo.", note_en:"1ST IRANIAN ATTACK ON EUROPEAN SOIL. Drone hit base 02→03/Mar. Limited damage. RAF on max alert.", cat:"BASE EUROPEIA", confidence:"CONFIRMADO", source:"FA britânicas · Governo Chipre" },
+    { id:"11", name:"Refinaria Ras Tanura (Arábia Saudita)", loc:"Costa leste, Arábia Saudita", note:"Drone causou incêndio limitado — controlado. Sauditas derrubaram 2 drones sobre o local.", note_en:"Drone caused limited fire — controlled. Saudis downed 2 drones over site.", cat:"ENERGIA", confidence:"CONFIRMADO", source:"FA Arábia Saudita" },
+    { id:"12", name:"Produção LNG do Qatar interrompida", loc:"Qatar — costa norte", note:"Qatar suspendeu produção de LNG após ataques. Impacto global nos mercados de energia.", note_en:"Qatar suspended LNG production after attacks. Global energy market impact.", cat:"ENERGIA", confidence:"CONFIRMADO", source:"Reuters · Al Jazeera" },
+    { id:"13", name:"Escola elementar — Minab (CONTROVÉRSIA)", loc:"Minab, Hormozgan — sudeste do Irã", note:"Irã: ~168 crianças mortas. NYT e WaPo verificaram imagens parcialmente. Sem conf. independente do número. Crise humanitária e de imagem.", note_en:"Iran: ~165 children dead (CBC visual investigation confirmed IRGC base adjacent). NYT/WaPo partially verified. No independent count confirmation.", cat:"CIVIL — CONTESTADO", confidence:"CONFLITANTE", source:"Governo iraniano · NYT · WaPo (verificação parcial de imagens)" },
+    { id:"15", name:"Embaixada EUA Riad", loc:"Bairro Diplomatico, Riad", note:"03/Mar: 2 drones iranianos atingiram embaixada. Incendio limitado, sem feridos. +4 drones no bairro. Min. Defesa Saudita confirmou. Trump prometeu retaliacao. Embaixada fechada.", note_en:"03/Mar: 2 Iranian drones hit embassy. Limited fire, no casualties. +4 drones in district. Saudi MoD confirmed. Trump vowed retaliation. Embassy closed.", cat:"DIPLOMATICO", confidence:"CONFIRMADO", source:"Min. Defesa Saudita - Al Jazeera - ABC News - CBS News (03/Mar)" },
+    { id:"14", name:"Embaixada EUA Kuwait + arredores", loc:"Kuwait City", note:"Embaixada EUA atingida por drones iranianos (02/Mar). Fechada indefinidamente. Fumaça visível de ruas próximas (Reuters).", note_en:"US Embassy hit by Iranian drones (02/Mar). Closed indefinitely. Smoke visible from nearby streets (Reuters).", cat:"DIPLOMÁTICO", confidence:"CONFIRMADO", source:"PBS · Reuters · CNBC (02/Mar)" }
   ],
 
   timeline: [
+    { time:"05 MAR · 16h UTC", tags:["tag-warning"], text:"AZERBAIJÃO: Presidente Aliyev condena 'atos de terror' do Irã. Azerbaijão promete resposta militar. Turquia condena ataques ao Azerbaijão. Iran nega responsabilidade — atribui a 'falsa bandeira' de Israel. IRGC telegram reivindica.", confidence:"CONFIRMADO" },
+    { time:"05 MAR · 14h UTC", tags:["tag-diplo","tag-us"], text:"SENADO EUA: War Powers Resolution de Tim Kaine + Rand Paul derrubada 47-53. Fetterman (D-PA) vota com republicanos. Paul: único republicano a favor. Trump pode continuar guerra sem autorização congressual.", confidence:"CONFIRMADO" },
+    { time:"05 MAR · 12h UTC", tags:["tag-attack","tag-warning"], text:"AZERBAIJÃO ATACADO: Drones iranianos atingem Aeroporto de Nakhchivan e aldeia de Shakarabad. 4 feridos (estáveis). Aliyev: 'Iran cometeu atos de terror contra o Azerbaijão'. 1ª expansão do conflito para ex-URSS.", confidence:"CONFIRMADO" },
+    { time:"05 MAR · 10h UTC", tags:["tag-attack"], text:"BEIRUTE — EVACUAÇÃO TOTAL: IDF emite ordem de evacuação urgente para TODOS os subúrbios sul de Beirute (Dahieh). Smotrich: 'Dahieh ficará como Khan Younis'. Beirute norte e leste únicos destinos. Israel atinge Tripoli pela 1ª vez — Hamas cmdt. eliminado.", confidence:"CONFIRMADO" },
+    { time:"05 MAR · 08h UTC", tags:["tag-confirm","tag-us"], text:"CENTCOM: 2.000+ alvos atingidos no Irã desde 28/Fev. Gen. Caine: lançamentos de mísseis caíram 86%, drones 73% vs Dia 1. CTP-ISW: 300 lançadores destruídos. Hegseth: 'accelerating, not decelerating'.", confidence:"CONFIRMADO" },
+    { time:"05 MAR · 06h UTC", tags:["tag-warning"], text:"MERCADOS: Petróleo sobe 5,5% (WTI $78,80/barril), Brent +3,96% ($84,62). Dow Jones cai 601 pontos (-1,24%). Estreito de Hormuz quase vazio — 20% do petróleo mundial paralisado. Amazon AWS: 3 data centers atingidos (Bahrein + 2 EAU).", confidence:"CONFIRMADO" },
+    { time:"05 MAR · 04h UTC", tags:["tag-attack"], text:"IRNA: Mortos no Irã sobem para 1.230. Human Rights group EUA: 1.100+. Irã lança 3 ondas de mísseis contra Israel de madrugada. Novas explosões em Teerã, Qom, Isfahan. IDF ataca Hezbollah em Beirute. IRGC: 'dias mais intensos virão'.", confidence:"CONFIRMADO" },
     { time:"04 MAR · 12h UTC", tags:["tag-confirm","tag-us"], text:"Hegseth no Pentágono: 'America is winning, decisively, devastatingly'. Gen. Caine: capacidade naval iraniana 'efetivamente neutralizada'. EUA afundou 17 navios + IRIS Dena. 'Ondas maiores estão chegando'.", confidence:"CONFIRMADO" },
     { time:"04 MAR · 10h UTC", tags:["tag-confirm","tag-attack"], text:"HISTÓRICO: Submarino EUA afunda IRIS Dena no Oceano Índico (costa Sri Lanka) com torpedo — 1ª vez desde WW2. 180 a bordo: 80+ mortos, 101 desaparecidos. Hegseth confirmou no Pentágono.", confidence:"CONFIRMADO" },
     { time:"04 MAR · 09h UTC", tags:["tag-warning","tag-attack"], text:"Mortos no Irã chegam a 1.045 (Tasnim). IRGC: '10ª onda de ataques em Teerã, Karaj, Isfahan, Qom'. Consulado EUA em Dubai atingido por drone. EUA pede evacuação de americanos em 14 países do Oriente Médio.", confidence:"REPORTADO" },
@@ -1617,6 +1631,13 @@ const WAR_DATA = {
   ],
 
   audit_log: [
+    { utc:"2026-03-05T16:00:00Z", field:"Azerbaijão — Aliyev condena Irã", old_value:"—", new_value:"Drones iranianos atingem Nakhchivan. 4 feridos. Azerbaijão promete resposta.", source:"Azerbaijão MFA · Reuters · NBC · CBC", note:"[DIA 6] 1ª expansão para Cáucaso/ex-URSS" },
+    { utc:"2026-03-05T14:00:00Z", field:"Senado EUA derruba War Powers 47-53", old_value:"Em votação", new_value:"Falhou 47-53 (Fetterman D vota com GOP)", source:"Breaking Defense · NBC · CBC · AP", note:"[DIA 6] Trump continua guerra sem autorização congressual" },
+    { utc:"2026-03-05T12:00:00Z", field:"kpis.iran_civilian_dead", old_value:"1045+", new_value:"1230+ (IRNA)", source:"IRNA · Al Jazeera · CBC (05/Mar)", note:"[DIA 6] Human Rights group EUA: 1.100+" },
+    { utc:"2026-03-05T10:00:00Z", field:"Lebanon — evacuação total Dahieh", old_value:"59 aldeias sul Líbano", new_value:"TODOS os subúrbios sul Beirute evacuados", source:"IDF · CNN · CBC · Reuters", note:"[DIA 6] Smotrich: 'Dahieh = Khan Younis'" },
+    { utc:"2026-03-05T08:00:00Z", field:"CENTCOM: 2.000+ alvos", old_value:"1.000+", new_value:"2.000+ alvos atingidos no Irã", source:"CENTCOM · Hegseth · Gen. Caine", note:"[DIA 6] Mísseis -86%, drones -73% vs Dia 1" },
+    { utc:"2026-03-05T06:00:00Z", field:"Amazon AWS — 3 data centers", old_value:"—", new_value:"AWS Bahrein + 2 EAU offline por drones iranianos", source:"AWS Health Dashboard · Fars News · CNBC", note:"[DIA 6] Infraestrutura digital global afetada" },
+    { utc:"2026-03-05T04:00:00Z", field:"countries.Lebanon — dead", old_value:"50+", new_value:"77+ mortos, 527+ feridos (Min. Saúde)", source:"Min. Saúde Líbano · Al Jazeera · CNN", note:"[DIA 6] Inclui 7 crianças nas últimas 24h" },
     { utc:"2026-03-04T12:00:00Z", field:"DIA 5 — Hegseth Pentágono", old_value:"—", new_value:"'America is winning decisively' · IRIS Dena afundada · 17 navios destruídos", source:"CENTCOM · CBS News · Newsweek", note:"[DIA 5] Hegseth: 'More larger waves are coming'" },
     { utc:"2026-03-04T10:00:00Z", field:"IRIS Dena — afundada submarino EUA", old_value:"em trânsito Oceano Índico", new_value:"AFUNDADA — 80+ mortos, 101 desaparecidos", source:"CBS · Reuters · AP · Hegseth", note:"[DIA 5] 1ª vez submarino EUA afunda navio inimigo desde WW2" },
     { utc:"2026-03-04T09:30:00Z", field:"kpis.iran_dead", old_value:"787", new_value:"1045+", source:"Tasnim News Agency · AP · Al Jazeera (04/Mar)", note:"[DIA 5] Mortos no Irã ultrapassam 1.000" },
@@ -1825,11 +1846,11 @@ const DATA_DICT = {
   "CSNS": "SNSC",
 
   // === COUNTRIES — notes ===
-  "DIA 5: 11+ mortos, 335+ feridos (MDA). 62 ondas de ataque em 24h (Dia 4→5). Sirenes em Jerusalém e Tel Aviv. Ben Gurion fechado. IDF invade sul do Líbano. Beit Shemesh: pior incidente (9 mortos).":
+  "DIA 6: 11+ mortos, 335+ feridos. Dia 6: 3 ondas de mísseis iranianos de madrugada interceptadas. INSS: Irã lançou 1.600+ drones em Israel, Jordânia, Golfo e Chipre. Sirenes em Tel Aviv e Jerusalém continuam. Ben Gurion fechado.":
     "DAY 5: 11+ dead, 335+ wounded (MDA). 62 attack waves in 24h (Day 4→5). Sirens in Jerusalem and Tel Aviv. Ben Gurion closed. IDF invades S. Lebanon. Beit Shemesh: worst incident (9 dead).",
   "6 soldados EUA mortos (todos no Kuwait, mesma unidade logística). Embaixada EUA atingida — FECHADA indefinidamente. FOGO AMIGO: Kuwait derrubou 3 F-15E americanos por engano durante ataque iraniano. Ali al-Salem AB: 15 cruzeiros iranianos.":
     "6 US soldiers killed (all in Kuwait, same logistics unit). US Embassy hit — CLOSED indefinitely. FRIENDLY FIRE: Kuwait shot down 3 US F-15Es by mistake during Iranian attack. Ali al-Salem AB: 15 Iranian cruise missiles.",
-  "DIA 5: 50+ mortos, 335+ feridos no Líbano (AP/Min. Saúde). Hezbollah atinge tanque israelense em Houla (2 feridos IDF). IDF invade sul Líbano: 59 aldeias evacuadas, operação além do Litani. Beirute sob strikes. 28.500 deslocados.":
+  "DIA 6: 77+ mortos, 527+ feridos (Min. Saúde). IDF emite ordem evacuação TOTAL dos subúrbios sul de Beirute (Dahieh). Israel atinge Tripoli pela 1ª vez — Hamas cmdt. Wasim Attallah Ali eliminado. 31 mortos nas últimas 24h incluindo 7 crianças.":
     "DAY 5: 50+ dead, 335+ wounded in Lebanon (AP/MoH). Hezbollah hits Israeli tank in Houla (2 IDF wounded). IDF invades S. Lebanon: 59 villages evacuated, operation beyond the Litani. Beirut under strikes. 28,500 displaced.",
   "QG 5ª Frota atingido. Torre residencial atingida. Aeroporto: danos materiais sem vítimas (Min. Interior). Residências em Manama atingidas noite de 28/Fev.":
     "US 5th Fleet HQ hit. Residential tower hit. Airport: material damage, no casualties (Min. Interior). Residences in Manama hit night of 28/Feb.",
@@ -2011,10 +2032,10 @@ function renderLeaders(){
     const pct = ((p.impact||0)/maxImpact*100).toFixed(0);
     return `<div class="leader-card">
       <div class="leader-rank">#${p.id} · ${T('IMPACTO','IMPACT')} ${p.impact||'?'}/10</div>
-      <span class="leader-title-tag ${tagCls}">${tD(p.title||p.cat)}</span>
+      <span class="leader-title-tag ${tagCls}">${T(p.title||p.cat, p.title_en||p.title||p.cat)}</span>
       <div class="leader-name">${p.name}</div>
-      <div class="leader-role">${tD(p.role)}</div>
-      <div class="leader-org">${tD(p.org)}</div>
+      <div class="leader-role">${T(p.role, p.role_en||p.role)}</div>
+      <div class="leader-org">${T(p.org, p.org_en||p.org)}</div>
       <div class="leader-impact-bar"><div class="lib-fill ${barCls}" style="width:${pct}%"></div></div>
       <div class="leader-badge">${confBadge(p.confidence,p.source,null)}</div>
     </div>`;
@@ -2126,9 +2147,9 @@ function renderKPIs() {
       <div class="kpi-label">${c.icon} ${label}</div>
       <div class="kpi-value-row">
         <span class="kpi-value">${d.value}${q}</span>
-        <span class="kpi-unit">${d.unit}</span>
+        <span class="kpi-unit">${d.unit_en && currentLang==='en' ? d.unit_en : d.unit}</span>
       </div>
-      <div class="kpi-sub">${tD(d.notes).substring(0,90)}${d.notes.length>80?'…':''}</div>
+      <div class="kpi-sub">${(currentLang==='en'&&d.notes_en?d.notes_en:d.notes).substring(0,90)}${d.notes.length>80?'…':''}</div>
       <div class="kpi-badge">${confBadge(d.confidence, d.source_primary, d.last_update_utc)}</div>
     </div>`;
   }).join('');
@@ -2160,7 +2181,7 @@ function renderTheater() {
         <div class="cstat"><span class="cstat-val" style="color:var(--alert)">${c.impacted}${c.qualifier_i||''}</span><span class="cstat-lbl">${T('Impactos','Impacts')}</span></div>
         <div class="cstat"><span class="cstat-val">${deadDisplay === 0 && woundedDisplay === 0 ? '—' : deadDisplay+' ✡'}</span><span class="cstat-lbl">${T('Mortos','Killed')}</span></div>
       </div>
-      <div class="country-note">${tD(c.note)}</div>
+      <div class="country-note">${T(c.note, c.note_en||c.note)}</div>
       <div class="risk-bar ${riskClass(c.risk)}"></div>
     </div>`;
   }).join('');
@@ -2182,7 +2203,7 @@ function renderIsraelCities() {
         <div class="cas-block"><span class="cas-n wounded">${c.wounded}</span><span class="cas-l">${T('Feridos','Wounded')}</span></div>
       </div>
       ${c.special ? `<div style="font-family:var(--font-mono);font-size:.5rem;color:var(--claimed);letter-spacing:.1em;">${c.special}</div>` : ''}
-      <div class="city-notes">${tD(c.note)}</div>
+      <div class="city-notes">${T(c.note, c.note_en||c.note)}</div>
       ${confBadge(c.confidence, c.source_primary, c.last_update_utc)}
     </div>`;
   }).join('');
@@ -2195,7 +2216,7 @@ function renderBench(items) {
   return items.map(i => `
   <div class="bench-row">
     <div class="bench-row-header">
-      <span class="bench-name">${tD(i.name)}</span>
+      <span class="bench-name">${T(i.name, i.name_en||i.name)}</span>
       <span class="bench-pct">${i.pct}%</span>
     </div>
     <div class="bench-track"><div class="bench-fill" style="width:${i.pct}%;background:${i.color}"></div></div>
@@ -2214,8 +2235,8 @@ function renderCasualties() {
   <tr>
     <td class="cas-num-cell">${c.id}</td>
     <td class="cas-name-cell">${c.name}</td>
-    <td class="cas-role-cell">${tD(c.role)}</td>
-    <td class="cas-org-cell">${tD(c.org)}</td>
+    <td class="cas-role-cell">${T(c.role, c.role_en||c.role)}</td>
+    <td class="cas-org-cell">${T(c.org, c.org_en||c.org)}</td>
     <td>${confBadge(c.confidence, c.source, null)}</td>
     <td class="cas-src-cell">${c.source.substring(0,50)}${c.source.length>50?'…':''}</td>
   </tr>`).join('');
@@ -2231,7 +2252,7 @@ function renderInfra() {
     <div class="infra-content">
       <div class="infra-name">${i.name}</div>
       <div class="infra-loc">${i.loc}</div>
-      <div class="infra-note">${tD(i.note)}</div>
+      <div class="infra-note">${T(i.note, i.note_en||i.note)}</div>
       <div style="display:flex;gap:.4rem;align-items:center;margin-top:.35rem;flex-wrap:wrap;">
         ${confBadge(i.confidence, i.source, null)}
         <span class="infra-cat">${tD(i.cat)}</span>
@@ -2300,7 +2321,7 @@ function renderHzbKPIs() {
     return `<div class="hzb-kpi">
       <div class="hzb-kpi-label">${i.icon} ${label}</div>
       <div class="hzb-kpi-val">${d.value.toLocaleString('pt-BR')}${q}</div>
-      <div class="hzb-kpi-sub">${tD(d.notes).substring(0,80)}${d.notes.length>70?'…':''}</div>
+      <div class="hzb-kpi-sub">${(currentLang==='en'&&d.notes_en?d.notes_en:d.notes).substring(0,85)}${d.notes.length>70?'…':''}</div>
       <div style="position:absolute;top:.65rem;right:.65rem;">${confBadge(d.confidence,d.source_primary,d.last_update_utc)}</div>
     </div>`;
   }).join('');
@@ -2330,6 +2351,10 @@ let updateCount = 0;
 let lastUpdateResult = null;
 let tickerItems = [];
 
+// ── Fontes de referência adicionadas por solicitação ────────
+// ISW / CriticalThreats: https://www.criticalthreats.org + @StudyofWar
+// Amit Segal (Kan 11 / Chief Political Correspondent): https://www.amitsegal.net
+// Breaking Defense: https://breakingdefense.com
 // ── Feeds RSS usados (CORS-habilitados via rss2json) ────────
 const RSS_FEEDS = [
   { name: "Reuters World", url: "https://feeds.reuters.com/reuters/worldNews" },
@@ -2337,7 +2362,12 @@ const RSS_FEEDS = [
   { name: "Times of Israel", url: "https://www.timesofisrael.com/feed/" },
   { name: "Iran International", url: "https://www.iranintl.com/en/rss" },
   { name: "Jerusalem Post", url: "https://www.jpost.com/rss/rssfeedsheadlines.aspx" },
-  { name: "Middle East Eye", url: "https://www.middleeasteye.net/rss" }
+  { name: "Middle East Eye", url: "https://www.middleeasteye.net/rss" },
+  { name: "ISW / CriticalThreats", url: "https://www.criticalthreats.org/feed" },
+  { name: "Breaking Defense", url: "https://breakingdefense.com/feed/" },
+  { name: "Amit Segal (Kan 11)", url: "https://www.amitsegal.net/feed/" },
+  { name: "CBS News World", url: "https://www.cbsnews.com/latest/rss/world" },
+  { name: "NBC News World", url: "https://feeds.nbcnews.com/nbcnews/public/world" }
 ];
 
 // ── Proxy CORS gratuito ──────────────────────────────────────
@@ -2347,7 +2377,7 @@ const RSS2JSON = "https://api.rss2json.com/v1/api.json?rss_url=";
 const KEYWORDS_IRAN = ["iran","irgc","khamenei","nuclear","tehran","hormuz","epic fury","roaring lion","promessa sincera","persian gulf"];
 const KEYWORDS_ISRAEL = ["israel","idf","gaza","west bank","netanyahu","mossad","iron dome","tel aviv","jerusalem"];
 const KEYWORDS_HEZBOLLAH = ["hezbollah","nasrallah","lebanon","beirut","litani","south lebanon","líbano"];
-const KEYWORDS_US = ["centcom","pentagon","us military","american troops","air force","us strike","trump iran"];
+const KEYWORDS_US = ["centcom","pentagon","us military","american troops","air force","us strike","trump iran","operation epic fury","us iran war"];
 const ALL_KEYWORDS = [...KEYWORDS_IRAN,...KEYWORDS_ISRAEL,...KEYWORDS_HEZBOLLAH,...KEYWORDS_US];
 
 // ── STATUS UI ────────────────────────────────────────────────
@@ -2831,12 +2861,12 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="ticker-label">AO VIVO</div>
   <div class="ticker-scroll">
      <div class="ticker-inner">
-       ◆ DIA 5 · 04 MAR 2026 · IRÃ: 1.045 MORTOS (TASNIM) · ÍNDICE ESCALADA 96/100 CRÍTICO &nbsp;|&nbsp;
-       ◆ HISTÓRICO: SUBMARINO EUA AFUNDA IRIS DENA NO OCEANO ÍNDICO — 1ª VEZ DESDE WW2 · 80+ MORTOS &nbsp;|&nbsp;
-       ◆ TURQUIA + NATO: MÍSSIL IRANIANO INTERCEPTADO NO ESPAÇO AÉREO TURCO (DÖRTYOL, HATAY) &nbsp;|&nbsp;
-       ◆ HEGSETH: "AMERICA IS WINNING, DECISIVELY, DEVASTATINGLY AND WITHOUT MERCY" · "MORE WAVES COMING" &nbsp;|&nbsp;
-       ◆ ISRAEL BOMBARDEIA ASSEMBLEIA DE ESPECIALISTAS DURANTE REUNIÃO PARA ELEGER NOVO LÍDER SUPREMO &nbsp;|&nbsp;
-       ◆ CONSULADO EUA EM DUBAI ATINGIDO POR DRONE IRANIANO · MACRON ENVIA PORTA-AVIÕES AO MEDITERRÂNEO &nbsp;|&nbsp;
+       ◆ DIA 6 · 05 MAR 2026 · IRÃ: 1.230 MORTOS (IRNA) · ÍNDICE ESCALADA 98/100 CRÍTICO &nbsp;|&nbsp;
+       ◆ AZERBAIJÃO ATACADO: DRONES IRANIANOS ATINGEM NAKHCHIVAN — EXPANSÃO DO CONFLITO PARA CÁUCASO · ALIYEV PROMETE RESPOSTA &nbsp;|&nbsp;
+       ◆ SENADO EUA 47-53: WAR POWERS RESOLUTION DERRUBADA — TRUMP CONTINUA GUERRA SEM AUTORIZAÇÃO CONGRESSUAL &nbsp;|&nbsp;
+       ◆ HEGSETH: "ACCELERATING, NOT DECELERATING" · CENTCOM: 2.000+ ALVOS NO IRÃ · MÍSSEIS -86%, DRONES -73% VS DIA 1 &nbsp;|&nbsp;
+       ◆ BEIRUTE: IDF ORDENA EVACUAÇÃO TOTAL DOS SUBÚRBIOS SUL (DAHIEH) — SMOTRICH: "FICARÁ COMO KHAN YOUNIS" &nbsp;|&nbsp;
+       ◆ LÍBANO: 77+ MORTOS, 527+ FERIDOS · IDF ATINGE TRIPOLI PELA 1ª VEZ — HAMAS CMDT. ELIMINADO · HORMUZ ESVAZIADO &nbsp;|&nbsp;
        ◆ IRGC: "PREPARADOS PARA DESTRUIÇÃO COMPLETA DA INFRAESTRUTURA MILITAR E ECONÔMICA DA REGIÃO" &nbsp;|&nbsp;
        ◆ ISRAEL INVADE SUL DO LÍBANO · 50+ MORTOS NO LÍBANO · 335+ FERIDOS · IDF: 59 ALDEIAS EVACUAR &nbsp;|&nbsp;
        ◆ CENTCOM: 17 NAVIOS IRANIANOS DESTRUÍDOS · 6 SOLDADOS EUA MORTOS (KUWAIT) — 4 IDENTIFICADOS &nbsp;|&nbsp;
