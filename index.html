@@ -1312,6 +1312,8 @@ body {
      last_update_utc, confidence_level, notes
      ============================================================ -->
 <script>
+let currentLang = 'pt';
+
 const WAR_DATA = {
 
   meta: {
@@ -3446,7 +3448,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // No fragile ID lookups needed.
 // ============================================================
 
-let currentLang = 'pt';
+// currentLang declared in WAR_DATA script block
 
 function setLang(lang) {
   currentLang = lang;
