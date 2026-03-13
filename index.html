@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0057)file:///C:/Users/Raphael%20Assayag/Downloads/index_2.html -->
+<!-- saved from url=(0057)file:///C:/Users/Raphael%20Assayag/Downloads/index_3.html -->
 <html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1301,6 +1301,39 @@ body {
 .hzb-hum-num {
   font-family:var(--font-mono); font-size:.85rem; font-weight:600;
 }
+
+/* ── KHAMENEI INTEL PANEL ─────────────────────────────────── */
+.khm-panel { background: #0d1117; border: 1px solid #3d1a1a; border-radius: 8px; padding: 1.5rem; margin-top: 1.5rem; }
+.khm-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.khm-title-block { display: flex; align-items: center; gap: 1rem; }
+.khm-icon { font-size: 2rem; color: #c0392b; line-height: 1; }
+.khm-name { font-size: 1.15rem; font-weight: 700; color: #e2e8f0; letter-spacing: .03em; }
+.khm-role { font-size: .75rem; color: #94a3b8; margin-top: 2px; }
+.khm-status-pill { font-size: .7rem; font-weight: 700; letter-spacing: .05em; padding: 5px 10px; border-radius: 4px; white-space: nowrap; }
+.pill-contested { background: rgba(217,119,6,.15); border: 1px solid #d97706; color: #fbbf24; }
+.pill-reported  { background: rgba(74,144,226,.12); border: 1px solid #4a90e2; color: #7db3f5; }
+.khm-meta-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .8rem; margin-bottom: 1.2rem; }
+.khm-meta-item { background: #111827; border: 1px solid #1f2937; border-radius: 6px; padding: .7rem; }
+.khm-meta-label { font-size: .62rem; color: #64748b; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
+.khm-meta-value { font-size: .82rem; color: #cbd5e1; font-family: monospace; }
+.khm-meta-value.red-text, .red-text { color: #f87171 !important; font-weight: 600; }
+.khm-assessment { background: #0f1923; border-left: 3px solid #c0392b; border-radius: 0 6px 6px 0; padding: 1rem 1.2rem; margin-bottom: 1.2rem; }
+.khm-assessment-title { font-size: .72rem; font-weight: 700; color: #c0392b; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .6rem; }
+.khm-assessment-body { font-size: .82rem; color: #cbd5e1; line-height: 1.6; margin-bottom: .8rem; }
+.khm-assessment-irgc { font-size: .76rem; color: #fbbf24; background: rgba(217,119,6,.08); border: 1px solid rgba(217,119,6,.25); border-radius: 4px; padding: .5rem .8rem; }
+.khm-sources-title { font-size: .68rem; font-weight: 700; color: #64748b; letter-spacing: .1em; text-transform: uppercase; margin-bottom: .8rem; padding-top: .4rem; border-top: 1px solid #1f2937; }
+.khm-sources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: .8rem; margin-bottom: 1.2rem; }
+.khm-source-card { background: #111827; border: 1px solid #1f2937; border-radius: 6px; padding: .9rem; }
+.khm-source-header { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-bottom: .5rem; }
+.khm-source-name { font-size: .8rem; font-weight: 700; color: #e2e8f0; }
+.khm-source-date { font-size: .68rem; color: #64748b; margin-left: auto; }
+.khm-source-claim { font-size: .78rem; color: #94a3b8; line-height: 1.55; margin-bottom: .4rem; }
+.khm-source-link { font-size: .68rem; color: #4a90e2; text-decoration: none; }
+.khm-source-link:hover { text-decoration: underline; }
+.khm-background { background: #0a0f14; border: 1px solid #1f2937; border-radius: 6px; padding: .9rem; }
+.khm-bg-title { font-size: .65rem; font-weight: 700; color: #64748b; letter-spacing: .1em; text-transform: uppercase; margin-bottom: .5rem; }
+.khm-bg-text { font-size: .78rem; color: #94a3b8; line-height: 1.6; }
+
 </style>
 </head>
 <body>
@@ -2520,6 +2553,104 @@ let tickerItems = [];
 // Amit Segal (Kan 11 / Chief Political Correspondent): https://www.amitsegal.net
 // Breaking Defense: https://breakingdefense.com
 // ── Feeds RSS usados (CORS-habilitados via rss2json) ────────
+// ── PAINEL INTELIGÊNCIA: MOJTABA KHAMENEI ─────────────────────
+const KHAMENEI_INTEL = {
+  profile: {
+    name: "Mojtaba Khamenei",
+    age: 56,
+    appointed: "08 Mar 2026",
+    title_pt: "Líder Supremo do Irã (desde 08/Mar/2026)",
+    title_en: "Supreme Leader of Iran (since 08/Mar/2026)",
+    background_pt: "Filho de Ayatolá Ali Khamenei (assassinado 28/Fev). Clérigo de médio escalão, sem alto título religioso. Associado próximo do IRGC e da elite econômica do regime. Sancionado pelo Tesouro EUA em 2019 por 'avançar ambições regionais desestabilizadoras' do pai. Linha-dura — analistas creem ser mais radical que o pai.",
+    background_en: "Son of assassinated Supreme Leader Ayatollah Ali Khamenei. Mid-ranking cleric, no senior religious title. Close IRGC associate. US Treasury-sanctioned in 2019. Analysts consider him more hardline than his father."
+  },
+  status: {
+    last_seen_public: "Nunca em público desde nomeação (08/Mar/2026)",
+    last_communication: "12 Mar 2026 — declaração escrita lida por âncora da TV estatal (foto estática na tela — sem vídeo, sem áudio)",
+    confidence: "CONFLITANTE"
+  },
+  sources: [
+    {
+      source: "CNN",
+      date: "11 Mar 2026",
+      url: "https://www.cnn.com/2026/03/11/middleeast/mojtaba-khamenei-injuries-iran-supreme-leader-latam-intl",
+      claim_pt: "Fratura no pé esquerdo + hematoma ao redor do olho esquerdo + lacerações leves no rosto (Dia 1 — 28/Fev). Embaixador iraniano em Chipre, Alireza Salarian: 'ferido no mesmo strike que matou o pai.' TV estatal usa imagens de arquivo e imagens geradas por IA.",
+      claim_en: "Fractured left foot + bruise around left eye + minor facial lacerations (Day 1 — Feb 28). Iranian amb. to Cyprus Salarian: 'injured in same strike that killed his father.' State media fills gaps with AI-generated images.",
+      badge: "REPORTADO",
+      flag: "Fonte: 'source familiar with the situation' — anônimo. Confirmado parcialmente pelo embaixador iraniano Salarian."
+    },
+    {
+      source: "Euronews",
+      date: "12 Mar 2026",
+      url: "https://www.euronews.com/2026/03/12/missing-in-action-what-we-know-about-mojtaba-khameneis-condition",
+      claim_pt: "Mohsen Sazegara (fundador do IRGC, hoje opositor): fontes internas dizem que abdômen e perna precisaram de cirurgia. Possíveis ferimentos no rosto. Não parece ser risco de vida. Amb. Salarian (Guardian): 'ouvi que pernas e braços foram feridos — acho que está no hospital.'",
+      claim_en: "Mohsen Sazegara (IRGC founder, now opposition): sources say abdomen and leg required surgery, possible facial injuries. Not life-threatening. Amb. Salarian: 'I heard legs and arms were injured — I think he is in hospital.'",
+      badge: "REPORTADO",
+      flag: "Sazegara: sem confirmação independente das lesões exatas. Salarian: embaixador iraniano — motivação para minimizar ou exagerar."
+    },
+    {
+      source: "Bloomberg / The Hill",
+      date: "13 Mar 2026",
+      url: "https://www.bloomberg.com/news/articles/2026-03-13/hegseth-says-khamenei-wounded-likely-disfigured",
+      claim_pt: "Hegseth (Pentágono, coletiva 13/Mar): 'ferido e provavelmente desfigurado'. Vance: 'Sabemos que ele está machucado. Não sabemos a extensão.' Trump: 'Danificado mas provavelmente vivo de alguma forma.' Hegseth: 'escondido, acuado. É o que ratos fazem.'",
+      claim_en: "Hegseth (Pentagon, 13/Mar briefing): 'wounded and likely disfigured.' Vance: 'We know that he is hurt. We do not know how bad.' Trump: 'Damaged but probably alive in some form.' Hegseth: 'cowering underground — that is what rats do.'",
+      badge: "REIVINDICADO",
+      flag: "EUA não forneceu evidências. Declaração com claro objetivo psicológico/operacional — pressionar regime e criar dúvida sobre comando iraniano."
+    },
+    {
+      source: "Al Jazeera",
+      date: "13 Mar 2026",
+      url: "https://www.aljazeera.com/news/2026/3/13/us-hegseth-claims-irans-new-supreme-leader-mojtaba-khamenei-injured",
+      claim_pt: "CENTCOM: 15.000+ alvos iranianos atingidos desde 28/Fev. Iran não respondeu às alegações de Hegseth. Khamenei declarou Hormuz fechado e ameaçou 'outras frentes' onde o inimigo tem 'pouca experiência e é altamente vulnerável.'",
+      claim_en: "CENTCOM: 15,000+ Iranian targets struck since Feb 28. Iran did not respond to Hegseth claims. Khamenei declared Hormuz closed and threatened 'other fronts' where the enemy is 'highly vulnerable.'",
+      badge: "CONFIRMADO",
+      flag: null
+    },
+    {
+      source: "CBC News / Georgetown Univ.",
+      date: "13 Mar 2026",
+      url: "https://www.cbc.ca/news/world/iran-supreme-leader-health-9.7126597",
+      claim_pt: "Prof. Nader Hashemi (Georgetown): 'Quanto mais tempo sem aparecer, mais rumores vão circular sobre a extensão dos ferimentos.' Akaash Maharaj (Munk School/Toronto): pode simplesmente estar escondido — qualquer vídeo revelaria localização para EUA/Israel. 'Cada vez que um membro do regime levanta a cabeça, ela é decepada pelos americanos ou israelenses.'",
+      claim_en: "Prof. Nader Hashemi (Georgetown): 'The longer he does not appear on camera, the more rumors will circulate.' Akaash Maharaj (Munk School): may simply be in hiding — any video would reveal location to US/Israel forces.",
+      badge: "REPORTADO",
+      flag: "Análise acadêmica — duas hipóteses igualmente válidas: incapacitado OU escondido por razões de segurança."
+    },
+    {
+      source: "Jerusalem Post",
+      date: "11 Mar 2026",
+      url: "https://www.jpost.com/middle-east/iran-news/article-889520",
+      claim_pt: "Fonte familiarizada com o assunto: Khamenei ferido mas capaz de exercer funções e gerir assuntos de Estado. TV estatal reconheceu ferimentos após nomeação sem dar detalhes.",
+      claim_en: "Source familiar with matter: Khamenei wounded but capable of carrying out duties and managing state affairs. State TV acknowledged injuries after appointment without details.",
+      badge: "REPORTADO",
+      flag: "Fonte anônima. Jerusalem Post historicamente tem fontes israelenses — possível interesse em subestimar incapacidade."
+    },
+    {
+      source: "Iran International",
+      date: "12 Mar 2026",
+      url: "https://www.iranintl.com/en/202603125349",
+      claim_pt: "Nenhuma evidência direta da condição. 1ª mensagem (12/Mar): lida por âncora sem vídeo nem áudio — foto estática na tela. Conteúdo: Hormuz fechado, bases EUA devem fechar 'imediatamente ou serão atacadas', ameaça de 'outras frentes'. Chamou eixo de resistência de 'melhores amigos'. Citou Houthis, Hezbollah e milícias iraquianas.",
+      claim_en: "No direct evidence of condition. First message (12/Mar): read by anchor, no video/audio — still photo on screen. Content: Hormuz closed, US bases must close 'immediately or will be attacked', threat of 'other fronts'. Called resistance axis 'best friends'.",
+      badge: "CONFIRMADO",
+      flag: "Iran International é oposição iraniana baseada em Londres — cobertura crítica ao regime, mas acesso a fontes internas."
+    },
+    {
+      source: "SCMP / Yousef Pezeshkian",
+      date: "11 Mar 2026",
+      url: "https://www.scmp.com/news/world/middle-east/article/3346205/irans-new-supreme-leader-safe-despite-war-injury-reports",
+      claim_pt: "Yousef Pezeshkian (filho do presidente + assessor): 'Perguntei a amigos que tinham contato. Me disseram que, graças a Deus, ele está salvo e em boa forma.' TV estatal o chamou de 'janbaz' (veterano ferido de guerra) sem detalhar ferimentos.",
+      claim_en: "Yousef Pezeshkian (president's son/adviser): 'I asked friends who had connections. They told me he is safe and sound.' State TV called him janbaz (wounded war veteran) without detailing injuries.",
+      badge: "REIVINDICADO",
+      flag: "Fonte governamental iraniana — motivo para minimizar. 'janbaz' confirma ferimento mas nega gravidade."
+    }
+  ],
+  assessment: {
+    consensus_pt: "VIVO e FERIDO — consenso entre fontes ocidentais, iranianas e independentes. Extensão dos ferimentos: DISPUTADA. Fratura no pé + lesões faciais (CNN/Israel) vs. cirurgia no abdômen e perna (Euronews/Sazegara). INCAPACIDADE vs. ESCONDERIJO: hipóteses igualmente plausíveis. Ausência de vídeo/áudio por 14+ dias é anômala em qualquer cenário.",
+    consensus_en: "ALIVE and INJURED — consensus across Western, Iranian and independent sources. Extent of injuries: DISPUTED. Fractured foot + facial injuries (CNN/Israel) vs. abdominal and leg surgery (Euronews/Sazegara). INCAPACITATION vs. HIDING: equally plausible hypotheses. Absence of video/audio for 14+ days is anomalous in any scenario.",
+    irgc_context_pt: "IRGC pressionou Assembleia de Especialistas para eleger Mojtaba com ameaças (Iran Wire). Se Khamenei incapacitado ou morto, IRGC controla de facto o regime — estrutura de junta militar. PJ Media/Iran Wire: grupos de oposição afirmam coma profundo tratado em segredo absoluto.",
+    risk_level: "CRÍTICO — liderança de facto do regime possivelmente nas mãos do IRGC"
+  }
+};
+
 const RSS_FEEDS = [
   { name: "Reuters World", url: "https://feeds.reuters.com/reuters/worldNews" },
   { name: "Al Jazeera", url: "https://www.aljazeera.com/xml/rss/all.xml" },
@@ -2919,6 +3050,9 @@ function rerenderAll() {
   document.getElementById('kpi-grid').innerHTML = renderKPIs();
   document.getElementById('timeline-body').innerHTML = renderTimeline();
   document.getElementById('audit-body').innerHTML = renderAudit();
+  if (document.getElementById('khamenei-panel')) {
+    document.getElementById('khamenei-panel').innerHTML = renderKhamenei();
+  }
   const auditCount = document.getElementById('audit-count');
   if (auditCount) auditCount.textContent = `${WAR_DATA.audit_log.length} entradas`;
   // Re-render Israel totals
@@ -2951,6 +3085,83 @@ function toggleAudit() {
 // ============================================================
 // INIT
 // ============================================================
+// ── RENDER: PAINEL KHAMENEI ──────────────────────────────────
+function renderKhamenei() {
+  const K = KHAMENEI_INTEL;
+  const lang = currentLang;
+  const badgeMap = { 'CONFIRMADO':'badge-confirmed','REPORTADO':'badge-reported','REIVINDICADO':'badge-claimed','CONFLITANTE':'badge-contested','DESMENTIDO':'badge-alert' };
+
+  const sourcesHTML = K.sources.map(s => {
+    const badgeClass = badgeMap[s.badge] || 'badge-reported';
+    const claim = lang==='en' ? s.claim_en : s.claim_pt;
+    const flagHTML = s.flag ? `<div class="bench-note">⚑ ${s.flag}</div>` : '';
+    return `
+      <div class="khm-source-card">
+        <div class="khm-source-header">
+          <span class="khm-source-name">${s.source}</span>
+          <span class="khm-source-date">${s.date}</span>
+          <span class="badge ${badgeClass}">${s.badge}</span>
+        </div>
+        <div class="khm-source-claim">${claim}</div>
+        ${flagHTML}
+        <a href="${s.url}" target="_blank" rel="noopener" class="khm-source-link">→ fonte original</a>
+      </div>`;
+  }).join('');
+
+  const assessment = lang==='en' ? K.assessment.consensus_en : K.assessment.consensus_pt;
+  const irgcCtx = K.assessment.irgc_context_pt;
+  const lastMsg = K.status.last_communication;
+
+  return `
+    <div class="khm-panel">
+      <div class="khm-header">
+        <div class="khm-title-block">
+          <div class="khm-icon">☪</div>
+          <div>
+            <div class="khm-name">${K.profile.name}</div>
+            <div class="khm-role">${lang==='en' ? K.profile.title_en : K.profile.title_pt}</div>
+          </div>
+        </div>
+        <div class="khm-status-pill ${K.status.confidence==='CONFLITANTE'?'pill-contested':'pill-reported'}">
+          ⚠ STATUS: ${K.status.confidence} — AUSENTE DO PÚBLICO
+        </div>
+      </div>
+
+      <div class="khm-meta-row">
+        <div class="khm-meta-item">
+          <div class="khm-meta-label">ÚLTIMA VEZ VISTO</div>
+          <div class="khm-meta-value red-text">Nunca em público desde 08/Mar</div>
+        </div>
+        <div class="khm-meta-item">
+          <div class="khm-meta-label">ÚLTIMA COMUNICAÇÃO</div>
+          <div class="khm-meta-value">${lastMsg}</div>
+        </div>
+        <div class="khm-meta-item">
+          <div class="khm-meta-label">DIAS SEM APARECER</div>
+          <div class="khm-meta-value red-text">14+ dias</div>
+        </div>
+        <div class="khm-meta-item">
+          <div class="khm-meta-label">RISCO</div>
+          <div class="khm-meta-value red-text">${K.assessment.risk_level}</div>
+        </div>
+      </div>
+
+      <div class="khm-assessment">
+        <div class="khm-assessment-title">▶ AVALIAÇÃO CONSOLIDADA (${K.sources.length} fontes)</div>
+        <div class="khm-assessment-body">${assessment}</div>
+        <div class="khm-assessment-irgc">⚑ DIMENSÃO IRGC: ${irgcCtx}</div>
+      </div>
+
+      <div class="khm-sources-title">FONTES DETALHADAS — O QUE CADA UMA DIZ</div>
+      <div class="khm-sources-grid">${sourcesHTML}</div>
+
+      <div class="khm-background">
+        <div class="khm-bg-title">PERFIL & CONTEXTO</div>
+        <div class="khm-bg-text">${lang==='en' ? K.profile.background_en : K.profile.background_pt}</div>
+      </div>
+    </div>`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Validation
   const errors = validateArsenal(WAR_DATA);
@@ -2999,6 +3210,11 @@ document.addEventListener('DOMContentLoaded', () => {
     `<div style="font-size:.62rem;color:var(--confirmed);padding:.25rem 0;border-bottom:1px solid var(--border);">✓ ${tD(s)}</div>`
   ).join('');
 
+  // Khamenei intel panel
+  if (document.getElementById('khamenei-panel')) {
+    document.getElementById('khamenei-panel').innerHTML = renderKhamenei();
+  }
+
   // Hezbollah tab
   document.getElementById('hzb-kpi-grid').innerHTML = renderHzbKPIs();
   document.getElementById('hzb-timeline-panel').innerHTML = renderHzbTimeline();
@@ -3024,13 +3240,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- PROGRESS BAR (fixed top) -->
 <div class="update-progress-bar">
-  <div class="update-progress-fill" id="update-progress" style="width: 100%;"></div>
+  <div class="update-progress-fill" id="update-progress" style="width: 30%;"></div>
 </div>
 
 <!-- UPDATE STATUS BAR -->
 <div class="update-status-bar">
-  <span class="update-status-text" id="update-status" style="color: var(--confirmed);">Ciclo 1 — feeds OK · Sem novas notícias relevantes</span>
-  <span class="update-status-text" id="next-update-top" style="color:var(--text-tertiary)">Próx. atualização: 23:10 UTC · Intervalo: 15 min</span>
+  <span class="update-status-text" id="update-status" style="color: var(--claimed);">Ciclo 1: consultando 11 feeds…</span>
+  <span class="update-status-text" id="next-update-top" style="color:var(--text-tertiary)">Sistema RSS autônomo · Próx.: 23:15 UTC · Intervalo: 15 min</span>
 </div>
 
 <!-- ============================================================
@@ -3074,13 +3290,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <button class="lang-btn" id="btn-pt" onclick="setLang(&#39;pt&#39;)">PT</button>
         <button class="lang-btn active" id="btn-en" onclick="setLang(&#39;en&#39;)">EN</button>
       </div>
-      <div class="live-badge" id="live-badge" onclick="fetchUpdate()" style="opacity: 1;">
+      <div class="live-badge" id="live-badge" onclick="fetchUpdate()" style="opacity: 0.5;">
         <div class="live-dot"></div>
         <span data-pt="AO VIVO · RSS · 15 MIN" data-en="LIVE · RSS · 15 MIN">LIVE · RSS · 15 MIN</span>
       </div>
     </div>
-    <div class="time-display" id="clock">2026-03-13 22:55 UTC</div>
-    <div class="time-display" id="next-update" style="font-size:.5rem;">Próx. atualização: 23:10 UTC</div>
+    <div class="time-display" id="clock">2026-03-13 22:59 UTC</div>
+    <div class="time-display" id="next-update" style="font-size:.5rem;">Próx. atualização RSS: 23:15 UTC</div>
   </div>
 </div>
 
@@ -4116,6 +4332,144 @@ Updated: N/A">✓ CONFIRMED</span></div>
   </div>
 
 </div>
+</div>
+
+<!-- ============================================================
+     PAINEL INTELIGÊNCIA: MOJTABA KHAMENEI
+     ============================================================ -->
+<div class="tab-content active" id="tab-khamenei-wrap" style="margin-top:0;">
+<div class="section-header">
+  <div class="section-title" data-pt="MOJTABA KHAMENEI — STATUS &amp; INTELIGÊNCIA" data-en="MOJTABA KHAMENEI — STATUS &amp; INTELLIGENCE">MOJTABA KHAMENEI — STATUS &amp; INTELLIGENCE</div>
+  <div class="section-meta" style="color:#f87171;font-weight:600;">⚠ LÍDER SUPREMO AUSENTE DO PÚBLICO · 14+ DIAS · STATUS DISPUTADO</div>
+</div>
+<div id="khamenei-panel">
+    <div class="khm-panel">
+      <div class="khm-header">
+        <div class="khm-title-block">
+          <div class="khm-icon">☪</div>
+          <div>
+            <div class="khm-name">Mojtaba Khamenei</div>
+            <div class="khm-role">Supreme Leader of Iran (since 08/Mar/2026)</div>
+          </div>
+        </div>
+        <div class="khm-status-pill pill-contested">
+          ⚠ STATUS: CONFLITANTE — AUSENTE DO PÚBLICO
+        </div>
+      </div>
+
+      <div class="khm-meta-row">
+        <div class="khm-meta-item">
+          <div class="khm-meta-label">ÚLTIMA VEZ VISTO</div>
+          <div class="khm-meta-value red-text">Nunca em público desde 08/Mar</div>
+        </div>
+        <div class="khm-meta-item">
+          <div class="khm-meta-label">ÚLTIMA COMUNICAÇÃO</div>
+          <div class="khm-meta-value">12 Mar 2026 — declaração escrita lida por âncora da TV estatal (foto estática na tela — sem vídeo, sem áudio)</div>
+        </div>
+        <div class="khm-meta-item">
+          <div class="khm-meta-label">DIAS SEM APARECER</div>
+          <div class="khm-meta-value red-text">14+ dias</div>
+        </div>
+        <div class="khm-meta-item">
+          <div class="khm-meta-label">RISCO</div>
+          <div class="khm-meta-value red-text">CRÍTICO — liderança de facto do regime possivelmente nas mãos do IRGC</div>
+        </div>
+      </div>
+
+      <div class="khm-assessment">
+        <div class="khm-assessment-title">▶ AVALIAÇÃO CONSOLIDADA (8 fontes)</div>
+        <div class="khm-assessment-body">ALIVE and INJURED — consensus across Western, Iranian and independent sources. Extent of injuries: DISPUTED. Fractured foot + facial injuries (CNN/Israel) vs. abdominal and leg surgery (Euronews/Sazegara). INCAPACITATION vs. HIDING: equally plausible hypotheses. Absence of video/audio for 14+ days is anomalous in any scenario.</div>
+        <div class="khm-assessment-irgc">⚑ DIMENSÃO IRGC: IRGC pressionou Assembleia de Especialistas para eleger Mojtaba com ameaças (Iran Wire). Se Khamenei incapacitado ou morto, IRGC controla de facto o regime — estrutura de junta militar. PJ Media/Iran Wire: grupos de oposição afirmam coma profundo tratado em segredo absoluto.</div>
+      </div>
+
+      <div class="khm-sources-title">FONTES DETALHADAS — O QUE CADA UMA DIZ</div>
+      <div class="khm-sources-grid">
+      <div class="khm-source-card">
+        <div class="khm-source-header">
+          <span class="khm-source-name">CNN</span>
+          <span class="khm-source-date">11 Mar 2026</span>
+          <span class="badge badge-reported">REPORTADO</span>
+        </div>
+        <div class="khm-source-claim">Fractured left foot + bruise around left eye + minor facial lacerations (Day 1 — Feb 28). Iranian amb. to Cyprus Salarian: 'injured in same strike that killed his father.' State media fills gaps with AI-generated images.</div>
+        <div class="bench-note">⚑ Fonte: 'source familiar with the situation' — anônimo. Confirmado parcialmente pelo embaixador iraniano Salarian.</div>
+        <a href="https://www.cnn.com/2026/03/11/middleeast/mojtaba-khamenei-injuries-iran-supreme-leader-latam-intl" target="_blank" rel="noopener" class="khm-source-link">→ fonte original</a>
+      </div>
+      <div class="khm-source-card">
+        <div class="khm-source-header">
+          <span class="khm-source-name">Euronews</span>
+          <span class="khm-source-date">12 Mar 2026</span>
+          <span class="badge badge-reported">REPORTADO</span>
+        </div>
+        <div class="khm-source-claim">Mohsen Sazegara (IRGC founder, now opposition): sources say abdomen and leg required surgery, possible facial injuries. Not life-threatening. Amb. Salarian: 'I heard legs and arms were injured — I think he is in hospital.'</div>
+        <div class="bench-note">⚑ Sazegara: sem confirmação independente das lesões exatas. Salarian: embaixador iraniano — motivação para minimizar ou exagerar.</div>
+        <a href="https://www.euronews.com/2026/03/12/missing-in-action-what-we-know-about-mojtaba-khameneis-condition" target="_blank" rel="noopener" class="khm-source-link">→ fonte original</a>
+      </div>
+      <div class="khm-source-card">
+        <div class="khm-source-header">
+          <span class="khm-source-name">Bloomberg / The Hill</span>
+          <span class="khm-source-date">13 Mar 2026</span>
+          <span class="badge badge-claimed">REIVINDICADO</span>
+        </div>
+        <div class="khm-source-claim">Hegseth (Pentagon, 13/Mar briefing): 'wounded and likely disfigured.' Vance: 'We know that he is hurt. We do not know how bad.' Trump: 'Damaged but probably alive in some form.' Hegseth: 'cowering underground — that is what rats do.'</div>
+        <div class="bench-note">⚑ EUA não forneceu evidências. Declaração com claro objetivo psicológico/operacional — pressionar regime e criar dúvida sobre comando iraniano.</div>
+        <a href="https://www.bloomberg.com/news/articles/2026-03-13/hegseth-says-khamenei-wounded-likely-disfigured" target="_blank" rel="noopener" class="khm-source-link">→ fonte original</a>
+      </div>
+      <div class="khm-source-card">
+        <div class="khm-source-header">
+          <span class="khm-source-name">Al Jazeera</span>
+          <span class="khm-source-date">13 Mar 2026</span>
+          <span class="badge badge-confirmed">CONFIRMADO</span>
+        </div>
+        <div class="khm-source-claim">CENTCOM: 15,000+ Iranian targets struck since Feb 28. Iran did not respond to Hegseth claims. Khamenei declared Hormuz closed and threatened 'other fronts' where the enemy is 'highly vulnerable.'</div>
+        
+        <a href="https://www.aljazeera.com/news/2026/3/13/us-hegseth-claims-irans-new-supreme-leader-mojtaba-khamenei-injured" target="_blank" rel="noopener" class="khm-source-link">→ fonte original</a>
+      </div>
+      <div class="khm-source-card">
+        <div class="khm-source-header">
+          <span class="khm-source-name">CBC News / Georgetown Univ.</span>
+          <span class="khm-source-date">13 Mar 2026</span>
+          <span class="badge badge-reported">REPORTADO</span>
+        </div>
+        <div class="khm-source-claim">Prof. Nader Hashemi (Georgetown): 'The longer he does not appear on camera, the more rumors will circulate.' Akaash Maharaj (Munk School): may simply be in hiding — any video would reveal location to US/Israel forces.</div>
+        <div class="bench-note">⚑ Análise acadêmica — duas hipóteses igualmente válidas: incapacitado OU escondido por razões de segurança.</div>
+        <a href="https://www.cbc.ca/news/world/iran-supreme-leader-health-9.7126597" target="_blank" rel="noopener" class="khm-source-link">→ fonte original</a>
+      </div>
+      <div class="khm-source-card">
+        <div class="khm-source-header">
+          <span class="khm-source-name">Jerusalem Post</span>
+          <span class="khm-source-date">11 Mar 2026</span>
+          <span class="badge badge-reported">REPORTADO</span>
+        </div>
+        <div class="khm-source-claim">Source familiar with matter: Khamenei wounded but capable of carrying out duties and managing state affairs. State TV acknowledged injuries after appointment without details.</div>
+        <div class="bench-note">⚑ Fonte anônima. Jerusalem Post historicamente tem fontes israelenses — possível interesse em subestimar incapacidade.</div>
+        <a href="https://www.jpost.com/middle-east/iran-news/article-889520" target="_blank" rel="noopener" class="khm-source-link">→ fonte original</a>
+      </div>
+      <div class="khm-source-card">
+        <div class="khm-source-header">
+          <span class="khm-source-name">Iran International</span>
+          <span class="khm-source-date">12 Mar 2026</span>
+          <span class="badge badge-confirmed">CONFIRMADO</span>
+        </div>
+        <div class="khm-source-claim">No direct evidence of condition. First message (12/Mar): read by anchor, no video/audio — still photo on screen. Content: Hormuz closed, US bases must close 'immediately or will be attacked', threat of 'other fronts'. Called resistance axis 'best friends'.</div>
+        <div class="bench-note">⚑ Iran International é oposição iraniana baseada em Londres — cobertura crítica ao regime, mas acesso a fontes internas.</div>
+        <a href="https://www.iranintl.com/en/202603125349" target="_blank" rel="noopener" class="khm-source-link">→ fonte original</a>
+      </div>
+      <div class="khm-source-card">
+        <div class="khm-source-header">
+          <span class="khm-source-name">SCMP / Yousef Pezeshkian</span>
+          <span class="khm-source-date">11 Mar 2026</span>
+          <span class="badge badge-claimed">REIVINDICADO</span>
+        </div>
+        <div class="khm-source-claim">Yousef Pezeshkian (president's son/adviser): 'I asked friends who had connections. They told me he is safe and sound.' State TV called him janbaz (wounded war veteran) without detailing injuries.</div>
+        <div class="bench-note">⚑ Fonte governamental iraniana — motivo para minimizar. 'janbaz' confirma ferimento mas nega gravidade.</div>
+        <a href="https://www.scmp.com/news/world/middle-east/article/3346205/irans-new-supreme-leader-safe-despite-war-injury-reports" target="_blank" rel="noopener" class="khm-source-link">→ fonte original</a>
+      </div></div>
+
+      <div class="khm-background">
+        <div class="khm-bg-title">PERFIL &amp; CONTEXTO</div>
+        <div class="khm-bg-text">Son of assassinated Supreme Leader Ayatollah Ali Khamenei. Mid-ranking cleric, no senior religious title. Close IRGC associate. US Treasury-sanctioned in 2019. Analysts consider him more hardline than his father.</div>
+      </div>
+    </div></div>
 </div>
 
 <!-- ============================================================
@@ -5548,23 +5902,8 @@ Atualizado: N/A">⚠ CONFLITANTE</span></td>
       <div class="section-meta">Sistema autônomo · Sem API key · 6 feeds RSS públicos · Intervalo: 15 min</div>
     </div>
     <div class="update-status-panel-wrap" id="update-status-panel">
-    <div style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center;">
-      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">CICLO</div>
-           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-bright);">#1</div></div>
-      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">ÚLTIMA BUSCA</div>
-           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-bright);">22:55 UTC</div></div>
-      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">FEEDS CONSULTADOS</div>
-           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--reported);">0</div></div>
-      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">ARTIGOS RELEVANTES</div>
-           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--confirmed);">0</div></div>
-      <div><div style="font-family:var(--font-mono);font-size:.5rem;color:var(--text-tertiary);letter-spacing:.1em;">EVENTOS ADICIONADOS</div>
-           <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--reported);">0</div></div>
-      
+      <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--text-tertiary);">Aguardando primeiro ciclo de atualização…</div>
     </div>
-    <div style="font-size:.6rem;color:var(--text-secondary);margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border);">0/11 feeds OK. Sem novidades.</div>
-    
-    <div style="font-family:var(--font-mono);font-size:.44rem;color:var(--text-tertiary);margin-top:.25rem;">Sistema RSS autônomo · Sem API key · 15 min · 6 feeds: Reuters · Al Jazeera · Times of Israel · Iran International · Jerusalem Post · Middle East Eye</div>
-  </div>
   </div>
 
   <!-- Sources -->
